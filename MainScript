@@ -1,58 +1,33 @@
-print("Loading CustomModule...")
-local CustomModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/main/CustomModule.lua"))()
-print("CustomModule loaded")
+local CustomModule = require(game.ReplicatedStorage.CustomModule) -- Adjust path if needed
+local MainGui = require(game.ReplicatedStorage.MainGui) -- Adjust path if needed
 
-print("Loading MainGui...")
-local MainGui = loadstring(game:HttpGet("https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/main/MainGui.lua"))()
-print("MainGui loaded")
-
--- Create the main GUI
 local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui") -- Change to PlayerGui for compatibility
+screenGui.Parent = game:GetService("CoreGui")
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Debug";
+    Text = "ScreenGui created.";
+    Duration = 5;
+})
 
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0.8, 0, 0.8, 0)
 frame.Position = UDim2.new(0.1, 0, 0.1, 0)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-frame.BackgroundTransparency = 0.5
-frame.BorderSizePixel = 0
-frame.Visible = true -- Ensure frame is visible for debugging
+frame.Visible = true
 frame.Parent = screenGui
 
-local uiCorner = Instance.new("UICorner")
-uiCorner.CornerRadius = UDim.new(0.1, 0)
-uiCorner.Parent = frame
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Debug";
+    Text = "Frame created and added to ScreenGui.";
+    Duration = 5;
+})
 
-local textLabel = Instance.new("TextLabel")
-textLabel.Size = UDim2.new(0.2, 0, 0.1, 0)
-textLabel.Position = UDim2.new(0, 5, 0, 5)
-textLabel.BackgroundTransparency = 1
-textLabel.Text = "Rex"
-textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-textLabel.TextScaled = true
-textLabel.Font = Enum.Font.GothamBold
-textLabel.Parent = frame
-
-local toggleButton = Instance.new("TextButton")
-toggleButton.Size = UDim2.new(0, 50, 0, 50)
-toggleButton.Position = UDim2.new(0, 10, 0, 10)
-toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-toggleButton.Text = ""
-toggleButton.Parent = screenGui
-
-local toggleButtonCorner = Instance.new("UICorner")
-toggleButtonCorner.CornerRadius = UDim.new(0.5, 0)
-toggleButtonCorner.Parent = toggleButton
-
-toggleButton.MouseButton1Click:Connect(function()
-    frame.Visible = not frame.Visible
-end)
-
-print("Adding toggles...")
--- Add toggles dynamically from CustomModule
 for _, toggle in ipairs(CustomModule.Toggles) do
-    print("Adding toggle:", toggle.Name)
     MainGui.createToggleButton(toggle, frame)
 end
 
-print("Script execution complete.")
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Debug";
+    Text = "Toggles added to GUI.";
+    Duration = 5;
+})
