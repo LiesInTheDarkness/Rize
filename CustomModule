@@ -12,6 +12,12 @@ CustomModule.Toggles = {
         Function = function(state)
             print("Toggle is now " .. (state and "ON" or "OFF"))
         end
+    },
+    {
+        Name = "Testing Toggle", -- Testing toggle
+        Function = function(state)
+            print("Testing Toggle is now " .. (state and "ON" or "OFF"))
+        end
     }
 }
 
