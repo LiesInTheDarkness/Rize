@@ -1,0 +1,124 @@
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
+local Library = {}
+
+function Library:CreateWindow(Title)
+    local GUI = Instance.new("ScreenGui")
+    local MainUI = Instance.new("Frame")
+    local TitleBar = Instance.new("Frame")
+    local TitleLabel = Instance.new("TextLabel")
+    local FloatingButton = Instance.new("TextButton")
+    local UIGradient = Instance.new("UIGradient")
+
+    GUI.Parent = game.CoreGui
+    GUI.Name = "CustomUI"
+
+    -- Main UI Panel (Hidden by Default)
+    MainUI.Parent = GUI
+    MainUI.Size = UDim2.new(0, 300, 0, 350)
+    MainUI.Position = UDim2.new(0.5, -150, 0.3, 0)
+    MainUI.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    MainUI.BorderSizePixel = 0
+    MainUI.Visible = false -- Start hidden
+
+    -- Gradient Effect
+    UIGradient.Parent = MainUI
+    UIGradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(50, 120, 255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(120, 50, 255))
+    }
+
+    -- Title Bar
+    TitleBar.Parent = MainUI
+    TitleBar.Size = UDim2.new(1, 0, 0, 40)
+    TitleBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+
+    -- Title Label
+    TitleLabel.Parent = TitleBar
+    TitleLabel.Size = UDim2.new(1, 0, 1, 0)
+    TitleLabel.Text = Title
+    TitleLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
+    TitleLabel.Font = Enum.Font.SourceSansBold
+    TitleLabel.TextSize = 18
+    TitleLabel.BackgroundTransparency = 1
+
+    -- Floating Button
+    FloatingButton.Parent = GUI
+    FloatingButton.Size = UDim2.new(0, 50, 0, 50)
+    FloatingButton.Position = UDim2.new(0.8, 0, 0.8, 0)
+    FloatingButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    FloatingButton.Text = "🔘"
+    FloatingButton.TextSize = 24
+    FloatingButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    FloatingButton.BorderSizePixel = 0
+
+    -- Dragging for Floating Button
+    local Dragging, DragStart, StartPos
+    FloatingButton.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+            Dragging = true
+            DragStart = input.Position
+            StartPos = FloatingButton.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    Dragging = false
+                end
+            end)
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if Dragging and (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement) then
+            local Delta = input.Position - DragStart
+            FloatingButton.Position = UDim2.new(StartPos.X.Scale, StartPos.X.Offset + Delta.X, StartPos.Y.Scale, StartPos.Y.Offset + Delta.Y)
+        end
+    end)
+
+    -- Show & Hide Animation
+    local UIVisible = false
+
+    FloatingButton.MouseButton1Click:Connect(function()
+        UIVisible = not UIVisible
+        
+        if UIVisible then
+            MainUI.Visible = true
+            TweenService:Create(MainUI, TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Size = UDim2.new(0, 300, 0, 350)}):Play()
+        else
+            TweenService:Create(MainUI, TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {Size = UDim2.new(0, 300, 0, 0)}):Play()
+            wait(0.4)
+            MainUI.Visible = false
+        end
+    end)
+
+    -- Dragging for Main UI
+    local UI_Dragging, UI_DragStart, UI_StartPos
+    TitleBar.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+            UI_Dragging = true
+            UI_DragStart = input.Position
+            UI_StartPos = MainUI.Position
+
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    UI_Dragging = false
+                end
+            end)
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if UI_Dragging and (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement) then
+            local Delta = input.Position - UI_DragStart
+            MainUI.Position = UDim2.new(UI_StartPos.X.Scale, UI_StartPos.X.Offset + Delta.X, UI_StartPos.Y.Scale, UI_StartPos.Y.Offset + Delta.Y)
+        end
+    end)
+
+    return {
+        MainUI = MainUI,
+        FloatingButton = FloatingButton
+    }
+end
+
+return Library
