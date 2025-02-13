@@ -7,15 +7,45 @@ local scripts = {
 }
 
 -- Function to fetch and execute a script from a URL
-local function loadScriptFromUrl(url)
-    local scriptContent = game:HttpGet(url)
-    local executeScript = loadstring(scriptContent)
-    if executeScript then
-        executeScript()
+local function loadScriptFromUrl(name, url)
+    local success, scriptContent = pcall(function()
+        return game:HttpGet(url)
+    end)
+
+    if success then
+        local executeScript, loadError = loadstring(scriptContent)
+        if executeScript then
+            local successExec, execError = pcall(executeScript)
+            if not successExec then
+                -- Use the custom warning GUI for script execution errors
+                shared.GuiLibrary.createwarning(
+                    "Script Error",
+                    "Failed to execute script: " .. name .. "\n" .. execError,
+                    5,
+                    Color3.fromRGB(255, 0, 0) -- Red for critical errors
+                )
+            end
+        else
+            -- Use the custom warning GUI for loading errors
+            shared.GuiLibrary.createwarning(
+                "Script Error",
+                "Failed to load script: " .. name .. "\n" .. loadError,
+                5,
+                Color3.fromRGB(255, 165, 0) -- Orange for warnings
+            )
+        end
+    else
+        -- Use the custom warning GUI for HTTP fetching errors
+        shared.GuiLibrary.createwarning(
+            "HTTP Error",
+            "Failed to fetch script: " .. name,
+            5,
+            Color3.fromRGB(255, 165, 0) -- Orange for warnings
+        )
     end
 end
 
--- pair the script
-for _, url in pairs(scripts) do
-    loadScriptFromUrl(url)
+-- Iterate through the script list and load each one
+for name, url in pairs(scripts) do
+    loadScriptFromUrl(name, url)
 end
