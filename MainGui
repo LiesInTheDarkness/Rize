@@ -40,55 +40,14 @@ local toggleButtonCorner = Instance.new("UICorner")
 toggleButtonCorner.CornerRadius = UDim.new(0.5, 0)
 toggleButtonCorner.Parent = toggleButton
 
--- Make the toggle button draggable
-local dragging
-local dragInput
-local dragStart
-local startPos
 
-local function update(input)
-    local delta = input.Position - dragStart
-    toggleButton.Position = UDim2.new(
-        startPos.X.Scale,
-        startPos.X.Offset + delta.X,
-        startPos.Y.Scale,
-        startPos.Y.Offset + delta.Y
-    )
-end
-
-toggleButton.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = toggleButton.Position
-
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-
-toggleButton.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType.Touch then
-        dragInput = input
-    end
-end)
-
-game:GetService("UserInputService").InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
-        update(input)
-    end
-end)
 
 -- Toggle the visibility of the frame when the toggle button is clicked
 toggleButton.MouseButton1Click:Connect(function()
     frame.Visible = not frame.Visible
 end)
 
--- Function to create a toggle button
-function MainGui.createToggleButton(toggle)
+function MainGui.createToggleButton(toggle, mainFrame)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(0, 200, 0, 50)
     button.Position = UDim2.new(0, 50, 0, 50 + (#mainFrame:GetChildren() - 1) * 60)
@@ -106,5 +65,3 @@ function MainGui.createToggleButton(toggle)
         button.BackgroundColor3 = state and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(50, 50, 50)
     end)
 end
-
-return MainGui
