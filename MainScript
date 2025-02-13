@@ -1,9 +1,14 @@
+print("Loading CustomModule...")
 local CustomModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/main/CustomModule.lua"))()
+print("CustomModule loaded")
+
+print("Loading MainGui...")
 local MainGui = loadstring(game:HttpGet("https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/main/MainGui.lua"))()
+print("MainGui loaded")
 
 -- Create the main GUI
 local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = game:GetService("CoreGui")
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui") -- Change to PlayerGui for compatibility
 
 local frame = Instance.new("Frame")
 frame.Size = UDim2.new(0.8, 0, 0.8, 0)
@@ -11,7 +16,7 @@ frame.Position = UDim2.new(0.1, 0, 0.1, 0)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.BackgroundTransparency = 0.5
 frame.BorderSizePixel = 0
-frame.Visible = true
+frame.Visible = true -- Ensure frame is visible for debugging
 frame.Parent = screenGui
 
 local uiCorner = Instance.new("UICorner")
@@ -32,7 +37,7 @@ local toggleButton = Instance.new("TextButton")
 toggleButton.Size = UDim2.new(0, 50, 0, 50)
 toggleButton.Position = UDim2.new(0, 10, 0, 10)
 toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-toggleButton.Text = "R"
+toggleButton.Text = ""
 toggleButton.Parent = screenGui
 
 local toggleButtonCorner = Instance.new("UICorner")
@@ -43,7 +48,11 @@ toggleButton.MouseButton1Click:Connect(function()
     frame.Visible = not frame.Visible
 end)
 
+print("Adding toggles...")
 -- Add toggles dynamically from CustomModule
 for _, toggle in ipairs(CustomModule.Toggles) do
+    print("Adding toggle:", toggle.Name)
     MainGui.createToggleButton(toggle, frame)
 end
+
+print("Script execution complete.")
