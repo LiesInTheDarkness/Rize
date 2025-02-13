@@ -42,27 +42,21 @@ function CustomModule:AddToggle(name, toggleFunction)
     })
 end
 
--- Function to create and display toggle buttons
-function CustomModule:CreateToggleButtons(parentFrame)
-    for _, toggle in ipairs(self.Toggles) do
-        local button = Instance.new("TextButton")
-        button.Size = UDim2.new(0.2, 0, 0.1, 0)
-        button.Position = UDim2.new(0, 5, 0, 45 + (#parentFrame:GetChildren() - 1) * 50)
-        button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-        button.Text = toggle.Name
-        button.TextColor3 = Color3.fromRGB(255, 255, 255)
-        button.TextScaled = true
-        button.Font = Enum.Font.GothamBold
-        button.Parent = parentFrame
+-- Function to create and display function MainGui.createToggleButton(toggle)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0, 200, 0, 50)
+    button.Position = UDim2.new(0, 50, 0, 50 + (#mainFrame:GetChildren() - 1) * 60)
+    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    button.Text = toggle.Name
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextScaled = true
+    button.Font = Enum.Font.GothamBold
+    button.Parent = mainFrame
 
-        -- Toggle state
-        local state = false
-        button.MouseButton1Click:Connect(function()
-            state = not state
-            toggle.Function(state)
-            button.BackgroundColor3 = state and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(50, 50, 50)
-        end)
-    end
+    local state = false
+    button.MouseButton1Click:Connect(function()
+        state = not state
+        toggle.Function(state)
+        button.BackgroundColor3 = state and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(50, 50, 50)
+    end)
 end
-
-return CustomModule
