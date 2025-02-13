@@ -2,8 +2,8 @@
 
 -- List of scripts to load
 local scripts = {
-    gui = "https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/refs/heads/main/MainGui", -- GUI script
-    customModule = "https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/refs/heads/main/CustomModule", -- Custom module
+    gui = "https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/refs/heads/main/MainGui",
+    customModule = "https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/refs/heads/main/CustomModule",
 }
 
 -- Function to fetch and execute a script from a URL
@@ -11,73 +11,22 @@ local function loadScriptFromUrl(name, url)
     local success, scriptContent = pcall(function()
         return game:HttpGet(url)
     end)
-    if success and scriptContent then
+    if success then
         local executeScript, loadError = loadstring(scriptContent)
         if executeScript then
             local successExec, execError = pcall(executeScript)
-            if successExec then
-                print("Successfully executed script:", name)
-                return true
-            else
-                -- Use the custom warning GUI for script execution errors
-                if shared.GuiLibrary and shared.GuiLibrary.createwarning then
-                    shared.GuiLibrary.createwarning(
-                        "Script Execution Error",
-                        "Failed to execute script: " .. name .. "\n" .. tostring(execError),
-                        5,
-                        Color3.fromRGB(255, 0, 0) -- Red for critical errors
-                    )
-                else
-                    warn("Failed to execute script:", name, execError)
-                end
+            if not successExec then
+                warn("Failed to execute script: " .. name .. "\n" .. execError)
             end
         else
-            -- Use the custom warning GUI for loading errors
-            if shared.GuiLibrary and shared.GuiLibrary.createwarning then
-                shared.GuiLibrary.createwarning(
-                    "Script Load Error",
-                    "Failed to load script: " .. name .. "\n" .. tostring(loadError),
-                    5,
-                    Color3.fromRGB(255, 165, 0) -- Orange for warnings
-                )
-            else
-                warn("Failed to load script:", name, loadError)
-            end
+            warn("Failed to load script: " .. name .. "\n" .. loadError)
         end
     else
-        -- Use the custom warning GUI for HTTP fetching errors
-        if shared.GuiLibrary and shared.GuiLibrary.createwarning then
-            shared.GuiLibrary.createwarning(
-                "HTTP Error",
-                "Failed to fetch script: " .. name .. "\n" .. tostring(scriptContent),
-                5,
-                Color3.fromRGB(255, 165, 0) -- Orange for warnings
-            )
-        else
-            warn("Failed to fetch script:", name)
-        end
+        warn("Failed to fetch script: " .. name)
     end
-    return false
 end
 
--- Load and execute each script
-local customModule
+-- Iterate through the script list and load each one
 for name, url in pairs(scripts) do
-    local success = loadScriptFromUrl(name, url)
-    if name == "customModule" and success then
-        -- If the CustomModule script is successfully executed, load it for use
-        customModule = loadstring(game:HttpGet(url))()
-    end
-    if not success then
-        warn("Halting further execution due to errors in script:", name)
-        break
-    end
+    loadScriptFromUrl(name, url)
 end
-
--- If CustomModule is loaded and MainGui exists, initialize buttons/toggles
-if customModule and shared.GuiLibrary and shared.GuiLibrary.initializeGui then
-    shared.GuiLibrary.initializeGui(customModule)
-else
-    warn("Failed to initialize GUI. Ensure MainGui and CustomModule are loaded correctly.")
-end
-
