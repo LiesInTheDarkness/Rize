@@ -56,7 +56,7 @@ frame.InputBegan:Connect(function(input)
 end)
 
 frame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType.Touch then
         dragInput = input
     end
 end)
@@ -98,3 +98,7 @@ end
 for _, toggle in ipairs(CustomModule.Toggles) do
     createToggleButton(toggle)
 end
+
+return {
+    createToggleButton = createToggleButton
+}
