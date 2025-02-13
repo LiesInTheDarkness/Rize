@@ -1,74 +1,67 @@
--- MainGui
 local MainGui = {}
 
-local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = game:GetService("CoreGui")
+-- Function to create the GUI
+function MainGui.createGui(toggleList)
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "MainGui"
+    screenGui.Parent = game:GetService("CoreGui")
 
--- Create the main frame
-local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0.8, 0, 0.8, 0)
-mainFrame.Position = UDim2.new(0.1, 0, 0.1, 0)
-mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-mainFrame.BackgroundTransparency = 0.5
-mainFrame.BorderSizePixel = 0
-mainFrame.Visible = false
-mainFrame.Parent = screenGui
+    local mainFrame = Instance.new("Frame")
+    mainFrame.Size = UDim2.new(0.3, 0, 0.4, 0)
+    mainFrame.Position = UDim2.new(0.35, 0, 0.3, 0)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    mainFrame.BackgroundTransparency = 0.1
+    mainFrame.BorderSizePixel = 0
+    mainFrame.Parent = screenGui
 
--- Add rounded corners to the main frame
-local uiCorner = Instance.new("UICorner")
-uiCorner.CornerRadius = UDim.new(0.1, 0)
-uiCorner.Parent = mainFrame
+    local uiCorner = Instance.new("UICorner")
+    uiCorner.CornerRadius = UDim.new(0.05, 0)
+    uiCorner.Parent = mainFrame
 
--- Add a title to the GUI
-local textLabel = Instance.new("TextLabel")
-textLabel.Size = UDim2.new(0.2, 0, 0.1, 0)
-textLabel.Position = UDim2.new(0, 5, 0, 5)
-textLabel.BackgroundTransparency = 1
-textLabel.Text = "Rex"
-textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-textLabel.TextScaled = true
-textLabel.Font = Enum.Font.GothamBold
-textLabel.Parent = mainFrame
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0.15, 0)
+    title.BackgroundTransparency = 1
+    title.Text = "Rex 2.0"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.TextScaled = true
+    title.Font = Enum.Font.GothamBold
+    title.Parent = mainFrame
 
--- Create the toggle button for showing/hiding the main frame
-local toggleButton = Instance.new("TextButton")
-toggleButton.Size = UDim2.new(0, 50, 0, 50)
-toggleButton.Position = UDim2.new(0, 10, 0, 10)
-toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-toggleButton.Text = ""
-toggleButton.Parent = screenGui
+    local toggleContainer = Instance.new("Frame")
+    toggleContainer.Size = UDim2.new(1, 0, 0.85, 0)
+    toggleContainer.Position = UDim2.new(0, 0, 0.15, 0)
+    toggleContainer.BackgroundTransparency = 1
+    toggleContainer.Parent = mainFrame
 
-local toggleButtonCorner = Instance.new("UICorner")
-toggleButtonCorner.CornerRadius = UDim.new(0.5, 0)
-toggleButtonCorner.Parent = toggleButton
+    local uiListLayout = Instance.new("UIListLayout")
+    uiListLayout.Padding = UDim.new(0, 10)
+    uiListLayout.FillDirection = Enum.FillDirection.Vertical
+    uiListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    uiListLayout.VerticalAlignment = Enum.VerticalAlignment.Top
+    uiListLayout.Parent = toggleContainer
 
--- Toggle visibility of the main frame when button is clicked
-toggleButton.MouseButton1Click:Connect(function()
-    mainFrame.Visible = not mainFrame.Visible
-end)
+    -- Create toggle buttons dynamically
+    for _, toggle in ipairs(toggleList) do
+        local button = Instance.new("TextButton")
+        button.Size = UDim2.new(0.9, 0, 0, 40)
+        button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        button.Text = toggle.Name
+        button.TextColor3 = Color3.fromRGB(255, 255, 255)
+        button.TextScaled = true
+        button.Font = Enum.Font.Gotham
+        button.Parent = toggleContainer
 
--- Function to create toggle buttons dynamically
-function MainGui.createToggleButton(toggle, mainFrame)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0, 200, 0, 50)
-    button.Position = UDim2.new(0, 50, 0, 50 + (#mainFrame:GetChildren() - 1) * 60)
-    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    button.Text = toggle.Name
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.TextScaled = true
-    button.Font = Enum.Font.GothamBold
-    button.Parent = mainFrame
+        local uiButtonCorner = Instance.new("UICorner")
+        uiButtonCorner.CornerRadius = UDim.new(0.2, 0)
+        uiButtonCorner.Parent = button
 
-    local state = false
-    button.MouseButton1Click:Connect(function()
-        state = not state
-        toggle.Function(state)
-        button.BackgroundColor3 = state and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(50, 50, 50)
-    end)
+        local state = false
+        button.MouseButton1Click:Connect(function()
+            state = not state
+            toggle.Function(state)
+            button.BackgroundColor3 = state and Color3.fromRGB(0, 200, 0) or Color3.fromRGB(50, 50, 50)
+        end)
+    end
 end
-
--- Return references to the screenGui and mainFrame for MainScript
-MainGui.screenGui = screenGui
-MainGui.mainFrame = mainFrame
 
 return MainGui
