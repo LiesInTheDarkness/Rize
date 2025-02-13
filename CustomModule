@@ -21,6 +21,20 @@ CustomModule.Toggles = {
     }
 }
 
+Name = "Skibidi", -- Custom toggle to change speed
+        Function = function(state)
+            local player = game.Players.LocalPlayer
+            if player and player.Character and player.Character:FindFirstChild("Humanoid") then
+                local humanoid = player.Character.Humanoid
+                if state then
+                    humanoid.WalkSpeed = 50
+                    print("Speed is now 50")
+                else
+                    humanoid.WalkSpeed = 16 -- Reset to default speed
+                    print("Speed is now default")
+                end
+            end
+        end
 -- Function to add new toggle
 function CustomModule:AddToggle(name, toggleFunction)
     table.insert(self.Toggles, {
