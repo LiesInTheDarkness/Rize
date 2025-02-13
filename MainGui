@@ -8,6 +8,7 @@ frame.Position = UDim2.new(0.1, 0, 0.1, 0) -- Center the frame
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Dark grey background
 frame.BackgroundTransparency = 0.5 -- Make it transparent
 frame.BorderSizePixel = 0
+frame.Visible = false -- Initially hidden
 frame.Parent = screenGui
 
 -- Create the UI Corner for rounded edges
@@ -26,7 +27,20 @@ textLabel.TextScaled = true -- Make text scale with size
 textLabel.Font = Enum.Font.GothamBold -- Use Gotham bold font
 textLabel.Parent = frame
 
--- Make the frame draggable (including mobile support)
+-- Create the Toggle Button
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(0, 50, 0, 50) -- Small square size
+toggleButton.Position = UDim2.new(0, 10, 0, 10) -- Initial position
+toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+toggleButton.Text = ""
+toggleButton.Parent = screenGui
+
+-- Add rounded corners to the toggle button
+local toggleButtonCorner = Instance.new("UICorner")
+toggleButtonCorner.CornerRadius = UDim.new(0.5, 0) -- Fully rounded corners
+toggleButtonCorner.Parent = toggleButton
+
+-- Make the toggle button draggable
 local dragging
 local dragInput
 local dragStart
@@ -34,7 +48,7 @@ local startPos
 
 local function update(input)
     local delta = input.Position - dragStart
-    frame.Position = UDim2.new(
+    toggleButton.Position = UDim2.new(
         startPos.X.Scale,
         startPos.X.Offset + delta.X,
         startPos.Y.Scale,
@@ -42,12 +56,12 @@ local function update(input)
     )
 end
 
-frame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+toggleButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType.Touch then
         dragging = true
         dragStart = input.Position
-        startPos = frame.Position
-        
+        startPos = toggleButton.Position
+
         input.Changed:Connect(function()
             if input.UserInputState == Enum.UserInputState.End then
                 dragging = false
@@ -56,7 +70,7 @@ frame.InputBegan:Connect(function(input)
     end
 end)
 
-frame.InputChanged:Connect(function(input)
+toggleButton.InputChanged:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType.Touch then
         dragInput = input
     end
@@ -66,6 +80,11 @@ game:GetService("UserInputService").InputChanged:Connect(function(input)
     if input == dragInput and dragging then
         update(input)
     end
+end)
+
+-- Toggle the visibility of the frame when the toggle button is clicked
+toggleButton.MouseButton1Click:Connect(function()
+    frame.Visible = not frame.Visible
 end)
 
 -- Import CustomModule
