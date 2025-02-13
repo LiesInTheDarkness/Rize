@@ -1,1 +1,25 @@
-j
+-- CustomModule
+local CustomModule = {}
+
+-- Buttons list
+CustomModule.Buttons = {
+    {
+        Name = "Test Warning", -- Button name
+        Function = function()
+            -- Call the warning function when this button is clicked
+            if shared.GuiLibrary and shared.GuiLibrary.createwarning then
+                shared.GuiLibrary.createwarning(
+                    "Skibidi",
+                    "Bro Thinks he can code",
+                    5,
+                    Color3.fromRGB(255, 0, 0) -- Red background color
+                )
+            end
+        end
+    }
+}
+
+-- Toggles list (add toggles if needed)
+CustomModule.Toggles = {}
+
+return CustomModule
