@@ -1,16 +1,16 @@
 local MainGui = {}
 
--- Function to dynamically create toggle buttons
-function MainGui.createToggleButton(toggle, frame)
+-- Function to create toggle buttons dynamically
+function MainGui.createToggleButton(toggle, parent)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(0, 200, 0, 50)
-    button.Position = UDim2.new(0, 50, 0, 50 + (#frame:GetChildren() - 1) * 60)
+    button.Position = UDim2.new(0, 50, 0, 50 + (#parent:GetChildren() - 1) * 60)
     button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     button.Text = toggle.Name
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.TextScaled = true
     button.Font = Enum.Font.GothamBold
-    button.Parent = frame
+    button.Parent = parent
 
     local state = false
     button.MouseButton1Click:Connect(function()
