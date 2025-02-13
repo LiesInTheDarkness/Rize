@@ -1,4 +1,3 @@
--- CustomModule
 local CustomModule = {}
 
 CustomModule.Toggles = {
@@ -17,7 +16,77 @@ CustomModule.Toggles = {
                 end
             end
         end
-    }
+    },
 }
+
+-- Create GUI for CustomModule
+function CustomModule:CreateGui()
+    -- Create the GUI Screen
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "CustomModuleGui"
+    screenGui.Parent = game:GetService("CoreGui")
+
+    -- Create Main Frame
+    local mainFrame = Instance.new("Frame")
+    mainFrame.Size = UDim2.new(0.3, 0, 0.5, 0)
+    mainFrame.Position = UDim2.new(0.35, 0, 0.25, 0)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    mainFrame.BackgroundTransparency = 0.2
+    mainFrame.BorderSizePixel = 0
+    mainFrame.Parent = screenGui
+
+    -- Add UI Corner for rounded edges
+    local uiCorner = Instance.new("UICorner")
+    uiCorner.CornerRadius = UDim.new(0.05, 0)
+    uiCorner.Parent = mainFrame
+
+    -- Add Title
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, 0, 0.1, 0)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Text = "Custom Module Toggles"
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.TextScaled = true
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.Parent = mainFrame
+
+    -- Toggle Button Container
+    local buttonContainer = Instance.new("Frame")
+    buttonContainer.Size = UDim2.new(1, -20, 0.9, -20)
+    buttonContainer.Position = UDim2.new(0, 10, 0.1, 10)
+    buttonContainer.BackgroundTransparency = 1
+    buttonContainer.Parent = mainFrame
+
+    -- Add UI List Layout
+    local listLayout = Instance.new("UIListLayout")
+    listLayout.Padding = UDim.new(0, 10)
+    listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    listLayout.Parent = buttonContainer
+
+    -- Generate Toggle Buttons
+    for _, toggle in ipairs(self.Toggles) do
+        local toggleButton = Instance.new("TextButton")
+        toggleButton.Size = UDim2.new(1, 0, 0, 50)
+        toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        toggleButton.Text = toggle.Name
+        toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        toggleButton.TextScaled = true
+        toggleButton.Font = Enum.Font.GothamBold
+        toggleButton.Parent = buttonContainer
+
+        -- Add UI Corner for Button
+        local buttonCorner = Instance.new("UICorner")
+        buttonCorner.CornerRadius = UDim.new(0.1, 0)
+        buttonCorner.Parent = toggleButton
+
+        -- Toggle State
+        local state = false
+        toggleButton.MouseButton1Click:Connect(function()
+            state = not state
+            toggle.Function(state)
+            toggleButton.BackgroundColor3 = state and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(50, 50, 50)
+        end)
+    end
+end
 
 return CustomModule
