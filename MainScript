@@ -15,7 +15,9 @@ local function loadScriptFromUrl(name, url)
         local executeScript, loadError = loadstring(scriptContent)
         if executeScript then
             local successExec, execError = pcall(executeScript)
-            if not successExec then
+            if successExec then
+                return executeScript
+            else
                 warn("Failed to execute script: " .. name .. "\n" .. execError)
             end
         else
@@ -24,10 +26,19 @@ local function loadScriptFromUrl(name, url)
     else
         warn("Failed to fetch script: " .. name)
     end
+    return nil
 end
 
 -- Load the GUI script first
-loadScriptFromUrl("gui", scripts.gui)
+local MainGui = loadScriptFromUrl("gui", scripts.gui)
 
 -- Load the CustomModule script
-loadScriptFromUrl("customModule", scripts.customModule)
+local CustomModule = loadScriptFromUrl("customModule", scripts.customModule)
+
+-- Ensure MainGui is compatible with CustomModule
+if MainGui and CustomModule then
+    -- Example of how to add a toggle to the GUI from CustomModule
+    for _, toggle in ipairs(CustomModule.Toggles) do
+        MainGui.createToggleButton(toggle)
+    end
+end
