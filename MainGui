@@ -77,8 +77,8 @@ end)
 shared.GuiLibrary = shared.GuiLibrary or {}
 
 shared.GuiLibrary.createwarning = function(title, text, delay, bgColor, position)
-    bgColor = bgColor or Color3.fromRGB(0, 122, 255)  -- Blue for a more professional feel
-    position = position or UDim2.new(0, 0, 0, 0)  -- Position relative to the button
+    bgColor = bgColor or Color3.fromRGB(169, 169, 169)  -- Gray color for the notification
+    position = position or UDim2.new(1, -250, 0, 10)  -- Position at top-right corner
 
     if playerGui:FindFirstChild("WarningNotification") then
         playerGui.WarningNotification:Destroy()
@@ -93,6 +93,7 @@ shared.GuiLibrary.createwarning = function(title, text, delay, bgColor, position
     frame.Position = position
     frame.BackgroundColor3 = bgColor
     frame.BorderSizePixel = 0
+    frame.BackgroundTransparency = 0.5  -- Make the frame semi-transparent
     frame.Parent = warningGui
 
     local corner = Instance.new("UICorner")
@@ -132,7 +133,7 @@ end
 local function createButton(buttonData)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(1, -20, 0, 30)
-    button.Position = UDim2.new(0, 10, 0, 10)
+    button.Position = UDim2.new(0, 10, 0, 50)  -- Reposition button to avoid overlapping with title
     button.Text = buttonData.Name
     button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
