@@ -3,24 +3,7 @@
 local CustomModule = {}
 
 -- Buttons list
-CustomModule.Buttons = {
-    {
-        Name = "Test Warning", -- Button name
-        Function = function()
-            -- Trigger a warning when the button is clicked
-            if shared.GuiLibrary and shared.GuiLibrary.createwarning then
-                shared.GuiLibrary.createwarning(
-                    "Test Warning",
-                    "This button triggered a warning successfully!",
-                    5,
-                    Color3.fromRGB(255, 0, 0) -- Red background color
-                )
-            else
-                warn("GuiLibrary or createwarning function is not available!")
-            end
-        end
-    }
-}
+CustomModule.Buttons = {}
 
 -- Toggles list
 CustomModule.Toggles = {
@@ -31,5 +14,25 @@ CustomModule.Toggles = {
         end
     }
 }
+
+-- Function to add new toggle
+function CustomModule:AddToggle(name, toggleFunction)
+    table.insert(self.Toggles, {
+        Name = name,
+        Function = toggleFunction
+    })
+end
+
+-- Function to process added module script code
+function CustomModule:ProcessModuleScript(moduleScript)
+    -- Example: Add a new toggle based on the module script
+    self:AddToggle(moduleScript.Name, function(state)
+        if state then
+            print(moduleScript.Name .. " is now ON")
+        else
+            print(moduleScript.Name .. " is now OFF")
+        end
+    end)
+end
 
 return CustomModule
