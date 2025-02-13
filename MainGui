@@ -5,7 +5,7 @@ local playerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 -- Create the ScreenGui
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = playerGui
-screenGui.Name = "MainGUI"
+screenGui.Name = "Rex 2.0"
 screenGui.ResetOnSpawn = false
 
 -- Create the main frame
