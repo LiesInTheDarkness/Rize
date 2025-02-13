@@ -1,33 +1,19 @@
-local CustomModule = require(game.ReplicatedStorage.CustomModule) -- Adjust path if needed
-local MainGui = require(game.ReplicatedStorage.MainGui) -- Adjust path if needed
+-- MainScript
+local HttpService = game:GetService("HttpService")
 
-local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = game:GetService("CoreGui")
-game.StarterGui:SetCore("SendNotification", {
-    Title = "Debug";
-    Text = "ScreenGui created.";
-    Duration = 5;
-})
+-- Load GUI and CustomModule from GitHub
+local MainGui = loadstring(game:HttpGet("https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/main/MainGui"))()
+local CustomModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/main/CustomModule"))()
 
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0.8, 0, 0.8, 0)
-frame.Position = UDim2.new(0.1, 0, 0.1, 0)
-frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-frame.Visible = true
-frame.Parent = screenGui
+-- Fetch screenGui and mainFrame from the existing MainGui setup
+local screenGui = MainGui.screenGui
+local mainFrame = MainGui.mainFrame
 
-game.StarterGui:SetCore("SendNotification", {
-    Title = "Debug";
-    Text = "Frame created and added to ScreenGui.";
-    Duration = 5;
-})
-
-for _, toggle in ipairs(CustomModule.Toggles) do
-    MainGui.createToggleButton(toggle, frame)
+if not screenGui or not mainFrame then
+    error("MainGui is not properly set up. Ensure MainGui defines screenGui and mainFrame.")
 end
 
-game.StarterGui:SetCore("SendNotification", {
-    Title = "Debug";
-    Text = "Toggles added to GUI.";
-    Duration = 5;
-})
+-- Add toggles dynamically from CustomModule
+for _, toggle in ipairs(CustomModule.Toggles) do
+    MainGui.createToggleButton(toggle, mainFrame)
+end
