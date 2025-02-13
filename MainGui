@@ -68,9 +68,6 @@ game:GetService("UserInputService").InputChanged:Connect(function(input)
     end
 end)
 
--- Create a smooth transition (optional)
-frame:TweenSize(UDim2.new(0.8, 0, 0.8, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 1, true)
-
 -- Import CustomModule
 local CustomModule = require(script.Parent:WaitForChild("CustomModule"))
 
