@@ -9,22 +9,29 @@ function Library:CreateWindow(Title)
     local TitleBar = Instance.new("Frame")
     local TitleLabel = Instance.new("TextLabel")
     local FloatingButton = Instance.new("TextButton")
+    local UICorner = Instance.new("UICorner")
 
     GUI.Parent = game.CoreGui
-    GUI.Name = "CleanUI"
+    GUI.Name = "MinimalUI"
 
     -- Main UI Panel (Hidden by Default)
     MainUI.Parent = GUI
     MainUI.Size = UDim2.new(0, 400, 0, 250) -- Wider & Shorter
     MainUI.Position = UDim2.new(0.5, -200, 0.3, 0)
-    MainUI.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    MainUI.BackgroundTransparency = 0.3 -- Semi-transparent
+    MainUI.BackgroundColor3 = Color3.fromRGB(20, 20, 20) -- Dark grey, subtle
     MainUI.BorderSizePixel = 0
     MainUI.Visible = false -- Start hidden
 
-    -- Title Bar
+    -- Rounded Corners
+    UICorner.Parent = MainUI
+    UICorner.CornerRadius = UDim.new(0, 10)
+
+    -- Title Bar (Transparent)
     TitleBar.Parent = MainUI
     TitleBar.Size = UDim2.new(1, 0, 0, 40)
-    TitleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    TitleBar.BackgroundTransparency = 0.6
+    TitleBar.BackgroundColor3 = Color3.fromRGB(15, 15, 15) -- Darker grey
 
     -- Title Label
     TitleLabel.Parent = TitleBar
@@ -37,13 +44,18 @@ function Library:CreateWindow(Title)
 
     -- Floating Button
     FloatingButton.Parent = GUI
-    FloatingButton.Size = UDim2.new(0, 50, 0, 50)
+    FloatingButton.Size = UDim2.new(0, 45, 0, 45)
     FloatingButton.Position = UDim2.new(0.85, 0, 0.8, 0)
-    FloatingButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+    FloatingButton.BackgroundTransparency = 0.4
+    FloatingButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     FloatingButton.Text = "☰"
-    FloatingButton.TextSize = 24
+    FloatingButton.TextSize = 22
     FloatingButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     FloatingButton.BorderSizePixel = 0
+
+    -- Rounded Floating Button
+    local ButtonCorner = Instance.new("UICorner", FloatingButton)
+    ButtonCorner.CornerRadius = UDim.new(1, 0)
 
     -- Floating Button Dragging
     local Dragging, DragStart, StartPos
@@ -76,9 +88,9 @@ function Library:CreateWindow(Title)
         
         if UIVisible then
             MainUI.Visible = true
-            TweenService:Create(MainUI, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 400, 0, 250)}):Play()
+            TweenService:Create(MainUI, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 400, 0, 250), BackgroundTransparency = 0.2}):Play()
         else
-            TweenService:Create(MainUI, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 400, 0, 0)}):Play()
+            TweenService:Create(MainUI, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 400, 0, 0), BackgroundTransparency = 1}):Play()
             wait(0.3)
             MainUI.Visible = false
         end
