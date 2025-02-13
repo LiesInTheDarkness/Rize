@@ -1,8 +1,5 @@
--- CustomModule
-
 local CustomModule = {}
 
--- Toggles list
 CustomModule.Toggles = {
     {
         Name = "Skibidi",
@@ -21,13 +18,5 @@ CustomModule.Toggles = {
         end
     }
 }
-
--- Function to add new toggle
-function CustomModule:AddToggle(name, toggleFunction)
-    table.insert(self.Toggles, {
-        Name = name,
-        Function = toggleFunction
-    })
-end
 
 return CustomModule
