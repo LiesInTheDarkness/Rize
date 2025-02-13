@@ -1,5 +1,53 @@
+-- MainGui
 local MainGui = {}
 
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game:GetService("CoreGui")
+
+-- Create the main frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0.8, 0, 0.8, 0)
+mainFrame.Position = UDim2.new(0.1, 0, 0.1, 0)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.BackgroundTransparency = 0.5
+mainFrame.BorderSizePixel = 0
+mainFrame.Visible = false
+mainFrame.Parent = screenGui
+
+-- Add rounded corners to the main frame
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0.1, 0)
+uiCorner.Parent = mainFrame
+
+-- Add a title to the GUI
+local textLabel = Instance.new("TextLabel")
+textLabel.Size = UDim2.new(0.2, 0, 0.1, 0)
+textLabel.Position = UDim2.new(0, 5, 0, 5)
+textLabel.BackgroundTransparency = 1
+textLabel.Text = "Rex"
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextScaled = true
+textLabel.Font = Enum.Font.GothamBold
+textLabel.Parent = mainFrame
+
+-- Create the toggle button for showing/hiding the main frame
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(0, 50, 0, 50)
+toggleButton.Position = UDim2.new(0, 10, 0, 10)
+toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+toggleButton.Text = ""
+toggleButton.Parent = screenGui
+
+local toggleButtonCorner = Instance.new("UICorner")
+toggleButtonCorner.CornerRadius = UDim.new(0.5, 0)
+toggleButtonCorner.Parent = toggleButton
+
+-- Toggle visibility of the main frame when button is clicked
+toggleButton.MouseButton1Click:Connect(function()
+    mainFrame.Visible = not mainFrame.Visible
+end)
+
+-- Function to create toggle buttons dynamically
 function MainGui.createToggleButton(toggle, mainFrame)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(0, 200, 0, 50)
@@ -16,12 +64,11 @@ function MainGui.createToggleButton(toggle, mainFrame)
         state = not state
         toggle.Function(state)
         button.BackgroundColor3 = state and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(50, 50, 50)
-        game.StarterGui:SetCore("SendNotification", {
-            Title = "Button Clicked";
-            Text = toggle.Name .. (state and " ON" or " OFF");
-            Duration = 5;
-        })
     end)
 end
+
+-- Return references to the screenGui and mainFrame for MainScript
+MainGui.screenGui = screenGui
+MainGui.mainFrame = mainFrame
 
 return MainGui
