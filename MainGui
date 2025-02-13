@@ -87,22 +87,18 @@ toggleButton.MouseButton1Click:Connect(function()
     frame.Visible = not frame.Visible
 end)
 
--- Import CustomModule
-local CustomModule = require(script.Parent:WaitForChild("CustomModule"))
-
--- Function to create a toggle button in the GUI
-local function createToggleButton(toggle)
+-- Function to create a toggle button
+function MainGui.createToggleButton(toggle)
     local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0.2, 0, 0.1, 0)
-    button.Position = UDim2.new(0, 5, 0, 45 + (#CustomModule.Toggles - 1) * 50)
+    button.Size = UDim2.new(0, 200, 0, 50)
+    button.Position = UDim2.new(0, 50, 0, 50 + (#mainFrame:GetChildren() - 1) * 60)
     button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     button.Text = toggle.Name
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.TextScaled = true
     button.Font = Enum.Font.GothamBold
-    button.Parent = frame
-    
-    -- Toggle state
+    button.Parent = mainFrame
+
     local state = false
     button.MouseButton1Click:Connect(function()
         state = not state
@@ -111,11 +107,4 @@ local function createToggleButton(toggle)
     end)
 end
 
--- Add toggles from CustomModule
-for _, toggle in ipairs(CustomModule.Toggles) do
-    createToggleButton(toggle)
-end
-
-return {
-    createToggleButton = createToggleButton
-}
+return MainGui
