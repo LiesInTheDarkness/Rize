@@ -5,19 +5,19 @@ local CustomModule = {}
 -- Toggles list
 CustomModule.Toggles = {
     {
-        Name = "Example Toggle", -- Toggle name
+        Name = "Example Toggle",
         Function = function(state)
             print("Toggle is now " .. (state and "ON" or "OFF"))
         end
     },
     {
-        Name = "Testing Toggle", -- Testing toggle
+        Name = "Testing Toggle",
         Function = function(state)
             print("Testing Toggle is now " .. (state and "ON" or "OFF"))
         end
     },
     {
-        Name = "Skibidi", -- Custom toggle to change speed
+        Name = "Skibidi",
         Function = function(state)
             local player = game.Players.LocalPlayer
             if player and player.Character and player.Character:FindFirstChild("Humanoid") then
