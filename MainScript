@@ -11,7 +11,7 @@ frame.Position = UDim2.new(0.1, 0, 0.1, 0)
 frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.BackgroundTransparency = 0.5
 frame.BorderSizePixel = 0
-frame.Visible = false
+frame.Visible = true
 frame.Parent = screenGui
 
 local uiCorner = Instance.new("UICorner")
