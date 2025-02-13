@@ -1,23 +1,25 @@
 local Library = {}
 
--- Create UI Window
 function Library:CreateWindow(title)
     local ScreenGui = Instance.new("ScreenGui")
     local MainFrame = Instance.new("Frame")
     local TitleLabel = Instance.new("TextLabel")
+    local TabsFrame = Instance.new("Frame")
+    local ButtonsFrame = Instance.new("Frame")
     
-    ScreenGui.Parent = game.CoreGui
+    -- Parent GUI to PlayerGui for visibility
+    ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
+    -- Main UI window
     MainFrame.Parent = ScreenGui
-    MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    MainFrame.BackgroundTransparency = 0.3
-    MainFrame.Size = UDim2.new(0, 400, 0, 250)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    MainFrame.BackgroundTransparency = 0.2
+    MainFrame.Size = UDim2.new(0, 400, 0, 300)
     MainFrame.Position = UDim2.new(0.5, -200, 0.3, 0)
     MainFrame.Active = true
     MainFrame.Draggable = true
-    MainFrame.BorderSizePixel = 0
-    MainFrame.ClipsDescendants = true
 
+    -- Title
     TitleLabel.Parent = MainFrame
     TitleLabel.Text = title
     TitleLabel.Size = UDim2.new(1, 0, 0, 30)
@@ -26,13 +28,13 @@ function Library:CreateWindow(title)
     TitleLabel.TextSize = 20
     TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 
-    local TabsFrame = Instance.new("Frame")
+    -- Tabs container
     TabsFrame.Parent = MainFrame
     TabsFrame.Size = UDim2.new(1, 0, 0, 30)
     TabsFrame.Position = UDim2.new(0, 0, 0, 30)
     TabsFrame.BackgroundTransparency = 1
 
-    local ButtonsFrame = Instance.new("Frame")
+    -- Buttons container
     ButtonsFrame.Parent = MainFrame
     ButtonsFrame.Size = UDim2.new(1, 0, 1, -60)
     ButtonsFrame.Position = UDim2.new(0, 0, 0, 60)
@@ -40,20 +42,24 @@ function Library:CreateWindow(title)
 
     local function CreateTab(tabName)
         local TabButton = Instance.new("TextButton")
+        local TabContent = Instance.new("Frame")
+
+        -- Style the tab button
         TabButton.Parent = TabsFrame
         TabButton.Text = tabName
         TabButton.Size = UDim2.new(0, 100, 1, 0)
-        TabButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        TabButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
         TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
         TabButton.Font = Enum.Font.SourceSansBold
         TabButton.TextSize = 16
 
-        local TabContent = Instance.new("Frame")
+        -- Create tab content area
         TabContent.Parent = ButtonsFrame
         TabContent.Size = UDim2.new(1, 0, 1, 0)
         TabContent.BackgroundTransparency = 1
         TabContent.Visible = false
 
+        -- Tab switching logic
         TabButton.MouseButton1Click:Connect(function()
             for _, child in pairs(ButtonsFrame:GetChildren()) do
                 child.Visible = false
@@ -66,15 +72,18 @@ function Library:CreateWindow(title)
 
     local function CreateButton(parent, text, callback)
         local Button = Instance.new("TextButton")
+
+        -- Button styling
         Button.Parent = parent
         Button.Size = UDim2.new(1, -10, 0, 40)
         Button.Position = UDim2.new(0, 5, 0, #parent:GetChildren() * 45)
         Button.Text = text
-        Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        Button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
         Button.TextColor3 = Color3.fromRGB(255, 255, 255)
         Button.Font = Enum.Font.SourceSansBold
         Button.TextSize = 18
 
+        -- Button click event
         Button.MouseButton1Click:Connect(function()
             if callback then callback() end
         end)
@@ -84,36 +93,47 @@ function Library:CreateWindow(title)
 
     local function CreateSlider(parent, min, max, default, callback)
         local SliderFrame = Instance.new("Frame")
+        local SliderBar = Instance.new("Frame")
+        local SliderButton = Instance.new("TextButton")
+
+        -- Slider container
         SliderFrame.Parent = parent
         SliderFrame.Size = UDim2.new(1, -10, 0, 40)
         SliderFrame.Position = UDim2.new(0, 5, 0, #parent:GetChildren() * 45)
         SliderFrame.BackgroundTransparency = 1
 
-        local SliderBar = Instance.new("Frame")
+        -- Slider bar
         SliderBar.Parent = SliderFrame
         SliderBar.Size = UDim2.new(1, 0, 0, 5)
         SliderBar.Position = UDim2.new(0, 0, 0.5, -2)
         SliderBar.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 
-        local SliderButton = Instance.new("TextButton")
+        -- Slider button
         SliderButton.Parent = SliderFrame
         SliderButton.Size = UDim2.new(0, 20, 0, 20)
         SliderButton.Position = UDim2.new((default - min) / (max - min), -10, 0.5, -10)
         SliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         SliderButton.Text = ""
 
+        -- Drag to adjust slider
+        local dragging = false
         SliderButton.MouseButton1Down:Connect(function()
-            local Connection
-            Connection = game:GetService("UserInputService").InputChanged:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseMovement then
-                    local Percent = math.clamp((input.Position.X - SliderFrame.AbsolutePosition.X) / SliderFrame.AbsoluteSize.X, 0, 1)
-                    SliderButton.Position = UDim2.new(Percent, -10, 0.5, -10)
-                    local Value = min + (max - min) * Percent
-                    if callback then callback(math.floor(Value)) end
-                end
-            end)
-            game:GetService("UserInputService").InputEnded:Wait()
-            Connection:Disconnect()
+            dragging = true
+        end)
+
+        game:GetService("UserInputService").InputChanged:Connect(function(input)
+            if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                local Percent = math.clamp((input.Position.X - SliderFrame.AbsolutePosition.X) / SliderFrame.AbsoluteSize.X, 0, 1)
+                SliderButton.Position = UDim2.new(Percent, -10, 0.5, -10)
+                local Value = math.floor(min + (max - min) * Percent)
+                if callback then callback(Value) end
+            end
+        end)
+
+        game:GetService("UserInputService").InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                dragging = false
+            end
         end)
 
         return SliderFrame
