@@ -1,0 +1,21 @@
+-- Main Script Loader
+
+-- List of scripts to load
+local scripts = {
+    gui = "https://raw.githubusercontent.com/username/repository/main/main_gui.lua",
+    -- Add more scripts here if needed
+}
+
+-- Function to fetch and execute a script from a URL
+local function loadScriptFromUrl(url)
+    local scriptContent = game:HttpGet(url)
+    local executeScript = loadstring(scriptContent)
+    if executeScript then
+        executeScript()
+    end
+end
+
+-- pair the script
+for _, url in pairs(scripts) do
+    loadScriptFromUrl(url)
+end
