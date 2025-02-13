@@ -1,8 +1,7 @@
--- Require necessary modules
-local CustomModule = require(game.ReplicatedStorage:WaitForChild("CustomModule")) -- Adjust path if needed
-local MainGui = require(game.ReplicatedStorage:WaitForChild("MainGui")) -- Adjust path if needed
+local CustomModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/main/CustomModule.lua"))()
+local MainGui = loadstring(game:HttpGet("https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/main/MainGui.lua"))()
 
--- Create the main ScreenGui and Frame
+-- Create the main GUI
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = game:GetService("CoreGui")
 
@@ -29,7 +28,6 @@ textLabel.TextScaled = true
 textLabel.Font = Enum.Font.GothamBold
 textLabel.Parent = frame
 
--- Create the toggle button for showing/hiding the frame
 local toggleButton = Instance.new("TextButton")
 toggleButton.Size = UDim2.new(0, 50, 0, 50)
 toggleButton.Position = UDim2.new(0, 10, 0, 10)
@@ -45,7 +43,7 @@ toggleButton.MouseButton1Click:Connect(function()
     frame.Visible = not frame.Visible
 end)
 
--- Add toggles dynamically
+-- Add toggles dynamically from CustomModule
 for _, toggle in ipairs(CustomModule.Toggles) do
     MainGui.createToggleButton(toggle, frame)
 end
