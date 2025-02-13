@@ -1,171 +1,71 @@
--- MainGui Script
+local screenGui = script.Parent
 
-local playerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+-- Create the Frame
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0.8, 0, 0.8, 0) -- Significantly bigger size
+frame.Position = UDim2.new(0.1, 0, 0.1, 0) -- Center the frame
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Dark grey background
+frame.BackgroundTransparency = 0.5 -- Make it transparent
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
 
--- Create the ScreenGui
-local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = playerGui
-screenGui.Name = "Rex 2.0"  -- The GUI name is "Rex 2.0"
-screenGui.ResetOnSpawn = false
+-- Create the UI Corner for rounded edges
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0.1, 0) -- Adjust the corner radius as needed
+uiCorner.Parent = frame
 
--- Create the main frame
-local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 300, 0, 250)  -- Increased the size to give space for buttons
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -125)
-mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-mainFrame.BorderSizePixel = 0
-mainFrame.Parent = screenGui
+-- Create the 'Rex' text label
+local textLabel = Instance.new("TextLabel")
+textLabel.Size = UDim2.new(0.2, 0, 0.1, 0) -- Adjust size as needed
+textLabel.Position = UDim2.new(0, 5, 0, 5) -- Top left corner with padding
+textLabel.BackgroundTransparency = 1 -- Make background transparent
+textLabel.Text = "Rex"
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text color
+textLabel.TextScaled = true -- Make text scale with size
+textLabel.Font = Enum.Font.GothamBold -- Use Gotham bold font
+textLabel.Parent = frame
 
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 8)
-corner.Parent = mainFrame
+-- Make the frame draggable (including mobile support)
+local dragging
+local dragInput
+local dragStart
+local startPos
 
--- Title bar with "Rex 2.0"
-local titleBar = Instance.new("Frame")
-titleBar.Size = UDim2.new(1, 0, 0, 40)
-titleBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-titleBar.BorderSizePixel = 0
-titleBar.Parent = mainFrame
+local function update(input)
+    local delta = input.Position - dragStart
+    frame.Position = UDim2.new(
+        startPos.X.Scale,
+        startPos.X.Offset + delta.X,
+        startPos.Y.Scale,
+        startPos.Y.Offset + delta.Y
+    )
+end
 
-local titleCorner = Instance.new("UICorner")
-titleCorner.CornerRadius = UDim.new(0, 8)
-titleCorner.Parent = titleBar
-
-local titleLabel = Instance.new("TextLabel")
-titleLabel.Size = UDim2.new(1, -10, 1, 0)
-titleLabel.Position = UDim2.new(0, 5, 0, 0)
-titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "Rex 2.0"  -- Display "Rex 2.0" as the title
-titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleLabel.TextSize = 18
-titleLabel.Font = Enum.Font.SourceSansBold
-titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-titleLabel.Parent = titleBar
-
--- **Draggable GUI Script**
-local dragging = false
-local dragStart, startPos
-local userInputService = game:GetService("UserInputService")
-
-titleBar.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         dragging = true
         dragStart = input.Position
-        startPos = mainFrame.Position
+        startPos = frame.Position
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
     end
 end)
 
-userInputService.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement) then
-        local delta = input.Position - dragStart
-        mainFrame.Position = UDim2.new(
-            startPos.X.Scale,
-            startPos.X.Offset + delta.X,
-            startPos.Y.Scale,
-            startPos.Y.Offset + delta.Y
-        )
+frame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
     end
 end)
 
-titleBar.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = false
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        update(input)
     end
 end)
 
--- Improved Notification System
-shared.GuiLibrary = shared.GuiLibrary or {}
-
-shared.GuiLibrary.createwarning = function(title, text, delay, bgColor, position)
-    bgColor = bgColor or Color3.fromRGB(169, 169, 169)  -- Default to gray color for the notification
-    position = position or UDim2.new(1, -250, 0, 10)  -- Position at top-right corner
-
-    if playerGui:FindFirstChild("WarningNotification") then
-        playerGui.WarningNotification:Destroy()
-    end
-
-    local warningGui = Instance.new("ScreenGui")
-    warningGui.Name = "WarningNotification"
-    warningGui.Parent = playerGui
-
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 250, 0, 60)  -- Smaller size for the notification
-    frame.Position = position
-    frame.BackgroundColor3 = bgColor
-    frame.BorderSizePixel = 0
-    frame.BackgroundTransparency = 0.8  -- Make the frame semi-transparent
-    frame.Parent = warningGui
-
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 6)
-    corner.Parent = frame
-
-    -- Title label for the notification
-    local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, 0, 0.3, 0)
-    titleLabel.Position = UDim2.new(0, 0, 0, 5)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Text = title or "Skibidi"  -- Default to "Skibidi"
-    titleLabel.Font = Enum.Font.GothamBold  -- Modern font
-    titleLabel.TextSize = 18
-    titleLabel.TextColor3 = Color3.new(1, 1, 1)
-    titleLabel.TextAlignment = Enum.TextAlignment.Center
-    titleLabel.Parent = frame
-
-    -- Text label for the message
-    local textLabel = Instance.new("TextLabel")
-    textLabel.Size = UDim2.new(1, 0, 0.7, 0)
-    textLabel.Position = UDim2.new(0, 0, 0.3, 0)
-    textLabel.BackgroundTransparency = 1
-    textLabel.Text = text or "This is a test notification."
-    textLabel.Font = Enum.Font.Gotham  -- Modern font
-    textLabel.TextSize = 14
-    textLabel.TextColor3 = Color3.new(1, 1, 1)
-    textLabel.TextWrapped = true
-    textLabel.TextAlignment = Enum.TextAlignment.Center
-    textLabel.Parent = frame
-
-    -- Automatically remove the warning after the delay
-    task.delay(delay, function()
-        warningGui:Destroy()
-    end)
-end
-
--- Function to create a button
-local function createButton(buttonData)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(1, -20, 0, 30)
-    button.Position = UDim2.new(0, 10, 0, 50)  -- Reposition button to avoid overlapping with title
-    button.Text = buttonData.Name
-    button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.Font = Enum.Font.SourceSans
-    button.TextSize = 16
-    button.Parent = mainFrame
-
-    button.MouseButton1Click:Connect(function()
-        -- Show notification near the button
-        shared.GuiLibrary.createwarning(
-            "Test Warning", 
-            "This is a test warning triggered by the button.", 
-            5, 
-            Color3.fromRGB(255, 0, 0), -- Red background color
-            button.Position + UDim2.new(0, 0, 0, button.Size.Y.Offset + 10)  -- Position below the button
-        )
-        -- Call the function
-        buttonData.Function()
-    end)
-end
-
--- Load CustomModule
-local success, customModule = pcall(function()
-    return loadstring(game:HttpGet("https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/refs/heads/main/CustomModule"))()
-end)
-
-if success then
-    for _, buttonData in ipairs(customModule.Buttons) do
-        createButton(buttonData)
-    end
-else
-    warn("Failed to load CustomModule!")
-end
+-- Create a smooth transition (optional)
+frame:TweenSize(UDim2.new(0.8, 0, 0.8, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 1, true)
