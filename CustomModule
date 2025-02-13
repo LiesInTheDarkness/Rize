@@ -2,9 +2,6 @@
 
 local CustomModule = {}
 
--- Buttons list
-CustomModule.Buttons = {}
-
 -- Toggles list
 CustomModule.Toggles = {
     {
@@ -43,18 +40,6 @@ function CustomModule:AddToggle(name, toggleFunction)
         Name = name,
         Function = toggleFunction
     })
-end
-
--- Function to process added module script code
-function CustomModule:ProcessModuleScript(moduleScript)
-    -- Example: Add a new toggle based on the module script
-    self:AddToggle(moduleScript.Name, function(state)
-        if state then
-            print(moduleScript.Name .. " is now ON")
-        else
-            print(moduleScript.Name .. " is now OFF")
-        end
-    end)
 end
 
 return CustomModule
