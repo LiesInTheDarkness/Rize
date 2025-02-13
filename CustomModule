@@ -1,4 +1,5 @@
 -- CustomModule
+
 local CustomModule = {}
 
 -- Buttons list
@@ -6,20 +7,29 @@ CustomModule.Buttons = {
     {
         Name = "Test Warning", -- Button name
         Function = function()
-            -- Call the warning function when this button is clicked
+            -- Trigger a warning when the button is clicked
             if shared.GuiLibrary and shared.GuiLibrary.createwarning then
                 shared.GuiLibrary.createwarning(
-                    "Skibidi",
-                    "Bro Thinks he can code",
+                    "Test Warning",
+                    "This button triggered a warning successfully!",
                     5,
                     Color3.fromRGB(255, 0, 0) -- Red background color
                 )
+            else
+                warn("GuiLibrary or createwarning function is not available!")
             end
         end
     }
 }
 
--- Toggles list (add toggles if needed)
-CustomModule.Toggles = {}
+-- Toggles list
+CustomModule.Toggles = {
+    {
+        Name = "Example Toggle", -- Toggle name
+        Function = function(state)
+            print("Toggle is now " .. (state and "ON" or "OFF"))
+        end
+    }
+}
 
 return CustomModule
