@@ -1,11 +1,43 @@
--- Load MainGui
-local MainGui = loadstring(game:HttpGet("https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/main/MainGui"))()
+-- Main Script Loader
 
--- Load CustomModule
-local CustomModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/main/CustomModule"))()
+-- List of scripts to load
+local scripts = {
+    gui = "https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/main/MainGui",
+    customModule = "https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/main/CustomModule",
+}
 
--- Create toggles using MainGui
+-- Function to fetch and execute a script from a URL
+local function loadScriptFromUrl(name, url)
+    local success, scriptContent = pcall(function()
+        return game:HttpGet(url)
+    end)
+    if success then
+        local executeScript, loadError = loadstring(scriptContent)
+        if executeScript then
+            local successExec, execError = pcall(executeScript)
+            if successExec then
+                return executeScript()
+            else
+                warn("Failed to execute script: " .. name .. "\n" .. execError)
+            end
+        else
+            warn("Failed to load script: " .. name .. "\n" .. loadError)
+        end
+    else
+        warn("Failed to fetch script: " .. name)
+    end
+    return nil
+end
+
+-- Load the GUI script first
+local MainGui = loadScriptFromUrl("gui", scripts.gui)
+
+-- Load the CustomModule script
+local CustomModule = loadScriptFromUrl("customModule", scripts.customModule)
+
+-- Ensure MainGui is compatible with CustomModule
 if MainGui and CustomModule then
+    -- Example of how to add a toggle to the GUI from CustomModule
     for _, toggle in ipairs(CustomModule.Toggles) do
         MainGui.createToggleButton(toggle)
     end
