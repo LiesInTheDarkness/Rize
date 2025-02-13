@@ -1,68 +1,23 @@
--- CustomModule
-
 local CustomModule = {}
 
--- Toggles list
 CustomModule.Toggles = {
-    {
-        Name = "Example Toggle",
-        Function = function(state)
-            print("Toggle is now " .. (state and "ON" or "OFF"))
-        end
-    },
-    {
-        Name = "Testing Toggle",
-        Function = function(state)
-            print("Testing Toggle is now " .. (state and "ON" or "OFF"))
-        end
-    },
     {
         Name = "Skibidi",
         Function = function(state)
-            local player = game.Players.LocalPlayer
+            local player = game:GetService("Players").LocalPlayer
             if player and player.Character and player.Character:FindFirstChild("Humanoid") then
-                local humanoid = player.Character.Humanoid
                 if state then
-                    humanoid.WalkSpeed = 50
-                    print("Speed is now 50")
+                    player.Character.Humanoid.WalkSpeed = 50
+                    print("Skibidi Module Activated! Speed set to 50.")
                 else
-                    humanoid.WalkSpeed = 16 -- Reset to default speed
-                    print("Speed is now default")
+                    player.Character.Humanoid.WalkSpeed = 16
+                    print("Skibidi Module Deactivated! Speed reset to 16.")
                 end
+            else
+                warn("Skibidi Module: Player or Humanoid not found.")
             end
         end
     }
 }
-
--- Function to add new toggle
-function CustomModule:AddToggle(name, toggleFunction)
-    table.insert(self.Toggles, {
-        Name = name,
-        Function = toggleFunction
-    })
-end
-
--- Function to create and display toggle buttons
-function CustomModule:CreateToggleButtons(parentFrame)
-    for _, toggle in ipairs(self.Toggles) do
-        local button = Instance.new("TextButton")
-        button.Size = UDim2.new(0.2, 0, 0.1, 0)
-        button.Position = UDim2.new(0, 5, 0, 45 + (#parentFrame:GetChildren() - 1) * 50)
-        button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-        button.Text = toggle.Name
-        button.TextColor3 = Color3.fromRGB(255, 255, 255)
-        button.TextScaled = true
-        button.Font = Enum.Font.GothamBold
-        button.Parent = parentFrame
-
-        -- Toggle state
-        local state = false
-        button.MouseButton1Click:Connect(function()
-            state = not state
-            toggle.Function(state)
-            button.BackgroundColor3 = state and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(50, 50, 50)
-        end)
-    end
-end
 
 return CustomModule
