@@ -142,3 +142,59 @@ end
 for _, toggle in pairs(CustomModule.Toggles) do
     createToggle(toggle.Name, toggle.Function)
 end
+
+-- Function to create a warning notification
+local function createWarning(title, text, delay, bgColor)
+    bgColor = bgColor or Color3.fromRGB(236, 129, 44) -- Default to orange
+    local playerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+    -- Check for existing notification and remove it
+    if playerGui:FindFirstChild("WarningNotification") then
+        playerGui.WarningNotification:Destroy()
+    end
+
+    -- Create the ScreenGui for the warning
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "WarningNotification"
+    screenGui.Parent = playerGui
+
+    -- Create the main warning frame
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 300, 0, 100)
+    frame.Position = UDim2.new(0.5, -150, 0.5, -50)
+    frame.AnchorPoint = Vector2.new(0.5, 0.5)
+    frame.BackgroundColor3 = bgColor
+    frame.BorderSizePixel = 0
+    frame.Parent = screenGui
+
+    -- Add the warning title
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, 0, 0.4, 0)
+    titleLabel.Position = UDim2.new(0, 0, 0, 10)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Text = title
+    titleLabel.Font = Enum.Font.SourceSansBold
+    titleLabel.TextSize = 20
+    titleLabel.TextColor3 = Color3.new(1, 1, 1)
+    titleLabel.Parent = frame
+
+    -- Add the warning message
+    local textLabel = Instance.new("TextLabel")
+    textLabel.Size = UDim2.new(1, 0, 0.6, 0)
+    textLabel.Position = UDim2.new(0, 0, 0.4, 0)
+    textLabel.BackgroundTransparency = 1
+    textLabel.Text = text
+    textLabel.Font = Enum.Font.SourceSans
+    textLabel.TextSize = 16
+    textLabel.TextColor3 = Color3.new(1, 1, 1)
+    textLabel.TextWrapped = true
+    textLabel.Parent = frame
+
+    -- Automatically remove the warning after the specified delay
+    task.delay(delay, function()
+        screenGui:Destroy()
+    end)
+end
+
+-- Example usage:
+-- createWarning("Warning!", "This is a test warning.", 5, Color3.fromRGB(255, 0, 0))
