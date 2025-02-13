@@ -26,7 +26,19 @@ local function loadScriptFromUrl(name, url)
     end
 end
 
--- Iterate through the script list and load each one
-for name, url in pairs(scripts) do
-    loadScriptFromUrl(name, url)
+-- Load the GUI script first
+loadScriptFromUrl("gui", scripts.gui)
+
+-- Load the CustomModule script
+local CustomModule = loadScriptFromUrl("customModule", scripts.customModule)
+
+-- Ensure MainGui is compatible with CustomModule
+if CustomModule then
+    -- Example of how to add a toggle to the GUI from CustomModule
+    for _, toggle in ipairs(CustomModule.Toggles) do
+        if script.Parent:FindFirstChild("MainGui") then
+            local MainGui = require(script.Parent.MainGui)
+            MainGui.createToggleButton(toggle)
+        end
+    end
 end
