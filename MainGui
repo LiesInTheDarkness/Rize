@@ -1,10 +1,6 @@
--- Main GUI Script (Mobile-Friendly)
+-- MainGui Script
 
 local playerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-local userInputService = game:GetService("UserInputService")
-
--- Load CustomModule
-local CustomModule = require(script.Parent.CustomModule)
 
 -- Create the ScreenGui
 local screenGui = Instance.new("ScreenGui")
@@ -14,160 +10,37 @@ screenGui.ResetOnSpawn = false
 
 -- Create the main frame
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 300, 0, 400)
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -200)
+mainFrame.Size = UDim2.new(0, 300, 0, 200)
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
 mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 mainFrame.BorderSizePixel = 0
 mainFrame.Parent = screenGui
 
--- Add a corner radius
 local corner = Instance.new("UICorner")
 corner.CornerRadius = UDim.new(0, 8)
 corner.Parent = mainFrame
 
--- Add a title bar for dragging
-local titleBar = Instance.new("Frame")
-titleBar.Size = UDim2.new(1, 0, 0, 40)
-titleBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-titleBar.BorderSizePixel = 0
-titleBar.Parent = mainFrame
+-- Warning Notification System
+shared.GuiLibrary = shared.GuiLibrary or {}
 
-local titleCorner = Instance.new("UICorner")
-titleCorner.CornerRadius = UDim.new(0, 8)
-titleCorner.Parent = titleBar
-
--- Title text
-local titleLabel = Instance.new("TextLabel")
-titleLabel.Size = UDim2.new(1, -10, 1, 0)
-titleLabel.Position = UDim2.new(0, 5, 0, 0)
-titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "Rex 2.0"
-titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-titleLabel.TextSize = 18
-titleLabel.Font = Enum.Font.SourceSansBold
-titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-titleLabel.Parent = titleBar
-
--- Mobile-Friendly Dragging Functionality
-local dragging = false
-local dragStart, startPos
-
-titleBar.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = mainFrame.Position
-    end
-end)
-
-userInputService.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement) then
-        local delta = input.Position - dragStart
-        mainFrame.Position = UDim2.new(
-            startPos.X.Scale,
-            startPos.X.Offset + delta.X,
-            startPos.Y.Scale,
-            startPos.Y.Offset + delta.Y
-        )
-    end
-end)
-
-titleBar.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = false
-    end
-end)
-
--- UI List Layout
-local uiListLayout = Instance.new("UIListLayout")
-uiListLayout.FillDirection = Enum.FillDirection.Vertical
-uiListLayout.Padding = UDim.new(0, 10)
-uiListLayout.Parent = mainFrame
-
--- Function to create a button
-local function createButton(name, func)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(1, -10, 0, 40)
-    button.Text = name
-    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    button.TextColor3 = Color3.new(1, 1, 1)
-    button.Font = Enum.Font.SourceSansBold
-    button.TextSize = 18
-    button.Parent = mainFrame
-
-    button.MouseButton1Click:Connect(func)
-end
-
--- Function to create a toggle
-local function createToggle(name, func)
-    local toggleFrame = Instance.new("Frame")
-    toggleFrame.Size = UDim2.new(1, -10, 0, 40)
-    toggleFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    toggleFrame.Parent = mainFrame
-
-    local toggleLabel = Instance.new("TextLabel")
-    toggleLabel.Size = UDim2.new(0.7, 0, 1, 0)
-    toggleLabel.Text = name
-    toggleLabel.TextColor3 = Color3.new(1, 1, 1)
-    toggleLabel.BackgroundTransparency = 1
-    toggleLabel.Font = Enum.Font.SourceSans
-    toggleLabel.TextSize = 18
-    toggleLabel.Parent = toggleFrame
-
-    local toggleButton = Instance.new("TextButton")
-    toggleButton.Size = UDim2.new(0.3, -10, 1, -10)
-    toggleButton.Position = UDim2.new(0.7, 10, 0, 5)
-    toggleButton.Text = "OFF"
-    toggleButton.BackgroundColor3 = Color3.fromRGB(100, 0, 0)
-    toggleButton.TextColor3 = Color3.new(1, 1, 1)
-    toggleButton.Font = Enum.Font.SourceSans
-    toggleButton.TextSize = 18
-    toggleButton.Parent = toggleFrame
-
-    local state = false
-
-    toggleButton.MouseButton1Click:Connect(function()
-        state = not state
-        toggleButton.Text = state and "ON" or "OFF"
-        toggleButton.BackgroundColor3 = state and Color3.fromRGB(0, 100, 0) or Color3.fromRGB(100, 0, 0)
-        func(state)
-    end)
-end
-
--- Load buttons and toggles from CustomModule
-for _, button in pairs(CustomModule.Buttons) do
-    createButton(button.Name, button.Function)
-end
-
-for _, toggle in pairs(CustomModule.Toggles) do
-    createToggle(toggle.Name, toggle.Function)
-end
-
--- Function to create a warning notification
-local function createWarning(title, text, delay, bgColor)
+shared.GuiLibrary.createwarning = function(title, text, delay, bgColor)
     bgColor = bgColor or Color3.fromRGB(236, 129, 44) -- Default to orange
-    local playerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
-    -- Check for existing notification and remove it
     if playerGui:FindFirstChild("WarningNotification") then
         playerGui.WarningNotification:Destroy()
     end
 
-    -- Create the ScreenGui for the warning
-    local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "WarningNotification"
-    screenGui.Parent = playerGui
+    local warningGui = Instance.new("ScreenGui")
+    warningGui.Name = "WarningNotification"
+    warningGui.Parent = playerGui
 
-    -- Create the main warning frame
     local frame = Instance.new("Frame")
     frame.Size = UDim2.new(0, 300, 0, 100)
     frame.Position = UDim2.new(0.5, -150, 0.5, -50)
     frame.AnchorPoint = Vector2.new(0.5, 0.5)
     frame.BackgroundColor3 = bgColor
     frame.BorderSizePixel = 0
-    frame.Parent = screenGui
+    frame.Parent = warningGui
 
-    -- Add the warning title
     local titleLabel = Instance.new("TextLabel")
     titleLabel.Size = UDim2.new(1, 0, 0.4, 0)
     titleLabel.Position = UDim2.new(0, 0, 0, 10)
@@ -178,7 +51,6 @@ local function createWarning(title, text, delay, bgColor)
     titleLabel.TextColor3 = Color3.new(1, 1, 1)
     titleLabel.Parent = frame
 
-    -- Add the warning message
     local textLabel = Instance.new("TextLabel")
     textLabel.Size = UDim2.new(1, 0, 0.6, 0)
     textLabel.Position = UDim2.new(0, 0, 0.4, 0)
@@ -190,25 +62,60 @@ local function createWarning(title, text, delay, bgColor)
     textLabel.TextWrapped = true
     textLabel.Parent = frame
 
-    -- Automatically remove the warning after the specified delay
+    -- Automatically remove the warning after the delay
     task.delay(delay, function()
-        screenGui:Destroy()
+        warningGui:Destroy()
     end)
 end
 
--- Example usage:
--- createWarning("Warning!", "This is a test warning.", 5, Color3.fromRGB(255, 0, 0))
+-- Function to create a button
+local function createButton(buttonData)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, -20, 0, 30)
+    button.Position = UDim2.new(0, 10, 0, 10)
+    button.Text = buttonData.Name
+    button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Font = Enum.Font.SourceSans
+    button.TextSize = 16
+    button.Parent = mainFrame
 
-shared.GuiLibrary = shared.GuiLibrary or {}
+    button.MouseButton1Click:Connect(buttonData.Function)
+end
 
-function shared.GuiLibrary.initializeGui(CustomModule)
-    -- Loop through CustomModule buttons and create them
-    for _, button in ipairs(CustomModule.Buttons) do
-        createButton(button.Name, button.Function) -- Define createButton elsewhere in MainGui
+-- Function to create a toggle
+local function createToggle(toggleData)
+    local toggle = Instance.new("TextButton")
+    toggle.Size = UDim2.new(1, -20, 0, 30)
+    toggle.Position = UDim2.new(0, 10, 0, 50)
+    toggle.Text = toggleData.Name .. ": OFF"
+    toggle.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    toggle.Font = Enum.Font.SourceSans
+    toggle.TextSize = 16
+    toggle.Parent = mainFrame
+
+    local state = false
+    toggle.MouseButton1Click:Connect(function()
+        state = not state
+        toggle.Text = toggleData.Name .. ": " .. (state and "ON" or "OFF")
+        toggleData.Function(state)
+    end)
+end
+
+-- Load CustomModule
+local success, customModule = pcall(function()
+    return loadstring(game:HttpGet("https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/refs/heads/main/CustomModule"))()
+end)
+
+if success then
+    for _, buttonData in ipairs(customModule.Buttons) do
+        createButton(buttonData)
     end
 
-    -- Loop through CustomModule toggles and create them
-    for _, toggle in ipairs(CustomModule.Toggles) do
-        createToggle(toggle.Name, toggle.Function) -- Define createToggle elsewhere in MainGui
+    for _, toggleData in ipairs(customModule.Toggles) do
+        createToggle(toggleData)
     end
+else
+    warn("Failed to load CustomModule!")
 end
