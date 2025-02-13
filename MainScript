@@ -2,8 +2,8 @@
 
 -- List of scripts to load
 local scripts = {
-    gui = "https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/refs/heads/main/MainGui",
-    customModule = "https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/refs/heads/main/CustomModule",
+    gui = "https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/main/MainGui",
+    customModule = "https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/main/CustomModule",
 }
 
 -- Function to fetch and execute a script from a URL
@@ -16,7 +16,7 @@ local function loadScriptFromUrl(name, url)
         if executeScript then
             local successExec, execError = pcall(executeScript)
             if successExec then
-                return executeScript
+                return executeScript()
             else
                 warn("Failed to execute script: " .. name .. "\n" .. execError)
             end
