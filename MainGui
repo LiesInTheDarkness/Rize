@@ -5,13 +5,13 @@ local playerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 -- Create the ScreenGui
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = playerGui
-screenGui.Name = "Rex 2.0"  -- Updated to "Rex 2.0"
+screenGui.Name = "Rex 2.0"  -- The GUI name is "Rex 2.0"
 screenGui.ResetOnSpawn = false
 
 -- Create the main frame
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 300, 0, 200)
-mainFrame.Position = UDim2.new(0.5, -150, 0.5, -100)
+mainFrame.Size = UDim2.new(0, 300, 0, 250)  -- Increased the size to give space for buttons
+mainFrame.Position = UDim2.new(0.5, -150, 0.5, -125)
 mainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 mainFrame.BorderSizePixel = 0
 mainFrame.Parent = screenGui
@@ -77,7 +77,7 @@ end)
 shared.GuiLibrary = shared.GuiLibrary or {}
 
 shared.GuiLibrary.createwarning = function(title, text, delay, bgColor, position)
-    bgColor = bgColor or Color3.fromRGB(169, 169, 169)  -- Gray color for the notification
+    bgColor = bgColor or Color3.fromRGB(169, 169, 169)  -- Default to gray color for the notification
     position = position or UDim2.new(1, -250, 0, 10)  -- Position at top-right corner
 
     if playerGui:FindFirstChild("WarningNotification") then
@@ -93,30 +93,32 @@ shared.GuiLibrary.createwarning = function(title, text, delay, bgColor, position
     frame.Position = position
     frame.BackgroundColor3 = bgColor
     frame.BorderSizePixel = 0
-    frame.BackgroundTransparency = 0.5  -- Make the frame semi-transparent
+    frame.BackgroundTransparency = 0.8  -- Make the frame semi-transparent
     frame.Parent = warningGui
 
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0, 6)
     corner.Parent = frame
 
+    -- Title label for the notification
     local titleLabel = Instance.new("TextLabel")
     titleLabel.Size = UDim2.new(1, 0, 0.3, 0)
     titleLabel.Position = UDim2.new(0, 0, 0, 5)
     titleLabel.BackgroundTransparency = 1
-    titleLabel.Text = title
-    titleLabel.Font = Enum.Font.SourceSansBold
-    titleLabel.TextSize = 16
+    titleLabel.Text = title or "Skibidi"  -- Default to "Skibidi"
+    titleLabel.Font = Enum.Font.GothamBold  -- Modern font
+    titleLabel.TextSize = 18
     titleLabel.TextColor3 = Color3.new(1, 1, 1)
     titleLabel.TextAlignment = Enum.TextAlignment.Center
     titleLabel.Parent = frame
 
+    -- Text label for the message
     local textLabel = Instance.new("TextLabel")
     textLabel.Size = UDim2.new(1, 0, 0.7, 0)
     textLabel.Position = UDim2.new(0, 0, 0.3, 0)
     textLabel.BackgroundTransparency = 1
-    textLabel.Text = text
-    textLabel.Font = Enum.Font.SourceSans
+    textLabel.Text = text or "This is a test notification."
+    textLabel.Font = Enum.Font.Gotham  -- Modern font
     textLabel.TextSize = 14
     textLabel.TextColor3 = Color3.new(1, 1, 1)
     textLabel.TextWrapped = true
