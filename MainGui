@@ -5,7 +5,7 @@ local playerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 -- Create the ScreenGui
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = playerGui
-screenGui.Name = "Rex 2.0"
+screenGui.Name = "Rex 2.0"  -- Updated to "Rex 2.0"
 screenGui.ResetOnSpawn = false
 
 -- Create the main frame
@@ -20,11 +20,35 @@ local corner = Instance.new("UICorner")
 corner.CornerRadius = UDim.new(0, 8)
 corner.Parent = mainFrame
 
--- Warning Notification System
+-- Title bar with "Rex 2.0"
+local titleBar = Instance.new("Frame")
+titleBar.Size = UDim2.new(1, 0, 0, 40)
+titleBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+titleBar.BorderSizePixel = 0
+titleBar.Parent = mainFrame
+
+local titleCorner = Instance.new("UICorner")
+titleCorner.CornerRadius = UDim.new(0, 8)
+titleCorner.Parent = titleBar
+
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(1, -10, 1, 0)
+titleLabel.Position = UDim2.new(0, 5, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Rex 2.0"  -- Display "Rex 2.0" as the title
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.TextSize = 18
+titleLabel.Font = Enum.Font.SourceSansBold
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.Parent = titleBar
+
+-- Improved Notification System
 shared.GuiLibrary = shared.GuiLibrary or {}
 
-shared.GuiLibrary.createwarning = function(title, text, delay, bgColor)
-    bgColor = bgColor or Color3.fromRGB(236, 129, 44) -- Default to orange
+shared.GuiLibrary.createwarning = function(title, text, delay, bgColor, position)
+    bgColor = bgColor or Color3.fromRGB(0, 122, 255)  -- Blue for a more professional feel
+    position = position or UDim2.new(0, 0, 0, 0)  -- Position relative to the button
+
     if playerGui:FindFirstChild("WarningNotification") then
         playerGui.WarningNotification:Destroy()
     end
@@ -34,32 +58,37 @@ shared.GuiLibrary.createwarning = function(title, text, delay, bgColor)
     warningGui.Parent = playerGui
 
     local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 300, 0, 100)
-    frame.Position = UDim2.new(0.5, -150, 0.5, -50)
-    frame.AnchorPoint = Vector2.new(0.5, 0.5)
+    frame.Size = UDim2.new(0, 250, 0, 60)  -- Smaller size for the notification
+    frame.Position = position
     frame.BackgroundColor3 = bgColor
     frame.BorderSizePixel = 0
     frame.Parent = warningGui
 
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = frame
+
     local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, 0, 0.4, 0)
-    titleLabel.Position = UDim2.new(0, 0, 0, 10)
+    titleLabel.Size = UDim2.new(1, 0, 0.3, 0)
+    titleLabel.Position = UDim2.new(0, 0, 0, 5)
     titleLabel.BackgroundTransparency = 1
     titleLabel.Text = title
     titleLabel.Font = Enum.Font.SourceSansBold
-    titleLabel.TextSize = 20
+    titleLabel.TextSize = 16
     titleLabel.TextColor3 = Color3.new(1, 1, 1)
+    titleLabel.TextAlignment = Enum.TextAlignment.Center
     titleLabel.Parent = frame
 
     local textLabel = Instance.new("TextLabel")
-    textLabel.Size = UDim2.new(1, 0, 0.6, 0)
-    textLabel.Position = UDim2.new(0, 0, 0.4, 0)
+    textLabel.Size = UDim2.new(1, 0, 0.7, 0)
+    textLabel.Position = UDim2.new(0, 0, 0.3, 0)
     textLabel.BackgroundTransparency = 1
     textLabel.Text = text
     textLabel.Font = Enum.Font.SourceSans
-    textLabel.TextSize = 16
+    textLabel.TextSize = 14
     textLabel.TextColor3 = Color3.new(1, 1, 1)
     textLabel.TextWrapped = true
+    textLabel.TextAlignment = Enum.TextAlignment.Center
     textLabel.Parent = frame
 
     -- Automatically remove the warning after the delay
@@ -80,26 +109,17 @@ local function createButton(buttonData)
     button.TextSize = 16
     button.Parent = mainFrame
 
-    button.MouseButton1Click:Connect(buttonData.Function)
-end
-
--- Function to create a toggle
-local function createToggle(toggleData)
-    local toggle = Instance.new("TextButton")
-    toggle.Size = UDim2.new(1, -20, 0, 30)
-    toggle.Position = UDim2.new(0, 10, 0, 50)
-    toggle.Text = toggleData.Name .. ": OFF"
-    toggle.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-    toggle.Font = Enum.Font.SourceSans
-    toggle.TextSize = 16
-    toggle.Parent = mainFrame
-
-    local state = false
-    toggle.MouseButton1Click:Connect(function()
-        state = not state
-        toggle.Text = toggleData.Name .. ": " .. (state and "ON" or "OFF")
-        toggleData.Function(state)
+    button.MouseButton1Click:Connect(function()
+        -- Show notification near the button
+        shared.GuiLibrary.createwarning(
+            "Test Warning", 
+            "This is a test warning triggered by the button.", 
+            5, 
+            Color3.fromRGB(255, 0, 0), -- Red background color
+            button.Position + UDim2.new(0, 0, 0, button.Size.Y.Offset + 10)  -- Position below the button
+        )
+        -- Call the function
+        buttonData.Function()
     end)
 end
 
@@ -111,10 +131,6 @@ end)
 if success then
     for _, buttonData in ipairs(customModule.Buttons) do
         createButton(buttonData)
-    end
-
-    for _, toggleData in ipairs(customModule.Toggles) do
-        createToggle(toggleData)
     end
 else
     warn("Failed to load CustomModule!")
