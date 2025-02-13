@@ -1,4 +1,4 @@
--- Main GUI Script
+-- Main GUI Script (Mobile-Friendly)
 
 local playerGui = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
@@ -21,7 +21,7 @@ local corner = Instance.new("UICorner")
 corner.CornerRadius = UDim.new(0, 8)
 corner.Parent = mainFrame
 
--- Add a title bar
+-- Add a title bar for dragging
 local titleBar = Instance.new("Frame")
 titleBar.Size = UDim2.new(1, 0, 0, 40)
 titleBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
@@ -44,58 +44,37 @@ titleLabel.Font = Enum.Font.SourceSansBold
 titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 titleLabel.Parent = titleBar
 
--- Add a button
-local actionButton = Instance.new("TextButton")
-actionButton.Size = UDim2.new(0, 200, 0, 40)
-actionButton.Position = UDim2.new(0.5, -100, 0.5, -20)
-actionButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-actionButton.Text = "Click Me!"
-actionButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-actionButton.TextSize = 16
-actionButton.Font = Enum.Font.SourceSansBold
-actionButton.Parent = mainFrame
-
-local buttonCorner = Instance.new("UICorner")
-buttonCorner.CornerRadius = UDim.new(0, 8)
-buttonCorner.Parent = actionButton
-
--- Button functionality
-actionButton.MouseButton1Click:Connect(function()
-    print("Button clicked!") -- Replace this with your desired functionality
-end)
-
--- Make the Frame draggable
-local dragging, dragInput, dragStart, startPos
+-- Mobile-Friendly Dragging Functionality
+local dragging = false
+local dragStart, startPos
 local userInputService = game:GetService("UserInputService")
 
 titleBar.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
         dragging = true
         dragStart = input.Position
         startPos = mainFrame.Position
+    end
+end)
 
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
+titleBar.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement then
+        userInputService.InputChanged:Connect(function(moveInput)
+            if dragging and moveInput.UserInputType == Enum.UserInputType.Touch then
+                local delta = moveInput.Position - dragStart
+                mainFrame.Position = UDim2.new(
+                    startPos.X.Scale,
+                    startPos.X.Offset + delta.X,
+                    startPos.Y.Scale,
+                    startPos.Y.Offset + delta.Y
+                )
             end
         end)
     end
 end)
 
-titleBar.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-        dragInput = input
-    end
-end)
-
-userInputService.InputChanged:Connect(function(input)
-    if dragging and input == dragInput then
-        local delta = input.Position - dragStart
-        mainFrame.Position = UDim2.new(
-            startPos.X.Scale,
-            startPos.X.Offset + delta.X,
-            startPos.Y.Scale,
-            startPos.Y.Offset + delta.Y
-        )
+titleBar.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
     end
 end)
