@@ -1,4 +1,5 @@
-local screenGui = script.Parent
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game:GetService("CoreGui")
 
 -- Create the Frame
 local frame = Instance.new("Frame")
@@ -71,7 +72,7 @@ end)
 frame:TweenSize(UDim2.new(0.8, 0, 0.8, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 1, true)
 
 -- Import CustomModule
-local CustomModule = require(script.CustomModule)
+local CustomModule = require(script.Parent:WaitForChild("CustomModule"))
 
 -- Function to create a toggle button in the GUI
 local function createToggleButton(toggle)
