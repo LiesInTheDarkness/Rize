@@ -1,14 +1,51 @@
-local CustomModule = require(game.ReplicatedStorage.CustomModule) -- Adjust path if needed
-local MainGui = require(game.ReplicatedStorage.MainGui) -- Adjust path if needed
+-- Require necessary modules
+local CustomModule = require(game.ReplicatedStorage:WaitForChild("CustomModule")) -- Adjust path if needed
+local MainGui = require(game.ReplicatedStorage:WaitForChild("MainGui")) -- Adjust path if needed
 
-local screenGui = game:GetService("CoreGui"):WaitForChild("ScreenGui") -- Locate the GUI
-local mainFrame = screenGui:FindFirstChild("Frame") -- Ensure the "Frame" is fetched from your GUI
+-- Create the main ScreenGui and Frame
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game:GetService("CoreGui")
 
-if not mainFrame then
-    error("MainFrame not found! Ensure your GUI is properly set up.")
-end
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0.8, 0, 0.8, 0)
+frame.Position = UDim2.new(0.1, 0, 0.1, 0)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.BackgroundTransparency = 0.5
+frame.BorderSizePixel = 0
+frame.Visible = false
+frame.Parent = screenGui
+
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0.1, 0)
+uiCorner.Parent = frame
+
+local textLabel = Instance.new("TextLabel")
+textLabel.Size = UDim2.new(0.2, 0, 0.1, 0)
+textLabel.Position = UDim2.new(0, 5, 0, 5)
+textLabel.BackgroundTransparency = 1
+textLabel.Text = "Rex"
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextScaled = true
+textLabel.Font = Enum.Font.GothamBold
+textLabel.Parent = frame
+
+-- Create the toggle button for showing/hiding the frame
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(0, 50, 0, 50)
+toggleButton.Position = UDim2.new(0, 10, 0, 10)
+toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+toggleButton.Text = ""
+toggleButton.Parent = screenGui
+
+local toggleButtonCorner = Instance.new("UICorner")
+toggleButtonCorner.CornerRadius = UDim.new(0.5, 0)
+toggleButtonCorner.Parent = toggleButton
+
+toggleButton.MouseButton1Click:Connect(function()
+    frame.Visible = not frame.Visible
+end)
 
 -- Add toggles dynamically
 for _, toggle in ipairs(CustomModule.Toggles) do
-    MainGui.createToggleButton(toggle, mainFrame) -- Pass the toggle and mainFrame explicitly
+    MainGui.createToggleButton(toggle, frame)
 end
