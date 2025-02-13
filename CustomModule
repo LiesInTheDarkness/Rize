@@ -1,3 +1,4 @@
+-- CustomModule
 local CustomModule = {}
 
 CustomModule.Toggles = {
@@ -9,18 +10,10 @@ CustomModule.Toggles = {
                 local humanoid = player.Character.Humanoid
                 if state then
                     humanoid.WalkSpeed = 50
-                    game.StarterGui:SetCore("SendNotification", {
-                        Title = "Toggle Skibidi";
-                        Text = "Speed set to 50";
-                        Duration = 5;
-                    })
+                    print("Speed is now 50")
                 else
                     humanoid.WalkSpeed = 16 -- Reset to default speed
-                    game.StarterGui:SetCore("SendNotification", {
-                        Title = "Toggle Skibidi";
-                        Text = "Speed reset to default";
-                        Duration = 5;
-                    })
+                    print("Speed is now default")
                 end
             end
         end
