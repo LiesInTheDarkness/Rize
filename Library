@@ -9,30 +9,22 @@ function Library:CreateWindow(Title)
     local TitleBar = Instance.new("Frame")
     local TitleLabel = Instance.new("TextLabel")
     local FloatingButton = Instance.new("TextButton")
-    local UIGradient = Instance.new("UIGradient")
 
     GUI.Parent = game.CoreGui
-    GUI.Name = "CustomUI"
+    GUI.Name = "CleanUI"
 
     -- Main UI Panel (Hidden by Default)
     MainUI.Parent = GUI
-    MainUI.Size = UDim2.new(0, 300, 0, 350)
-    MainUI.Position = UDim2.new(0.5, -150, 0.3, 0)
-    MainUI.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    MainUI.Size = UDim2.new(0, 400, 0, 250) -- Wider & Shorter
+    MainUI.Position = UDim2.new(0.5, -200, 0.3, 0)
+    MainUI.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     MainUI.BorderSizePixel = 0
     MainUI.Visible = false -- Start hidden
-
-    -- Gradient Effect
-    UIGradient.Parent = MainUI
-    UIGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(50, 120, 255)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(120, 50, 255))
-    }
 
     -- Title Bar
     TitleBar.Parent = MainUI
     TitleBar.Size = UDim2.new(1, 0, 0, 40)
-    TitleBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    TitleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 
     -- Title Label
     TitleLabel.Parent = TitleBar
@@ -46,14 +38,14 @@ function Library:CreateWindow(Title)
     -- Floating Button
     FloatingButton.Parent = GUI
     FloatingButton.Size = UDim2.new(0, 50, 0, 50)
-    FloatingButton.Position = UDim2.new(0.8, 0, 0.8, 0)
+    FloatingButton.Position = UDim2.new(0.85, 0, 0.8, 0)
     FloatingButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-    FloatingButton.Text = "🔘"
+    FloatingButton.Text = "☰"
     FloatingButton.TextSize = 24
     FloatingButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     FloatingButton.BorderSizePixel = 0
 
-    -- Dragging for Floating Button
+    -- Floating Button Dragging
     local Dragging, DragStart, StartPos
     FloatingButton.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -84,15 +76,15 @@ function Library:CreateWindow(Title)
         
         if UIVisible then
             MainUI.Visible = true
-            TweenService:Create(MainUI, TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Size = UDim2.new(0, 300, 0, 350)}):Play()
+            TweenService:Create(MainUI, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 400, 0, 250)}):Play()
         else
-            TweenService:Create(MainUI, TweenInfo.new(0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {Size = UDim2.new(0, 300, 0, 0)}):Play()
-            wait(0.4)
+            TweenService:Create(MainUI, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {Size = UDim2.new(0, 400, 0, 0)}):Play()
+            wait(0.3)
             MainUI.Visible = false
         end
     end)
 
-    -- Dragging for Main UI
+    -- Draggable Main UI
     local UI_Dragging, UI_DragStart, UI_StartPos
     TitleBar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
