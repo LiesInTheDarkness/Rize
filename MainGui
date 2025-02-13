@@ -3,41 +3,41 @@ screenGui.Parent = game:GetService("CoreGui")
 
 -- Create the Frame
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0.8, 0, 0.8, 0) -- Significantly bigger size
-frame.Position = UDim2.new(0.1, 0, 0.1, 0) -- Center the frame
-frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30) -- Dark grey background
-frame.BackgroundTransparency = 0.5 -- Make it transparent
+frame.Size = UDim2.new(0.8, 0, 0.8, 0)
+frame.Position = UDim2.new(0.1, 0, 0.1, 0)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.BackgroundTransparency = 0.5
 frame.BorderSizePixel = 0
-frame.Visible = false -- Initially hidden
+frame.Visible = false
 frame.Parent = screenGui
 
 -- Create the UI Corner for rounded edges
 local uiCorner = Instance.new("UICorner")
-uiCorner.CornerRadius = UDim.new(0.1, 0) -- Adjust the corner radius as needed
+uiCorner.CornerRadius = UDim.new(0.1, 0)
 uiCorner.Parent = frame
 
 -- Create the 'Rex' text label
 local textLabel = Instance.new("TextLabel")
-textLabel.Size = UDim2.new(0.2, 0, 0.1, 0) -- Adjust size as needed
-textLabel.Position = UDim2.new(0, 5, 0, 5) -- Top left corner with padding
-textLabel.BackgroundTransparency = 1 -- Make background transparent
+textLabel.Size = UDim2.new(0.2, 0, 0.1, 0)
+textLabel.Position = UDim2.new(0, 5, 0, 5)
+textLabel.BackgroundTransparency = 1
 textLabel.Text = "Rex"
-textLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text color
-textLabel.TextScaled = true -- Make text scale with size
-textLabel.Font = Enum.Font.GothamBold -- Use Gotham bold font
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.TextScaled = true
+textLabel.Font = Enum.Font.GothamBold
 textLabel.Parent = frame
 
 -- Create the Toggle Button
 local toggleButton = Instance.new("TextButton")
-toggleButton.Size = UDim2.new(0, 50, 0, 50) -- Small square size
-toggleButton.Position = UDim2.new(0, 10, 0, 10) -- Initial position
+toggleButton.Size = UDim2.new(0, 50, 0, 50)
+toggleButton.Position = UDim2.new(0, 10, 0, 10)
 toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 toggleButton.Text = ""
 toggleButton.Parent = screenGui
 
 -- Add rounded corners to the toggle button
 local toggleButtonCorner = Instance.new("UICorner")
-toggleButtonCorner.CornerRadius = UDim.new(0.5, 0) -- Fully rounded corners
+toggleButtonCorner.CornerRadius = UDim.new(0.5, 0)
 toggleButtonCorner.Parent = toggleButton
 
 -- Make the toggle button draggable
@@ -94,7 +94,7 @@ local CustomModule = require(script.Parent:WaitForChild("CustomModule"))
 local function createToggleButton(toggle)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(0.2, 0, 0.1, 0)
-    button.Position = UDim2.new(0, 5, 0, 45 + (#CustomModule.Toggles - 1) * 50) -- Adjust position as needed
+    button.Position = UDim2.new(0, 5, 0, 45 + (#CustomModule.Toggles - 1) * 50)
     button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     button.Text = toggle.Name
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
