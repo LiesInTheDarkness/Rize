@@ -1,62 +1,16 @@
-local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = game:GetService("CoreGui")
+local MainGui = {}
 
--- Create the Frame
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0.8, 0, 0.8, 0)
-frame.Position = UDim2.new(0.1, 0, 0.1, 0)
-frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-frame.BackgroundTransparency = 0.5
-frame.BorderSizePixel = 0
-frame.Visible = false
-frame.Parent = screenGui
-
--- Create the UI Corner for rounded edges
-local uiCorner = Instance.new("UICorner")
-uiCorner.CornerRadius = UDim.new(0.1, 0)
-uiCorner.Parent = frame
-
--- Create the 'Rex' text label
-local textLabel = Instance.new("TextLabel")
-textLabel.Size = UDim2.new(0.2, 0, 0.1, 0)
-textLabel.Position = UDim2.new(0, 5, 0, 5)
-textLabel.BackgroundTransparency = 1
-textLabel.Text = "Rex"
-textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-textLabel.TextScaled = true
-textLabel.Font = Enum.Font.GothamBold
-textLabel.Parent = frame
-
--- Create the Toggle Button
-local toggleButton = Instance.new("TextButton")
-toggleButton.Size = UDim2.new(0, 50, 0, 50)
-toggleButton.Position = UDim2.new(0, 10, 0, 10)
-toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-toggleButton.Text = ""
-toggleButton.Parent = screenGui
-
--- Add rounded corners to the toggle button
-local toggleButtonCorner = Instance.new("UICorner")
-toggleButtonCorner.CornerRadius = UDim.new(0.5, 0)
-toggleButtonCorner.Parent = toggleButton
-
-
-
--- Toggle the visibility of the frame when the toggle button is clicked
-toggleButton.MouseButton1Click:Connect(function()
-    frame.Visible = not frame.Visible
-end)
-
-function MainGui.createToggleButton(toggle, mainFrame)
+-- Function to dynamically create toggle buttons
+function MainGui.createToggleButton(toggle, frame)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(0, 200, 0, 50)
-    button.Position = UDim2.new(0, 50, 0, 50 + (#mainFrame:GetChildren() - 1) * 60)
+    button.Position = UDim2.new(0, 50, 0, 50 + (#frame:GetChildren() - 1) * 60)
     button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     button.Text = toggle.Name
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.TextScaled = true
     button.Font = Enum.Font.GothamBold
-    button.Parent = mainFrame
+    button.Parent = frame
 
     local state = false
     button.MouseButton1Click:Connect(function()
@@ -65,3 +19,5 @@ function MainGui.createToggleButton(toggle, mainFrame)
         button.BackgroundColor3 = state and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(50, 50, 50)
     end)
 end
+
+return MainGui
