@@ -1,108 +1,62 @@
-local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = game:GetService("CoreGui")
+local MainGui = {}
 
--- Create the Frame
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0.8, 0, 0.8, 0)
-frame.Position = UDim2.new(0.1, 0, 0.1, 0)
-frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-frame.BackgroundTransparency = 0.5
-frame.BorderSizePixel = 0
-frame.Visible = false
-frame.Parent = screenGui
+-- Create the main GUI frame
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
 
--- Create the UI Corner for rounded edges
-local uiCorner = Instance.new("UICorner")
-uiCorner.CornerRadius = UDim.new(0.1, 0)
-uiCorner.Parent = frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 400, 0, 300)
+mainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+mainFrame.Parent = ScreenGui
 
--- Create the 'Rex' text label
-local textLabel = Instance.new("TextLabel")
-textLabel.Size = UDim2.new(0.2, 0, 0.1, 0)
-textLabel.Position = UDim2.new(0, 5, 0, 5)
-textLabel.BackgroundTransparency = 1
-textLabel.Text = "Rex"
-textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-textLabel.TextScaled = true
-textLabel.Font = Enum.Font.GothamBold
-textLabel.Parent = frame
+local titleBar = Instance.new("TextLabel")
+titleBar.Size = UDim2.new(1, 0, 0, 50)
+titleBar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+titleBar.Text = "Rex 2.0"
+titleBar.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleBar.TextScaled = true
+titleBar.Font = Enum.Font.GothamBold
+titleBar.Parent = mainFrame
 
--- Create the Toggle Button
-local toggleButton = Instance.new("TextButton")
-toggleButton.Size = UDim2.new(0, 50, 0, 50)
-toggleButton.Position = UDim2.new(0, 10, 0, 10)
-toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-toggleButton.Text = ""
-toggleButton.Parent = screenGui
+-- Make the mainFrame draggable
+local UIS = game:GetService("UserInputService")
+local dragToggle, dragStart, startPos
 
--- Add rounded corners to the toggle button
-local toggleButtonCorner = Instance.new("UICorner")
-toggleButtonCorner.CornerRadius = UDim.new(0.5, 0)
-toggleButtonCorner.Parent = toggleButton
-
--- Make the toggle button draggable
-local dragging
-local dragInput
-local dragStart
-local startPos
-
-local function update(input)
-    local delta = input.Position - dragStart
-    toggleButton.Position = UDim2.new(
-        startPos.X.Scale,
-        startPos.X.Offset + delta.X,
-        startPos.Y.Scale,
-        startPos.Y.Offset + delta.Y
-    )
-end
-
-toggleButton.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType.Touch then
-        dragging = true
+titleBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragToggle = true
         dragStart = input.Position
-        startPos = toggleButton.Position
-
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
+        startPos = mainFrame.Position
     end
 end)
 
-toggleButton.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType.Touch then
-        dragInput = input
+titleBar.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragToggle = false
     end
 end)
 
-game:GetService("UserInputService").InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
-        update(input)
+UIS.InputChanged:Connect(function(input)
+    if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        mainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
     end
 end)
 
--- Toggle the visibility of the frame when the toggle button is clicked
-toggleButton.MouseButton1Click:Connect(function()
-    frame.Visible = not frame.Visible
-end)
-
--- Import CustomModule
-local CustomModule = require(script.Parent:WaitForChild("CustomModule"))
-
--- Function to create a toggle button in the GUI
-local function createToggleButton(toggle)
+-- Function to create a toggle button
+function MainGui.createToggleButton(toggle)
     local button = Instance.new("TextButton")
-    button.Size = UDim2.new(0.2, 0, 0.1, 0)
-    button.Position = UDim2.new(0, 5, 0, 45 + (#CustomModule.Toggles - 1) * 50)
+    button.Size = UDim2.new(0, 200, 0, 50)
+    button.Position = UDim2.new(0, 50, 0, 50 + (#mainFrame:GetChildren() - 1) * 60)
     button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     button.Text = toggle.Name
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.TextScaled = true
     button.Font = Enum.Font.GothamBold
-    button.Parent = frame
-    
-    -- Toggle state
+    button.Parent = mainFrame
+
     local state = false
     button.MouseButton1Click:Connect(function()
         state = not state
@@ -111,11 +65,4 @@ local function createToggleButton(toggle)
     end)
 end
 
--- Add toggles from CustomModule
-for _, toggle in ipairs(CustomModule.Toggles) do
-    createToggleButton(toggle)
-end
-
-return {
-    createToggleButton = createToggleButton
-}
+return MainGui
