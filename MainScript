@@ -1,14 +1,14 @@
--- MainScript
+local CustomModule = require(game.ReplicatedStorage.CustomModule) -- Adjust path if needed
+local MainGui = require(game.ReplicatedStorage.MainGui) -- Adjust path if needed
 
--- Load MainGui
-local MainGui = loadstring(game:HttpGet("https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/main/MainGui"))()
+local screenGui = game:GetService("CoreGui"):WaitForChild("ScreenGui") -- Locate the GUI
+local mainFrame = screenGui:FindFirstChild("Frame") -- Ensure the "Frame" is fetched from your GUI
 
--- Load CustomModule
-local CustomModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/LiesInTheDarkness/Rex-2.0/main/CustomModule"))()
+if not mainFrame then
+    error("MainFrame not found! Ensure your GUI is properly set up.")
+end
 
--- Create toggles using MainGui
-if MainGui and CustomModule then
-    for _, toggle in ipairs(CustomModule.Toggles) do
-        MainGui.createToggleButton(toggle)
-    end
+-- Add toggles dynamically
+for _, toggle in ipairs(CustomModule.Toggles) do
+    MainGui.createToggleButton(toggle, mainFrame) -- Pass the toggle and mainFrame explicitly
 end
