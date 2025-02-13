@@ -198,3 +198,17 @@ end
 
 -- Example usage:
 -- createWarning("Warning!", "This is a test warning.", 5, Color3.fromRGB(255, 0, 0))
+
+shared.GuiLibrary = shared.GuiLibrary or {}
+
+function shared.GuiLibrary.initializeGui(CustomModule)
+    -- Loop through CustomModule buttons and create them
+    for _, button in ipairs(CustomModule.Buttons) do
+        createButton(button.Name, button.Function) -- Define createButton elsewhere in MainGui
+    end
+
+    -- Loop through CustomModule toggles and create them
+    for _, toggle in ipairs(CustomModule.Toggles) do
+        createToggle(toggle.Name, toggle.Function) -- Define createToggle elsewhere in MainGui
+    end
+end
