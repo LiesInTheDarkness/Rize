@@ -32,7 +32,7 @@ local toggleButton = Instance.new("TextButton")
 toggleButton.Size = UDim2.new(0, 50, 0, 50)
 toggleButton.Position = UDim2.new(0, 10, 0, 10)
 toggleButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-toggleButton.Text = ""
+toggleButton.Text = "R"
 toggleButton.Parent = screenGui
 
 local toggleButtonCorner = Instance.new("UICorner")
