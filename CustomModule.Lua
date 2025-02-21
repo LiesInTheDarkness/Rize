@@ -9,10 +9,13 @@ function CustomModule.AddCustomStuff(UI)
 UI:CreateButton(Tab1, "Something", function()
     end)
     
-UI:CreateSlider(Tab1, "Walk speed ", 0, 100, 50, function(val)
-    local player = game:GetService("Players").LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
+local player = game:GetService("Players").LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+
+local defaultSpeed = humanoid and humanoid.WalkSpeed or 16
+
+UI:CreateSlider(Tab1, "Walk Speed", 0, 100, defaultSpeed, function(val)
     if humanoid then
         humanoid.WalkSpeed = val
     end
