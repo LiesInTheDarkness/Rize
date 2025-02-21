@@ -5,12 +5,16 @@ local CustomModule = {}
 function CustomModule.AddCustomStuff(UI)
     -- Create a custom tab and add elements with custom names
     local Tab1 = UI:CreateTab("Custom Tab 1")
-    UI:CreateButton(Tab1, "My Custom Button", function()
-        print("[CustomModule] My Custom Button clicked!")
+    UI:CreateButton(Tab1, "Something", function()
     end)
     UI:CreateSlider(Tab1, "My Custom Slider", 0, 100, 50, function(val)
-        print("[CustomModule] My Custom Slider value:", val)
-    end)
+    local player = game:GetService("Players").LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid.WalkSpeed = val
+    end
+end)
     UI:CreateToggle(Tab1, "My Custom Toggle", false, function(state)
         print("[CustomModule] My Custom Toggle state:", state)
     end)
