@@ -1,4 +1,4 @@
--- CustomModule.lua -- Updated module with error checking and debug logs
+-- CustomModule.lua -- Updated module with error checking
 local CustomModule = {}
 
 function CustomModule.AddCustomStuff(UI)
@@ -18,28 +18,19 @@ function CustomModule.AddCustomStuff(UI)
     local humanoid = character:FindFirstChildOfClass("Humanoid")
     local defaultSpeed = (humanoid and humanoid.WalkSpeed) or 16
 
-    print("[CustomModule] Creating tab 'Test1'")
     local Tab1 = UI:CreateTab("Test1")
-    UI:CreateButton(Tab1, "Something", function() 
-        print("[CustomModule] 'Something' button clicked")
-    end)
+    UI:CreateButton(Tab1, "Something", function() end)
     
     UI:CreateSlider(Tab1, "Walk Speed", 0, 100, defaultSpeed, function(val)
         if humanoid then
             humanoid.WalkSpeed = val
-            print("[CustomModule] Updated WalkSpeed to", val)
         end
     end)
     
-    UI:CreateToggle(Tab1, "Tes", false, function(state)
-        print("[CustomModule] Toggle 'Tes' state:", state)
-    end)
+    UI:CreateToggle(Tab1, "Tes", false, function(state) end)
     
-    print("[CustomModule] Creating tab 'Test'")
     local Tab2 = UI:CreateTab("Test")
-    UI:CreateButton(Tab2, "Another Custom Button", function()
-        print("[CustomModule] 'Another Custom Button' clicked!")
-    end)
+    UI:CreateButton(Tab2, "Another Custom Button", function() end)
 end
 
 return CustomModule
