@@ -6,9 +6,9 @@ local UserInputService = game:GetService("UserInputService")
 
 function RizeUi.new()
     local self = setmetatable({}, RizeUi)
-    self.Settings = {}      -- Stores current setting values.
-    self.Tabs = {}          -- Holds tab information.
-    self.Elements = {}      -- Holds references to UI elements for updating.
+    self.Settings = {}      -- Current setting values.
+    self.Tabs = {}          -- Tab data.
+    self.Elements = {}      -- References to UI elements for updating.
     self.UIOpen = true
 
     local player = Players.LocalPlayer
@@ -18,7 +18,7 @@ function RizeUi.new()
 
     self.ScreenGui = Instance.new("ScreenGui")
     self.ScreenGui.Name = "RizeUI"
-    self.ScreenGui.ResetOnSpawn = false  -- Persist after character death.
+    self.ScreenGui.ResetOnSpawn = false  -- Persist after death.
     local playerGui = player:WaitForChild("PlayerGui")
     self.ScreenGui.Parent = playerGui
 
@@ -79,11 +79,10 @@ function RizeUi.new()
     TabBar.Parent = self.MainFrame
     self.TabBar = TabBar
 
-    -- Toggle button to open/close the UI.
+    -- Toggle button for open/close; positioned under Roblox icon.
     self.ToggleButton = Instance.new("TextButton")
     self.ToggleButton.Name = "ToggleButton"
     self.ToggleButton.Text = "R"
-    -- Change this Position as needed (here it is under the Roblox icon)
     self.ToggleButton.Position = UDim2.new(0, 10, 0, 50)
     self.ToggleButton.Size = UDim2.new(0, 50, 0, 50)
     self.ToggleButton.BackgroundColor3 = Color3.fromRGB(130, 60, 85)
@@ -247,7 +246,7 @@ function RizeUi:CreateSlider(tabData, sliderName, minValue, maxValue, defaultVal
     updatePositionFromValue(currentValue)
     self.Settings[sliderName] = currentValue
 
-    -- Save a reference for updating later.
+    -- Save reference for later updates.
     self.Elements[sliderName] = {
         type = "slider",
         update = updatePositionFromValue,
@@ -296,10 +295,15 @@ function RizeUi:CreateSlider(tabData, sliderName, minValue, maxValue, defaultVal
                 local relativeX = math.clamp(input.Position.X - sliderBar.AbsolutePosition.X, 0, sliderBar.AbsoluteSize.X)
                 local percent = relativeX / sliderBar.AbsoluteSize.X
                 local newValue = math.floor(minValue + (maxValue - minValue) * percent)
-                currentValue = newValue
-                self.Settings[sliderName] = newValue
-                updatePositionFromValue(newValue)
-                if callback then callback(newValue) end
+                if newValue ~= currentValue then
+                    currentValue = newValue
+                    self.Settings[sliderName] = newValue
+                    updatePositionFromValue(newValue)
+                    if callback then callback(newValue) end
+                    if self.SaveSettings then
+                        self:SaveSettings()
+                    end
+                end
             end
         end
     end)
