@@ -1,11 +1,6 @@
--- UiLib.lua
--- A cleaner, more polished version of the Rize UI Library
--- featuring gradients, rounded corners, consistent spacing,
--- and optional tab icons to match your second image.
-
+-- UiLib.lua -- A cleaner, more polished version of the Rize UI Library
 local RizeUi = {}
 RizeUi.__index = RizeUi
-
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 
@@ -15,37 +10,37 @@ function RizeUi.new()
     self.Tabs = {}
     self.UIOpen = true
 
-    -- // ScreenGui
     local player = Players.LocalPlayer
+    if not player then
+        error("[UiLib] LocalPlayer is nil. This must be run in a LocalScript.")
+    end
+
     self.ScreenGui = Instance.new("ScreenGui")
     self.ScreenGui.Name = "RizeUI"
-    self.ScreenGui.Parent = player:WaitForChild("PlayerGui")
+    local playerGui = player:WaitForChild("PlayerGui")
+    self.ScreenGui.Parent = playerGui
 
-    -- // Main Frame
     self.MainFrame = Instance.new("Frame")
     self.MainFrame.Name = "MainFrame"
     self.MainFrame.Size = UDim2.new(0, 400, 0, 300)
     self.MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-    self.MainFrame.BackgroundColor3 = Color3.fromRGB(140, 90, 110) -- fallback
+    self.MainFrame.BackgroundColor3 = Color3.fromRGB(140, 90, 110)
     self.MainFrame.Active = true
     self.MainFrame.Draggable = true
     self.MainFrame.Parent = self.ScreenGui
 
-    -- Round corners for MainFrame
     local mainCorner = Instance.new("UICorner")
     mainCorner.CornerRadius = UDim.new(0, 12)
     mainCorner.Parent = self.MainFrame
 
-    -- Gradient for MainFrame
     local mainGradient = Instance.new("UIGradient")
     mainGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(141, 105, 120)), -- top
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(180, 120, 150))  -- bottom
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(141, 105, 120)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(180, 120, 150))
     })
     mainGradient.Rotation = 90
     mainGradient.Parent = self.MainFrame
 
-    -- // Title Bar (Header) for the "RIZE" title
     local TitleBar = Instance.new("Frame")
     TitleBar.Name = "TitleBar"
     TitleBar.Size = UDim2.new(1, 0, 0, 40)
@@ -74,16 +69,14 @@ function RizeUi.new()
     TitleLabel.TextScaled = true
     TitleLabel.Parent = TitleBar
 
-    -- // Tab Bar (for tab buttons)
     local TabBar = Instance.new("Frame")
     TabBar.Name = "TabBar"
     TabBar.Size = UDim2.new(1, 0, 0, 40)
-    TabBar.Position = UDim2.new(0, 0, 0, 40)  -- directly below TitleBar
+    TabBar.Position = UDim2.new(0, 0, 0, 40)
     TabBar.BackgroundTransparency = 1
     TabBar.Parent = self.MainFrame
-    self.TabBar = TabBar  -- store reference for tab creation
+    self.TabBar = TabBar
 
-    -- // Toggle Button (the floating circle 'R')
     self.ToggleButton = Instance.new("TextButton")
     self.ToggleButton.Name = "ToggleButton"
     self.ToggleButton.Text = "R"
@@ -98,34 +91,25 @@ function RizeUi.new()
     local toggleCorner = Instance.new("UICorner")
     toggleCorner.CornerRadius = UDim.new(1, 0)
     toggleCorner.Parent = self.ToggleButton
-
     self.ToggleButton.MouseButton1Click:Connect(function()
         self.UIOpen = not self.UIOpen
         self.MainFrame.Visible = self.UIOpen
     end)
-
+    
     return self
 end
 
---------------------------------------------------------------------------------
--- Tab Creation (with optional icon)
---------------------------------------------------------------------------------
 function RizeUi:CreateTab(tabName, iconId)
     local tabData = {}
-
-    -- Each tab button is now added to the separate TabBar
     local tabButton = Instance.new("TextButton")
     tabButton.Name = "TabButton_" .. tabName
     tabButton.Size = UDim2.new(0, 120, 1, 0)
     tabButton.BackgroundTransparency = 1
     tabButton.Text = ""
     tabButton.Parent = self.TabBar
-
-    -- Position tabs horizontally
     local tabCount = #self.Tabs
     tabButton.Position = UDim2.new(0, tabCount * 120, 0, 0)
 
-    -- Optional icon on the tab button
     if iconId then
         local icon = Instance.new("ImageLabel")
         icon.Name = "Icon"
@@ -136,22 +120,20 @@ function RizeUi:CreateTab(tabName, iconId)
         icon.Parent = tabButton
     end
 
-    -- Text next to icon
     local tabText = Instance.new("TextLabel")
     tabText.Name = "TabText"
     tabText.BackgroundTransparency = 1
     tabText.Size = UDim2.new(1, iconId and -30 or 0, 1, 0)
-    tabText.Position = UDim2.new(iconId and 0 or 0, iconId and 30 or 0, 0, 0)
+    tabText.Position = UDim2.new(0, iconId and 30 or 0, 0, 0)
     tabText.Text = tabName
     tabText.TextColor3 = Color3.fromRGB(255, 255, 255)
     tabText.Font = Enum.Font.SourceSansBold
     tabText.TextScaled = true
     tabText.Parent = tabButton
 
-    -- Scrollable frame for the tab content (placed below the TabBar)
     local scrollingFrame = Instance.new("ScrollingFrame")
     scrollingFrame.Name = "Tab_" .. tabName
-    scrollingFrame.Size = UDim2.new(1, -10, 1, -80)  -- adjusted for TitleBar (40) + TabBar (40)
+    scrollingFrame.Size = UDim2.new(1, -10, 1, -80)
     scrollingFrame.Position = UDim2.new(0, 5, 0, 80)
     scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
     scrollingFrame.ScrollBarThickness = 6
@@ -177,14 +159,12 @@ function RizeUi:CreateTab(tabName, iconId)
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Padding = UDim.new(0, 6)
 
-    -- Tab switching logic
     tabButton.MouseButton1Click:Connect(function()
         for _, t in ipairs(self.Tabs) do
             t.Frame.Visible = false
         end
         scrollingFrame.Visible = true
     end)
-
     tabData.Name = tabName
     tabData.Button = tabButton
     tabData.Frame = scrollingFrame
@@ -192,9 +172,25 @@ function RizeUi:CreateTab(tabName, iconId)
     return tabData
 end
 
---------------------------------------------------------------------------------
--- Buttons, Sliders, Toggles
---------------------------------------------------------------------------------
+function RizeUi:CreateButton(tabData, buttonName, callback)
+    local btn = Instance.new("TextButton")
+    btn.Name = buttonName
+    btn.Size = UDim2.new(1, -10, 0, 40)
+    btn.BackgroundColor3 = Color3.fromRGB(220, 220, 220)
+    btn.TextColor3 = Color3.fromRGB(0, 0, 0)
+    btn.Font = Enum.Font.SourceSans
+    btn.TextSize = 20
+    btn.Text = buttonName
+    btn.Parent = tabData.Frame
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 10)
+    corner.Parent = btn
+
+    btn.MouseButton1Click:Connect(function()
+        if callback then callback() end
+    end)
+end
 
 function RizeUi:CreateSlider(tabData, sliderName, minValue, maxValue, defaultValue, callback)
     local sliderFrame = Instance.new("Frame")
@@ -300,9 +296,9 @@ function RizeUi:CreateSlider(tabData, sliderName, minValue, maxValue, defaultVal
             end
         end
     end)
-
     return sliderFrame
 end
+
 function RizeUi:CreateToggle(tabData, toggleName, defaultState, callback)
     local toggleFrame = Instance.new("Frame")
     toggleFrame.Name = toggleName
@@ -335,15 +331,12 @@ function RizeUi:CreateToggle(tabData, toggleName, defaultState, callback)
     toggleButton.Parent = toggleFrame
 
     self.Settings[toggleName] = defaultState
-
     toggleButton.MouseButton1Click:Connect(function()
         local newState = not self.Settings[toggleName]
         self.Settings[toggleName] = newState
         toggleButton.Text = newState and "ON" or "OFF"
         toggleButton.BackgroundColor3 = newState and Color3.fromRGB(120, 180, 120) or Color3.fromRGB(120, 120, 120)
-        if callback then
-            callback(newState)
-        end
+        if callback then callback(newState) end
         if self.SaveSettings then
             self:SaveSettings()
         end
