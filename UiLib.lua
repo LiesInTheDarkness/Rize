@@ -270,51 +270,57 @@ function RizeUi:CreateSlider(tabData, sliderName, minValue, maxValue, defaultVal
     self.Settings[sliderName] = currentValue
 
     local dragging = false
-    local function endDrag()
-        dragging = false
-        if self.SaveSettings then
-            self:SaveSettings()
-        end
-    end
-    local function startDrag()
-        dragging = true
-    end
 
-    sliderHandle.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            startDrag()
-        end
-    end)
-    sliderHandle.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            endDrag()
-        end
-    end)
-    sliderBar.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            startDrag()
-        end
-    end)
-    sliderBar.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            endDrag()
-        end
-    end)
-
-    UserInputService.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local relativeX = math.clamp(input.Position.X - sliderBar.AbsolutePosition.X, 0, sliderBar.AbsoluteSize.X)
-            local percent = relativeX / sliderBar.AbsoluteSize.X
-            local newValue = math.floor(minValue + (maxValue - minValue) * percent)
-            currentValue = newValue
-            self.Settings[sliderName] = newValue
-            updatePositionFromValue(newValue)
-            if callback then
-                callback(newValue)
-            end
-        end
-    end)
+local function startDrag()
+    dragging = true
 end
+
+local function endDrag()
+    dragging = false
+    if self.SaveSettings then
+        self:SaveSettings()
+    end
+end
+
+-- Listen for both mouse and touch events on the slider handle
+sliderHandle.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        startDrag()
+    end
+end)
+
+sliderHandle.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        endDrag()
+    end
+end)
+
+-- Also listen on the slider bar for initiating dragging
+sliderBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        startDrag()
+    end
+end)
+
+sliderBar.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        endDrag()
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local relativeX = math.clamp(input.Position.X - sliderBar.AbsolutePosition.X, 0, sliderBar.AbsoluteSize.X)
+        local percent = relativeX / sliderBar.AbsoluteSize.X
+        local newValue = math.floor(minValue + (maxValue - minValue) * percent)
+        currentValue = newValue
+        self.Settings[sliderName] = newValue
+        updatePositionFromValue(newValue)
+        if callback then
+            callback(newValue)
+        end
+    end
+end)
 
 function RizeUi:CreateToggle(tabData, toggleName, defaultState, callback)
     local toggleFrame = Instance.new("Frame")
