@@ -1,4 +1,4 @@
--- MainScript.lua -- Final version with profile saving/loading using "MainProfile.txt"
+-- MainScript.lua
 local HttpService = game:GetService("HttpService")
 local rizeFolder = "Rize"
 local profilePath = rizeFolder .. "/MainProfile.txt"  -- Using MainProfile.txt
