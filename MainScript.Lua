@@ -1,4 +1,4 @@
--- MainScript.lua -- Entry point for your Rize UI system
+-- MainScript.lua -- Entry point for your Rize UI system.
 local HttpService = game:GetService("HttpService")
 local UiLibURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Rize/refs/heads/main/UiLib.lua"
 local CustomModuleURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Rize/refs/heads/main/CustomModule.Lua"
@@ -15,7 +15,6 @@ if not CustomModule then
 end
 
 local UI = RizeUI.new()
-print("[MainScript] UI instance created")
 
 function UI:SaveSettings()
     local success, err = pcall(function() 
@@ -39,8 +38,4 @@ function UI:LoadSettings()
 end
 
 UI:LoadSettings()
-print("[MainScript] Settings loaded")
-
 CustomModule.AddCustomStuff(UI)
-print("[MainScript] Custom module executed")
-print("[MainScript] Rize UI loaded successfully!")
