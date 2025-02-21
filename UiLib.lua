@@ -1,4 +1,4 @@
--- UiLib.lua -- A cleaner, more polished version of the Rize UI Library
+-- UiLib.lua -- A cleaner, more polished version of the Rize UI Library with persistent settings support
 local RizeUi = {}
 RizeUi.__index = RizeUi
 local Players = game:GetService("Players")
@@ -8,6 +8,7 @@ function RizeUi.new()
     local self = setmetatable({}, RizeUi)
     self.Settings = {}
     self.Tabs = {}
+    self.Elements = {}  -- References for UI elements to update when settings are loaded
     self.UIOpen = true
 
     local player = Players.LocalPlayer
@@ -17,7 +18,7 @@ function RizeUi.new()
 
     self.ScreenGui = Instance.new("ScreenGui")
     self.ScreenGui.Name = "RizeUI"
-    self.ScreenGui.ResetOnSpawn = false  -- Ensures the UI persists after character death
+    self.ScreenGui.ResetOnSpawn = false  -- Persist after character death
     local playerGui = player:WaitForChild("PlayerGui")
     self.ScreenGui.Parent = playerGui
 
@@ -244,6 +245,13 @@ function RizeUi:CreateSlider(tabData, sliderName, minValue, maxValue, defaultVal
     updatePositionFromValue(currentValue)
     self.Settings[sliderName] = currentValue
 
+    -- Store a reference for updating when settings load
+    self.Elements[sliderName] = {
+        type = "slider",
+        update = updatePositionFromValue,
+        sliderHandle = sliderHandle
+    }
+
     local dragging = false
     local function startDrag()
         dragging = true
@@ -332,6 +340,13 @@ function RizeUi:CreateToggle(tabData, toggleName, defaultState, callback)
     toggleButton.Parent = toggleFrame
 
     self.Settings[toggleName] = defaultState
+
+    -- Store reference for toggle updates
+    self.Elements[toggleName] = {
+        type = "toggle",
+        toggleButton = toggleButton
+    }
+    
     toggleButton.MouseButton1Click:Connect(function()
         local newState = not self.Settings[toggleName]
         self.Settings[toggleName] = newState
