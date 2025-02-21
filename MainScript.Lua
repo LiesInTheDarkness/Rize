@@ -3,8 +3,8 @@
 -- Replace the URLs with your actual GitHub raw URLs if needed.
 local HttpService = game:GetService("HttpService")
 
-local UiLibURL = "https://raw.githubusercontent.com/LiesInTheDarkness/YourRepo/main/UiLib.lua"
-local CustomModuleURL = "https://raw.githubusercontent.com/LiesInTheDarkness/YourRepo/main/CustomModule.lua"
+local UiLibURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Rize/refs/heads/main/UiLib.lua"
+local CustomModuleURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Rize/refs/heads/main/CustomModule.Lua"
 
 local RizeUI = loadstring(game:HttpGet(UiLibURL))()
 local CustomModule = loadstring(game:HttpGet(CustomModuleURL))()
