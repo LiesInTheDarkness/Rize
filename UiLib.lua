@@ -195,7 +195,7 @@ end
 function RizeUi:CreateSlider(tabData, sliderName, minValue, maxValue, defaultValue, callback)
     local sliderFrame = Instance.new("Frame")
     sliderFrame.Name = sliderName
-    sliderFrame.Size = UDim2.new(1, -10, 0, 45)
+    sliderFrame.Size = UDim2.new(1, -10, 0, 60)
     sliderFrame.BackgroundColor3 = Color3.fromRGB(220, 220, 220)
     sliderFrame.Parent = tabData.Frame
 
@@ -215,7 +215,7 @@ function RizeUi:CreateSlider(tabData, sliderName, minValue, maxValue, defaultVal
 
     local sliderBar = Instance.new("Frame")
     sliderBar.Name = "Bar"
-    sliderBar.Size = UDim2.new(1, -150, 0, 8)
+    sliderBar.Size = UDim2.new(1, -150, 0, 12)
     sliderBar.Position = UDim2.new(0, 140, 0.5, -4)
     sliderBar.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
     sliderBar.Parent = sliderFrame
@@ -226,7 +226,7 @@ function RizeUi:CreateSlider(tabData, sliderName, minValue, maxValue, defaultVal
 
     local sliderHandle = Instance.new("Frame")
     sliderHandle.Name = "Handle"
-    sliderHandle.Size = UDim2.new(0, 12, 1, 0)
+    sliderHandle.Size = UDim2.new(0, 16, 1, 0)
     sliderHandle.BackgroundColor3 = Color3.fromRGB(100, 60, 80)
     sliderHandle.Parent = sliderBar
 
