@@ -1,4 +1,4 @@
--- UiLib.lua -- A cleaner, more polished version of the Rize UI Library with persistent settings support
+-- UiLib.lua -- Rize UI Library with persistent settings support.
 local RizeUi = {}
 RizeUi.__index = RizeUi
 local Players = game:GetService("Players")
@@ -6,19 +6,19 @@ local UserInputService = game:GetService("UserInputService")
 
 function RizeUi.new()
     local self = setmetatable({}, RizeUi)
-    self.Settings = {}
-    self.Tabs = {}
-    self.Elements = {}  -- References for UI elements to update when settings are loaded
+    self.Settings = {}      -- Stores current setting values.
+    self.Tabs = {}          -- Holds tab information.
+    self.Elements = {}      -- Holds references to UI elements for updating.
     self.UIOpen = true
 
     local player = Players.LocalPlayer
     if not player then
-        error("[UiLib] LocalPlayer is nil. This must be run in a LocalScript.")
+        error("[UiLib] LocalPlayer is nil. This must run in a LocalScript.")
     end
 
     self.ScreenGui = Instance.new("ScreenGui")
     self.ScreenGui.Name = "RizeUI"
-    self.ScreenGui.ResetOnSpawn = false  -- Persist after character death
+    self.ScreenGui.ResetOnSpawn = false  -- Persist after character death.
     local playerGui = player:WaitForChild("PlayerGui")
     self.ScreenGui.Parent = playerGui
 
@@ -79,13 +79,14 @@ function RizeUi.new()
     TabBar.Parent = self.MainFrame
     self.TabBar = TabBar
 
+    -- Toggle button to open/close the UI.
     self.ToggleButton = Instance.new("TextButton")
     self.ToggleButton.Name = "ToggleButton"
     self.ToggleButton.Text = "R"
-    self.ToggleButton.Size = UDim2.new(0, 50, 0, 50)
+    -- Change this Position as needed (here it is under the Roblox icon)
     self.ToggleButton.Position = UDim2.new(0, 10, 0, 50)
-
- self.ToggleButton.BackgroundColor3 = Color3.fromRGB(130, 60, 85)
+    self.ToggleButton.Size = UDim2.new(0, 50, 0, 50)
+    self.ToggleButton.BackgroundColor3 = Color3.fromRGB(130, 60, 85)
     self.ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     self.ToggleButton.Font = Enum.Font.SourceSansBold
     self.ToggleButton.TextScaled = true
@@ -246,7 +247,7 @@ function RizeUi:CreateSlider(tabData, sliderName, minValue, maxValue, defaultVal
     updatePositionFromValue(currentValue)
     self.Settings[sliderName] = currentValue
 
-    -- Store a reference for updating when settings load
+    -- Save a reference for updating later.
     self.Elements[sliderName] = {
         type = "slider",
         update = updatePositionFromValue,
@@ -254,10 +255,7 @@ function RizeUi:CreateSlider(tabData, sliderName, minValue, maxValue, defaultVal
     }
 
     local dragging = false
-    local function startDrag()
-        dragging = true
-    end
-
+    local function startDrag() dragging = true end
     local function endDrag()
         dragging = false
         if self.SaveSettings then
@@ -281,7 +279,6 @@ function RizeUi:CreateSlider(tabData, sliderName, minValue, maxValue, defaultVal
             endDrag()
         end
     end)
-
     sliderBar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
             startDrag()
@@ -341,8 +338,6 @@ function RizeUi:CreateToggle(tabData, toggleName, defaultState, callback)
     toggleButton.Parent = toggleFrame
 
     self.Settings[toggleName] = defaultState
-
-    -- Store reference for toggle updates
     self.Elements[toggleName] = {
         type = "toggle",
         toggleButton = toggleButton
