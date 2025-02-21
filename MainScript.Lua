@@ -14,7 +14,7 @@ end
 -- Check for profile file; if not present, create one with default settings.
 if not isfile(profilePath) then
     local defaultSettings = {
-        ["Walk Speed"] = 50,  -- default slider value (adjust key to match your slider's name)
+        ["Walk Speed"] = defaultSpeed,  -- default slider value (adjust key to match your slider's name)
         Tes = false           -- default toggle state (key should match toggle name)
     }
     writefile(profilePath, HttpService:JSONEncode(defaultSettings))
