@@ -269,7 +269,7 @@ function RizeUi:CreateSlider(tabData, sliderName, minValue, maxValue, defaultVal
 
     self.Settings[sliderName] = currentValue
 
-    local dragging = false
+local dragging = false
 
 local function startDrag()
     dragging = true
@@ -282,42 +282,44 @@ local function endDrag()
     end
 end
 
--- Listen for both mouse and touch events on the slider handle
+-- Only handle touch events for the slider handle
 sliderHandle.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+    if input.UserInputType == Enum.UserInputType.Touch then
         startDrag()
     end
 end)
 
 sliderHandle.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+    if input.UserInputType == Enum.UserInputType.Touch then
         endDrag()
     end
 end)
 
--- Also listen on the slider bar for initiating dragging
+-- Also handle touch events on the slider bar
 sliderBar.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+    if input.UserInputType == Enum.UserInputType.Touch then
         startDrag()
     end
 end)
 
 sliderBar.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+    if input.UserInputType == Enum.UserInputType.Touch then
         endDrag()
     end
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local relativeX = math.clamp(input.Position.X - sliderBar.AbsolutePosition.X, 0, sliderBar.AbsoluteSize.X)
-        local percent = relativeX / sliderBar.AbsoluteSize.X
-        local newValue = math.floor(minValue + (maxValue - minValue) * percent)
-        currentValue = newValue
-        self.Settings[sliderName] = newValue
-        updatePositionFromValue(newValue)
-        if callback then
-            callback(newValue)
+    if dragging and input.UserInputType == Enum.UserInputType.Touch then
+        if sliderBar and sliderBar.AbsolutePosition and sliderBar.AbsoluteSize then
+            local relativeX = math.clamp(input.Position.X - sliderBar.AbsolutePosition.X, 0, sliderBar.AbsoluteSize.X)
+            local percent = relativeX / sliderBar.AbsoluteSize.X
+            local newValue = math.floor(minValue + (maxValue - minValue) * percent)
+            currentValue = newValue
+            self.Settings[sliderName] = newValue
+            updatePositionFromValue(newValue)
+            if callback then
+                callback(newValue)
+            end
         end
     end
 end)
