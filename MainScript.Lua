@@ -15,7 +15,7 @@ local UI = RizeUI.new()
 -- Define saving and loading functions in MainScript
 function UI:SaveSettings()
     local success, err = pcall(function()
-        writefile("RizeSetting.json", HttpService:JSONEncode(self.Settings))
+        writefile("Rize/Setting.json", HttpService:JSONEncode(self.Settings))
     end)
     if not success then
         warn("[MainScript] Could not save settings:", err)
@@ -23,8 +23,8 @@ function UI:SaveSettings()
 end
 
 function UI:LoadSettings()
-    if isfile and isfile("RizeSetting.json") then
-        local data = readfile("RizeSetting.json")
+    if isfile and isfile("Rize/Setting.json") then
+        local data = readfile("Rize/Setting.json")
         local success, decoded = pcall(function()
             return HttpService:JSONDecode(data)
         end)
