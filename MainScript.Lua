@@ -1,19 +1,27 @@
--- MainScript.lua -- Entry point for the Rize UI system with profile saving and local CustomModule support.
 local HttpService = game:GetService("HttpService")
 local rizeFolder = "Rize"
-local profilePath = rizeFolder .. "/Profile1.Json"
-local customModulePath = rizeFolder .. "/CustomModule.lua"
-local uiLibURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Rize/refs/heads/main/UiLib.lua"
-local githubCustomModuleURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Rize/refs/heads/main/CustomModule.Lua"
+local profilePath = rizeFolder .. "/MainProfile.txt"
 
--- Ensure Rize folder exists.
+-- Ensure the Rize folder exists.
 if not isfolder(rizeFolder) then
     makefolder(rizeFolder)
 end
 
--- Check for profile file; if not present, create one with default settings.
+-- If MainProfile.txt doesn't exist, create it with an empty JSON object.
 if not isfile(profilePath) then
-    writefile(profilePath, HttpService:JSONEncode(defaultSettings))
+    writefile(profilePath, "{}")
+end
+
+-- Function to load profile settings.
+local function loadProfileSettings()
+    local data = readfile(profilePath)
+    local success, decoded = pcall(function()
+        return HttpService:JSONDecode(data)
+    end)
+    if success and decoded then
+        return decoded
+    end
+    return {}
 end
 
 -- Functions for loading and saving profile settings.
