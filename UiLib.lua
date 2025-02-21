@@ -83,8 +83,9 @@ function RizeUi.new()
     self.ToggleButton.Name = "ToggleButton"
     self.ToggleButton.Text = "R"
     self.ToggleButton.Size = UDim2.new(0, 50, 0, 50)
-    self.ToggleButton.Position = UDim2.new(0.5, -25, 0.5, -150 - 60)
-    self.ToggleButton.BackgroundColor3 = Color3.fromRGB(130, 60, 85)
+    self.ToggleButton.Position = UDim2.new(0, 10, 0, 50)
+
+ self.ToggleButton.BackgroundColor3 = Color3.fromRGB(130, 60, 85)
     self.ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     self.ToggleButton.Font = Enum.Font.SourceSansBold
     self.ToggleButton.TextScaled = true
