@@ -8,6 +8,7 @@ local CustomModuleURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Riz
 
 local RizeUI = loadstring(game:HttpGet(UiLibURL))()
 local CustomModule = loadstring(game:HttpGet(CustomModuleURL))()
+CustomModule.AddCustomStuff(RizeUI)
 
 -- Create the UI instance
 local UI = RizeUI.new()
