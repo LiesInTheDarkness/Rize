@@ -1,4 +1,4 @@
--- MainScript.lua -- Entry point for your Rize UI system.
+-- MainScript.lua -- Entry point for the Rize UI system.
 local HttpService = game:GetService("HttpService")
 local UiLibURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Rize/refs/heads/main/UiLib.lua"
 local CustomModuleURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Rize/refs/heads/main/CustomModule.Lua"
@@ -33,6 +33,19 @@ function UI:LoadSettings()
         end)
         if success and decoded then
             self.Settings = decoded
+            if self.Elements then
+                for name, value in pairs(self.Settings) do
+                    local element = self.Elements[name]
+                    if element then
+                        if element.type == "slider" then
+                            element.update(value)
+                        elseif element.type == "toggle" then
+                            element.toggleButton.Text = value and "ON" or "OFF"
+                            element.toggleButton.BackgroundColor3 = value and Color3.fromRGB(120, 180, 120) or Color3.fromRGB(120, 120, 120)
+                        end
+                    end
+                end
+            end
         end
     end
 end
