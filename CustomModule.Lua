@@ -1,4 +1,4 @@
--- CustomModule.lua -- Updated module with error checking
+-- CustomModule.lua -- Module for adding custom UI elements.
 local CustomModule = {}
 
 function CustomModule.AddCustomStuff(UI)
