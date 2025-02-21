@@ -10,7 +10,7 @@ local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 
 function RizeUi.new()
-    local self = setmetatable({}, BetterUI)
+    local self = setmetatable({}, RizeUi)
     self.Settings = {}
     self.Tabs = {}
     self.UIOpen = true
@@ -101,7 +101,7 @@ end
 --------------------------------------------------------------------------------
 -- Tab Creation (with optional icon)
 --------------------------------------------------------------------------------
-function BetterUI:CreateTab(tabName, iconId)
+function RizeUi:CreateTab(tabName, iconId)
     local tabData = {}
 
     -- Each tab button is inside the TitleBar
@@ -187,7 +187,7 @@ end
 -- Buttons, Sliders, Toggles
 --------------------------------------------------------------------------------
 
-function BetterUI:CreateButton(tabData, buttonName, callback)
+function RizeUi:CreateButton(tabData, buttonName, callback)
     local btn = Instance.new("TextButton")
     btn.Name = buttonName
     btn.Size = UDim2.new(1, -10, 0, 40)
@@ -209,7 +209,7 @@ function BetterUI:CreateButton(tabData, buttonName, callback)
     end)
 end
 
-function BetterUI:CreateSlider(tabData, sliderName, minValue, maxValue, defaultValue, callback)
+function RizeUi:CreateSlider(tabData, sliderName, minValue, maxValue, defaultValue, callback)
     local sliderFrame = Instance.new("Frame")
     sliderFrame.Name = sliderName
     sliderFrame.Size = UDim2.new(1, -10, 0, 45)
@@ -267,7 +267,6 @@ function BetterUI:CreateSlider(tabData, sliderName, minValue, maxValue, defaultV
             self:SaveSettings()
         end
     end
-
     local function startDrag()
         dragging = true
     end
@@ -308,7 +307,7 @@ function BetterUI:CreateSlider(tabData, sliderName, minValue, maxValue, defaultV
     end)
 end
 
-function BetterUI:CreateToggle(tabData, toggleName, defaultState, callback)
+function RizeUi:CreateToggle(tabData, toggleName, defaultState, callback)
     local toggleFrame = Instance.new("Frame")
     toggleFrame.Name = toggleName
     toggleFrame.Size = UDim2.new(1, -10, 0, 40)
@@ -346,11 +345,9 @@ function BetterUI:CreateToggle(tabData, toggleName, defaultState, callback)
         self.Settings[toggleName] = newState
         toggleButton.Text = newState and "ON" or "OFF"
         toggleButton.BackgroundColor3 = newState and Color3.fromRGB(120, 180, 120) or Color3.fromRGB(120, 120, 120)
-
         if callback then
             callback(newState)
         end
-
         if self.SaveSettings then
             self:SaveSettings()
         end
