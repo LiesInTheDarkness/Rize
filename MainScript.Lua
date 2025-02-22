@@ -1,23 +1,25 @@
 -- MainScript.lua
 local HttpService = game:GetService("HttpService")
 local rizeFolder = "Rize"
-local profilePath = rizeFolder .. "/MainProfile.txt"  -- Using MainProfile.txt
-local customModulePath = rizeFolder .. "/CustomModule.lua"
+local profilePath = rizeFolder .. "/MainProfile.txt"
+local defaultCustomModuleURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Rize/refs/heads/main/CustomModule.lua"
 local uiLibURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Rize/refs/heads/main/UiLib.lua"
-local githubCustomModuleURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Rize/refs/heads/main/CustomModule.lua"  -- Note the lowercase extension
 
 -- Ensure the Rize folder exists.
 if not isfolder(rizeFolder) then
     makefolder(rizeFolder)
 end
 
--- Check for profile file; if not present, create it with an empty JSON object.
+-- Ensure the profile file exists.
 if not isfile(profilePath) then
     writefile(profilePath, "{}")
 end
 
--- Functions for profile settings.
+-- Profile functions with extra safety.
 local function loadProfileSettings()
+    if not isfile(profilePath) then
+        writefile(profilePath, "{}")
+    end
     local data = readfile(profilePath)
     local success, decoded = pcall(function() return HttpService:JSONDecode(data) end)
     if success and decoded then
@@ -35,7 +37,6 @@ local function setupProfileFunctions(UI)
     function UI:SaveSettings()
         saveProfileSettings(self.Settings)
     end
-
     function UI:LoadSettings()
         local loaded = loadProfileSettings()
         if loaded then
@@ -48,7 +49,7 @@ local function setupProfileFunctions(UI)
                             element.update(value)
                         elseif element.type == "toggle" then
                             element.toggleButton.Text = value and "ON" or "OFF"
-                            element.toggleButton.BackgroundColor3 = value and Color3.fromRGB(120,180,120) or Color3.fromRGB(120,120,120)
+                            element.toggleButton.BackgroundColor3 = value and Color3.fromRGB(200, 50, 50) or Color3.fromRGB(100, 100, 100)
                         end
                     end
                 end
@@ -57,15 +58,20 @@ local function setupProfileFunctions(UI)
     end
 end
 
--- Check if CustomModule.lua exists locally; if not, download it from GitHub.
+-- Check for CustomModule in the Rize folder.
+local customModulePath = rizeFolder .. "/CustomModule.lua"
 if not isfile(customModulePath) then
-    local success, response = pcall(function()
-        return game:HttpGet(githubCustomModuleURL)
-    end)
-    if success and response and response ~= "" then
-        writefile(customModulePath, response)
+    -- Check for alternate casing "CustomModule.Lua"
+    local alternatePath = rizeFolder .. "/CustomModule.Lua"
+    if isfile(alternatePath) then
+        customModulePath = alternatePath
     else
-        error("Failed to download CustomModule.lua from GitHub.")
+        local success, response = pcall(function() return game:HttpGet(defaultCustomModuleURL) end)
+        if success and response and response ~= "" then
+            writefile(customModulePath, response)
+        else
+            error("Failed to download CustomModule.lua from GitHub.")
+        end
     end
 end
 
@@ -91,7 +97,7 @@ if not CustomModule then
 end
 CustomModule = CustomModule()
 
--- Create the UI instance.
+-- Create the UI instance and set up profile persistence.
 local UI = RizeUI.new()
 setupProfileFunctions(UI)
 UI:LoadSettings()
