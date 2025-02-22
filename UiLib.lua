@@ -1,368 +1,117 @@
--- UiLib.lua -- Rize UI Library with persistent settings support.
-local TweenService = game:GetService("TweenService")
-local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
-local RizeUi = {}
-RizeUi.__index = RizeUi
+-- Rize UI Library (UI Handling Only) -- Provides a structured UI framework for Rize Executor
 
-function RizeUi.new()
-    local self = setmetatable({}, RizeUi)
-    self.Settings = {} -- current setting values
-    self.Tabs = {}     -- tab data
-    self.Elements = {} -- references to UI elements for updating
-    self.UIOpen = true
+local RizeUILib = {}
 
-    local player = Players.LocalPlayer
-    if not player then
-        error("[UiLib] LocalPlayer is nil. This must run in a LocalScript.")
-    end
+-- Table to store UI elements RizeUILib.Elements = {} RizeUILib.Notifications = {}
 
-    self.ScreenGui = Instance.new("ScreenGui")
-    self.ScreenGui.Name = "RizeUI"
-    self.ScreenGui.ResetOnSpawn = false
-    player:WaitForChild("PlayerGui")
-    self.ScreenGui.Parent = player.PlayerGui
+-- Function to create the main UI frame function RizeUILib:CreateMainFrame() local mainFrame = Instance.new("ScreenGui") mainFrame.Name = "RizeUI" mainFrame.Parent = game.CoreGui
 
-    -- Main Frame styling to mimic Rise 6.0 (dark theme with red accents)
-    self.MainFrame = Instance.new("Frame")
-    self.MainFrame.Name = "MainFrame"
-    self.MainFrame.Size = UDim2.new(0, 400, 0, 300)
-    self.MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-    self.MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    self.MainFrame.BorderSizePixel = 0
-    self.MainFrame.Active = true
-    self.MainFrame.Draggable = true
-    self.MainFrame.Parent = self.ScreenGui
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 460, 0, 560)
+frame.Position = UDim2.new(0.5, -230, 0.5, -280)
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+frame.BorderSizePixel = 0
+frame.Parent = mainFrame
 
-    local mainCorner = Instance.new("UICorner")
-    mainCorner.CornerRadius = UDim.new(0, 12)
-    mainCorner.Parent = self.MainFrame
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 12)
+uiCorner.Parent = frame
 
-    local mainGradient = Instance.new("UIGradient")
-    mainGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(30, 30, 30)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(20, 20, 20))
-    })
-    mainGradient.Rotation = 90
-    mainGradient.Parent = self.MainFrame
+local uiStroke = Instance.new("UIStroke")
+uiStroke.Thickness = 2
+uiStroke.Color = Color3.fromRGB(120, 120, 120)
+uiStroke.Parent = frame
 
-    -- Title Bar with a red accent
-    local TitleBar = Instance.new("Frame")
-    TitleBar.Name = "TitleBar"
-    TitleBar.Size = UDim2.new(1, 0, 0, 40)
-    TitleBar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    TitleBar.Parent = self.MainFrame
+self.MainFrame = frame
+return frame
 
-    local barCorner = Instance.new("UICorner")
-    barCorner.CornerRadius = UDim.new(0, 12)
-    barCorner.Parent = TitleBar
-
-    local barGradient = Instance.new("UIGradient")
-    barGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(200, 50, 50)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 0, 0))
-    })
-    barGradient.Rotation = 0
-    barGradient.Parent = TitleBar
-
-    local TitleLabel = Instance.new("TextLabel")
-    TitleLabel.Name = "TitleLabel"
-    TitleLabel.Text = "RIZE"
-    TitleLabel.Size = UDim2.new(1, 0, 1, 0)
-    TitleLabel.BackgroundTransparency = 1
-    TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    TitleLabel.Font = Enum.Font.SourceSansBold
-    TitleLabel.TextScaled = true
-    TitleLabel.Parent = TitleBar
-
-    -- TabBar and Tab Switching Animation
-    local TabBar = Instance.new("Frame")
-    TabBar.Name = "TabBar"
-    TabBar.Size = UDim2.new(1, 0, 0, 40)
-    TabBar.Position = UDim2.new(0, 0, 0, 40)
-    TabBar.BackgroundTransparency = 1
-    TabBar.Parent = self.MainFrame
-    self.TabBar = TabBar
-
-    -- Toggle button for UI open/close with a slide animation.
-    self.ToggleButton = Instance.new("TextButton")
-    self.ToggleButton.Name = "ToggleButton"
-    self.ToggleButton.Text = "R"
-    self.ToggleButton.Position = UDim2.new(0, 10, 0, 50)
-    self.ToggleButton.Size = UDim2.new(0, 50, 0, 50)
-    self.ToggleButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-    self.ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    self.ToggleButton.Font = Enum.Font.SourceSansBold
-    self.ToggleButton.TextScaled = true
-    self.ToggleButton.Parent = self.ScreenGui
-
-    local toggleCorner = Instance.new("UICorner")
-    toggleCorner.CornerRadius = UDim.new(1, 0)
-    toggleCorner.Parent = self.ToggleButton
-
-    self.ToggleButton.MouseButton1Click:Connect(function()
-        self.UIOpen = not self.UIOpen
-        if self.UIOpen then
-            self.MainFrame.Visible = true
-            local tweenIn = TweenService:Create(self.MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Position = UDim2.new(0.5, -200, 0.5, -150)})
-            tweenIn:Play()
-        else
-            local tweenOut = TweenService:Create(self.MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Position = UDim2.new(0.5, -200, 1.5, -150)})
-            tweenOut:Play()
-            tweenOut.Completed:Connect(function()
-                self.MainFrame.Visible = false
-            end)
-        end
-    end)
-
-    return self
 end
 
-function RizeUi:CreateTab(tabName, iconId)
-    local tabData = {}
-    local tabButton = Instance.new("TextButton")
-    tabButton.Name = "TabButton_" .. tabName
-    tabButton.Size = UDim2.new(0, 120, 1, 0)
-    tabButton.BackgroundTransparency = 1
-    tabButton.Text = ""
-    tabButton.Parent = self.TabBar
+-- Function to create a tab system function RizeUILib:CreateTab(name) local tab = Instance.new("Frame") tab.Size = UDim2.new(1, 0, 0, 40) tab.BackgroundColor3 = Color3.fromRGB(20, 20, 20) tab.Parent = self.MainFrame
 
-    local tabCount = #self.Tabs
-    tabButton.Position = UDim2.new(0, tabCount * 120, 0, 0)
+local label = Instance.new("TextLabel")
+label.Text = name
+label.Size = UDim2.new(1, 0, 1, 0)
+label.TextColor3 = Color3.fromRGB(255, 255, 255)
+label.Font = Enum.Font.GothamBold
+label.TextScaled = true
+label.BackgroundTransparency = 1
+label.Parent = tab
 
-    if iconId then
-        local icon = Instance.new("ImageLabel")
-        icon.Name = "Icon"
-        icon.Size = UDim2.new(0, 24, 0, 24)
-        icon.Position = UDim2.new(0, 5, 0.5, -12)
-        icon.BackgroundTransparency = 1
-        icon.Image = iconId
-        icon.Parent = tabButton
-    end
+table.insert(self.Elements, tab)
+return tab
 
-    local tabText = Instance.new("TextLabel")
-    tabText.Name = "TabText"
-    tabText.BackgroundTransparency = 1
-    tabText.Size = UDim2.new(1, iconId and -30 or 0, 1, 0)
-    tabText.Position = UDim2.new(0, iconId and 30 or 0, 0, 0)
-    tabText.Text = tabName
-    tabText.TextColor3 = Color3.fromRGB(255, 255, 255)
-    tabText.Font = Enum.Font.SourceSansBold
-    tabText.TextScaled = true
-    tabText.Parent = tabButton
-
-    local scrollingFrame = Instance.new("ScrollingFrame")
-    scrollingFrame.Name = "Tab_" .. tabName
-    scrollingFrame.Size = UDim2.new(1, -10, 1, -80)
-    scrollingFrame.Position = UDim2.new(0, 5, 0, 80)
-    scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-    scrollingFrame.ScrollBarThickness = 6
-    scrollingFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    scrollingFrame.Visible = (tabCount == 0)
-    scrollingFrame.Parent = self.MainFrame
-
-    local scrollCorner = Instance.new("UICorner")
-    scrollCorner.CornerRadius = UDim.new(0, 12)
-    scrollCorner.Parent = scrollingFrame
-
-    local scrollGradient = Instance.new("UIGradient")
-    scrollGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 40, 40)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(30, 30, 30))
-    })
-    scrollGradient.Rotation = 90
-    scrollGradient.Parent = scrollingFrame
-
-    local layout = Instance.new("UIListLayout")
-    layout.Parent = scrollingFrame
-    layout.FillDirection = Enum.FillDirection.Vertical
-    layout.SortOrder = Enum.SortOrder.LayoutOrder
-    layout.Padding = UDim.new(0, 6)
-
-    tabButton.MouseButton1Click:Connect(function()
-        for _, t in ipairs(self.Tabs) do
-            t.Frame.Visible = false
-        end
-        scrollingFrame.Visible = true
-        -- Animate tab content fade-in
-        scrollingFrame.BackgroundTransparency = 1
-        local tween = TweenService:Create(scrollingFrame, TweenInfo.new(0.3), {BackgroundTransparency = 0})
-        tween:Play()
-    end)
-
-    tabData.Name = tabName
-    tabData.Button = tabButton
-    tabData.Frame = scrollingFrame
-    table.insert(self.Tabs, tabData)
-    return tabData
 end
 
-function RizeUi:CreateButton(tabData, buttonName, callback)
-    local btn = Instance.new("TextButton")
-    btn.Name = buttonName
-    btn.Size = UDim2.new(1, -10, 0, 40)
-    btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.Font = Enum.Font.SourceSans
-    btn.TextSize = 20
-    btn.Text = buttonName
-    btn.Parent = tabData.Frame
+-- Function to create a notification function RizeUILib:CreateNotification(message, duration) local notification = Instance.new("TextLabel") notification.Size = UDim2.new(0, 300, 0, 50) notification.Position = UDim2.new(0.5, -150, 0.05, #self.Notifications * 55) notification.Text = message notification.TextColor3 = Color3.fromRGB(255, 255, 255) notification.Font = Enum.Font.GothamBold notification.TextScaled = true notification.BackgroundColor3 = Color3.fromRGB(50, 50, 50) notification.Parent = self.MainFrame
 
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 10)
-    corner.Parent = btn
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 8)
+uiCorner.Parent = notification
 
-    btn.MouseButton1Click:Connect(function()
-        if callback then callback() end
-    end)
+table.insert(self.Notifications, notification)
+task.delay(duration or 3, function()
+    notification:Destroy()
+end)
+
 end
 
-function RizeUi:CreateSlider(tabData, sliderName, minValue, maxValue, defaultValue, callback)
-    local sliderFrame = Instance.new("Frame")
-    sliderFrame.Name = sliderName
-    sliderFrame.Size = UDim2.new(1, -10, 0, 45)
-    sliderFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    sliderFrame.Parent = tabData.Frame
+-- Function to create a slider function RizeUILib:CreateSlider(tab, name, min, max, default, callback) local sliderFrame = Instance.new("Frame") sliderFrame.Size = UDim2.new(1, -10, 0, 40) sliderFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60) sliderFrame.Parent = tab
 
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 10)
-    corner.Parent = sliderFrame
+local label = Instance.new("TextLabel")
+label.Text = name .. " (" .. default .. ")"
+label.Size = UDim2.new(1, 0, 0.5, 0)
+label.TextColor3 = Color3.fromRGB(255, 255, 255)
+label.Font = Enum.Font.Gotham
+label.TextScaled = true
+label.Parent = sliderFrame
 
-    local sliderLabel = Instance.new("TextLabel")
-    sliderLabel.Size = UDim2.new(0, 130, 1, 0)
-    sliderLabel.Position = UDim2.new(0, 10, 0, 0)
-    sliderLabel.BackgroundTransparency = 1
-    sliderLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    sliderLabel.Font = Enum.Font.SourceSans
-    sliderLabel.TextSize = 20
-    sliderLabel.Text = sliderName
-    sliderLabel.Parent = sliderFrame
+local slider = Instance.new("TextButton")
+slider.Size = UDim2.new(0, 200, 0, 10)
+slider.Position = UDim2.new(0.5, -100, 0.7, 0)
+slider.BackgroundColor3 = Color3.fromRGB(120, 120, 120)
+slider.Parent = sliderFrame
 
-    local sliderBar = Instance.new("Frame")
-    sliderBar.Name = "Bar"
-    sliderBar.Size = UDim2.new(1, -150, 0, 8)
-    sliderBar.Position = UDim2.new(0, 140, 0.5, -4)
-    sliderBar.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-    sliderBar.Parent = sliderFrame
-
-    local barCorner = Instance.new("UICorner")
-    barCorner.CornerRadius = UDim.new(0, 4)
-    barCorner.Parent = sliderBar
-
-    local sliderHandle = Instance.new("Frame")
-    sliderHandle.Name = "Handle"
-    sliderHandle.Size = UDim2.new(0, 12, 1, 0)
-    sliderHandle.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-    sliderHandle.Parent = sliderBar
-
-    local handleCorner = Instance.new("UICorner")
-    handleCorner.CornerRadius = UDim.new(0, 6)
-    handleCorner.Parent = sliderHandle
-
-    local currentValue = defaultValue or 0
-    local function updatePositionFromValue(val)
-        local percent = (val - minValue) / (maxValue - minValue)
-        sliderHandle.Position = UDim2.new(percent, -6, 0, 0)
-    end
-    updatePositionFromValue(currentValue)
-    self.Settings[sliderName] = currentValue
-    self.Elements[sliderName] = { type = "slider", update = updatePositionFromValue, sliderHandle = sliderHandle }
-
-    local dragging = false
-    local function startDrag()
-        dragging = true
-    end
-    local function endDrag()
-        dragging = false
-        if self.SaveSettings then self:SaveSettings() end
-    end
-    local function isInputSupported(input)
-        return input.UserInputType == Enum.UserInputType.Touch or 
-               input.UserInputType == Enum.UserInputType.MouseButton1 or 
-               input.UserInputType == Enum.UserInputType.MouseMovement
-    end
-
-    sliderHandle.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-            startDrag()
-        end
-    end)
-    sliderHandle.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-            endDrag()
-        end
-    end)
-    sliderBar.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-            startDrag()
-        end
-    end)
-    sliderBar.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-            endDrag()
-        end
-    end)
-    UserInputService.InputChanged:Connect(function(input)
-        if dragging and isInputSupported(input) then
-            if sliderBar and sliderBar.AbsolutePosition and sliderBar.AbsoluteSize then
-                local relativeX = math.clamp(input.Position.X - sliderBar.AbsolutePosition.X, 0, sliderBar.AbsoluteSize.X)
-                local percent = relativeX / sliderBar.AbsoluteSize.X
-                local newValue = math.floor(minValue + (maxValue - minValue) * percent)
-                if newValue ~= currentValue then
-                    currentValue = newValue
-                    self.Settings[sliderName] = newValue
-                    updatePositionFromValue(newValue)
-                    if callback then callback(newValue) end
-                    if self.SaveSettings then self:SaveSettings() end
-                end
-            end
-        end
-    end)
-    return sliderFrame
+local function updateSlider(value)
+    label.Text = name .. " (" .. value .. ")"
+    callback(value)
 end
 
-function RizeUi:CreateToggle(tabData, toggleName, defaultState, callback)
-    local toggleFrame = Instance.new("Frame")
-    toggleFrame.Name = toggleName
-    toggleFrame.Size = UDim2.new(1, -10, 0, 40)
-    toggleFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    toggleFrame.Parent = tabData.Frame
+slider.MouseButton1Click:Connect(function()
+    updateSlider(math.random(min, max)) -- Placeholder for real slider movement
+end)
 
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 10)
-    corner.Parent = toggleFrame
+table.insert(self.Elements, sliderFrame)
+return sliderFrame
 
-    local toggleLabel = Instance.new("TextLabel")
-    toggleLabel.Size = UDim2.new(0, 130, 1, 0)
-    toggleLabel.Position = UDim2.new(0, 10, 0, 0)
-    toggleLabel.BackgroundTransparency = 1
-    toggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    toggleLabel.Font = Enum.Font.SourceSans
-    toggleLabel.TextSize = 20
-    toggleLabel.Text = toggleName
-    toggleLabel.Parent = toggleFrame
-
-    local toggleButton = Instance.new("TextButton")
-    toggleButton.Size = UDim2.new(0, 60, 0.8, 0)
-    toggleButton.Position = UDim2.new(1, -70, 0.1, 0)
-    toggleButton.BackgroundColor3 = defaultState and Color3.fromRGB(200, 50, 50) or Color3.fromRGB(100, 100, 100)
-    toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    toggleButton.Font = Enum.Font.SourceSansBold
-    toggleButton.TextScaled = true
-    toggleButton.Text = defaultState and "ON" or "OFF"
-    toggleButton.Parent = toggleFrame
-
-    self.Settings[toggleName] = defaultState
-    self.Elements[toggleName] = { type = "toggle", toggleButton = toggleButton }
-
-    toggleButton.MouseButton1Click:Connect(function()
-        local newState = not self.Settings[toggleName]
-        self.Settings[toggleName] = newState
-        toggleButton.Text = newState and "ON" or "OFF"
-        toggleButton.BackgroundColor3 = newState and Color3.fromRGB(200, 50, 50) or Color3.fromRGB(100, 100, 100)
-        if callback then callback(newState) end
-        if self.SaveSettings then self:SaveSettings() end
-    end)
 end
 
-return RizeUi
+-- Function to create a toggle button function RizeUILib:CreateToggle(tab, name, default, callback) local toggleFrame = Instance.new("Frame") toggleFrame.Size = UDim2.new(1, -10, 0, 35) toggleFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 60) toggleFrame.Parent = tab
+
+local label = Instance.new("TextLabel")
+label.Text = name
+label.Size = UDim2.new(1, -40, 1, 0)
+label.TextColor3 = Color3.fromRGB(255, 255, 255)
+label.Font = Enum.Font.Gotham
+label.TextScaled = true
+label.Parent = toggleFrame
+
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(0, 30, 0, 30)
+button.Position = UDim2.new(1, -35, 0.5, -15)
+button.BackgroundColor3 = default and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+button.Parent = toggleFrame
+
+local state = default
+button.MouseButton1Click:Connect(function()
+    state = not state
+    button.BackgroundColor3 = state and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+    callback(state)
+end)
+
+table.insert(self.Elements, toggleFrame)
+return toggleFrame
+
+end
+
+return RizeUILib
