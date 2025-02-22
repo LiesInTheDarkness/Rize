@@ -58,46 +58,52 @@ local function setupProfileFunctions(UI)
     end
 end
 
--- Check for CustomModule in the Rize folder.
+-- Attempt to locate or download CustomModule.
 local customModulePath = rizeFolder .. "/CustomModule.lua"
 local customModuleFound = false
-if isfile(customModulePath) or isfile(rizeFolder .. "/CustomModule.Lua") then
-    if not isfile(customModulePath) and isfile(rizeFolder .. "/CustomModule.Lua") then
-         customModulePath = rizeFolder .. "/CustomModule.Lua"
-    end
+
+if isfile(customModulePath) then
+    customModuleFound = true
+elseif isfile(rizeFolder .. "/CustomModule.Lua") then
+    customModulePath = rizeFolder .. "/CustomModule.Lua"
     customModuleFound = true
 else
     local success, response = pcall(function() return game:HttpGet(defaultCustomModuleURL) end)
     if success and response and response ~= "" then
-         writefile(customModulePath, response)
-         customModuleFound = true
+        writefile(customModulePath, response)
+        customModuleFound = true
     else
-         warn("Failed to download CustomModule.lua from GitHub, using fallback default module.")
-         customModuleFound = false
+        warn("Failed to download CustomModule.lua from GitHub, using fallback default module.")
+        customModuleFound = false
     end
 end
 
+-- Validate file contents if the file exists.
+if customModuleFound then
+    local content = readfile(customModulePath)
+    if not content or content == "" then
+        warn("CustomModule.lua exists but is empty. Using fallback default module.")
+        customModuleFound = false
+    end
+end
+
+-- Load or create a fallback for the CustomModule.
 local CustomModule = nil
 if customModuleFound then
     local customModuleSource = readfile(customModulePath)
-    if customModuleSource and customModuleSource ~= "" then
-         local loadSuccess, loadedModule = pcall(loadstring(customModuleSource))
-         if loadSuccess and loadedModule then
-              CustomModule = loadedModule
-         else
-              warn("Failed to load CustomModule.lua, using fallback default module.")
-              customModuleFound = false
-         end
+    local loadSuccess, loadedModule = pcall(loadstring, customModuleSource)
+    if loadSuccess and loadedModule then
+        CustomModule = loadedModule
     else
-         warn("CustomModule.lua is empty, using fallback default module.")
-         customModuleFound = false
+        warn("Failed to load CustomModule.lua, using fallback default module.")
+        customModuleFound = false
     end
 end
 
 if not customModuleFound then
     CustomModule = {}
     function CustomModule.AddCustomStuff(UI)
-         warn("CustomModule not available, skipping custom UI elements.")
+        warn("CustomModule not available, skipping custom UI elements.")
     end
 end
 
