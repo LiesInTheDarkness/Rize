@@ -60,18 +60,44 @@ end
 
 -- Check for CustomModule in the Rize folder.
 local customModulePath = rizeFolder .. "/CustomModule.lua"
-if not isfile(customModulePath) then
-    -- Check for alternate casing "CustomModule.Lua"
-    local alternatePath = rizeFolder .. "/CustomModule.Lua"
-    if isfile(alternatePath) then
-        customModulePath = alternatePath
+local customModuleFound = false
+if isfile(customModulePath) or isfile(rizeFolder .. "/CustomModule.Lua") then
+    if not isfile(customModulePath) and isfile(rizeFolder .. "/CustomModule.Lua") then
+         customModulePath = rizeFolder .. "/CustomModule.Lua"
+    end
+    customModuleFound = true
+else
+    local success, response = pcall(function() return game:HttpGet(defaultCustomModuleURL) end)
+    if success and response and response ~= "" then
+         writefile(customModulePath, response)
+         customModuleFound = true
     else
-        local success, response = pcall(function() return game:HttpGet(defaultCustomModuleURL) end)
-        if success and response and response ~= "" then
-            writefile(customModulePath, response)
-        else
-            error("Failed to download CustomModule.lua from GitHub.")
-        end
+         warn("Failed to download CustomModule.lua from GitHub, using fallback default module.")
+         customModuleFound = false
+    end
+end
+
+local CustomModule = nil
+if customModuleFound then
+    local customModuleSource = readfile(customModulePath)
+    if customModuleSource and customModuleSource ~= "" then
+         local loadSuccess, loadedModule = pcall(loadstring(customModuleSource))
+         if loadSuccess and loadedModule then
+              CustomModule = loadedModule
+         else
+              warn("Failed to load CustomModule.lua, using fallback default module.")
+              customModuleFound = false
+         end
+    else
+         warn("CustomModule.lua is empty, using fallback default module.")
+         customModuleFound = false
+    end
+end
+
+if not customModuleFound then
+    CustomModule = {}
+    function CustomModule.AddCustomStuff(UI)
+         warn("CustomModule not available, skipping custom UI elements.")
     end
 end
 
@@ -85,17 +111,6 @@ if not RizeUI then
     error("Failed to load UI Library (UiLib.lua).")
 end
 RizeUI = RizeUI()
-
--- Load the Custom Module from the local file.
-local customModuleSource = readfile(customModulePath)
-if not customModuleSource or customModuleSource == "" then
-    error("CustomModule.lua is empty or missing.")
-end
-local CustomModule = loadstring(customModuleSource)
-if not CustomModule then
-    error("Failed to load CustomModule.lua.")
-end
-CustomModule = CustomModule()
 
 -- Create the UI instance and set up profile persistence.
 local UI = RizeUI.new()
