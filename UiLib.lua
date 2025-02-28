@@ -1,4 +1,4 @@
--- Rize UI Library (UI Handling Only) -- Provides a structured UI framework
+-- Rize UI Library (UI Handling Only) -- Provides a structured UI framework 
 
 local RizeUILib = {}
 
@@ -11,40 +11,40 @@ function RizeUILib.new()
     self.CurrentTab = nil
     self.Settings = {}
     self.Visible = true
-
+    
     -- Create the main UI
     self.ScreenGui = Instance.new("ScreenGui")
     self.ScreenGui.Name = "RizeUI"
     self.ScreenGui.ResetOnSpawn = false
-
+    
     -- Use ZIndexBehavior to ensure proper layering
     self.ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
+    
     -- Try to parent to CoreGui, fall back to PlayerGui for mobile
     local success, _ = pcall(function()
         self.ScreenGui.Parent = game:GetService("CoreGui")
     end)
-
+    
     if not success then
         self.ScreenGui.Parent = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
     end
-
+    
     -- Main Frame
-    self.MainFrame = Instance.new("Frame")
-    self.MainFrame.Name = "MainFrame"
-    self.MainFrame.Size = UDim2.new(0, 460, 0, 300)
-    self.MainFrame.Position = UDim2.new(0.5, -230, 0.5, -150)
-    self.MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    self.MainFrame.BorderSizePixel = 0
-    self.MainFrame.Parent = self.ScreenGui
-    self.MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    self.MainFrame.BackgroundTransparency = 0
+self.MainFrame = Instance.new("Frame")
+self.MainFrame.Name = "MainFrame"
+self.MainFrame.Size = UDim2.new(0.6, 0, 0.6, 0)         -- Use scale-based sizing for responsiveness
+self.MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)         -- Set the pivot to the center
+self.MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)         -- Center on the screen
+self.MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+self.MainFrame.BorderSizePixel = 0
+self.MainFrame.BackgroundTransparency = 0
+self.MainFrame.Parent = self.ScreenGui
 
-    -- Add UI Corner to MainFrame
-    local mainFrameCorner = Instance.new("UICorner")
-    mainFrameCorner.CornerRadius = UDim.new(0, 12)
-    mainFrameCorner.Parent = self.MainFrame
-
+-- Add UI Corner to MainFrame
+local mainFrameCorner = Instance.new("UICorner")
+mainFrameCorner.CornerRadius = UDim.new(0, 12)
+mainFrameCorner.Parent = self.MainFrame
+    
     -- Add shadow effect
     local shadowFrame = Instance.new("Frame")
     shadowFrame.Name = "Shadow"
@@ -56,11 +56,11 @@ function RizeUILib.new()
     shadowFrame.BorderSizePixel = 0
     shadowFrame.ZIndex = -1
     shadowFrame.Parent = self.MainFrame
-
+    
     local shadowCorner = Instance.new("UICorner")
     shadowCorner.CornerRadius = UDim.new(0, 14)
     shadowCorner.Parent = shadowFrame
-
+    
     -- Title bar
     self.TitleBar = Instance.new("Frame")
     self.TitleBar.Name = "TitleBar"
@@ -68,12 +68,12 @@ function RizeUILib.new()
     self.TitleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
     self.TitleBar.BorderSizePixel = 0
     self.TitleBar.Parent = self.MainFrame
-
+    
     -- Add UI Corner to TitleBar
     local titleBarCorner = Instance.new("UICorner")
     titleBarCorner.CornerRadius = UDim.new(0, 12)
     titleBarCorner.Parent = self.TitleBar
-
+    
     -- Fix for the corner
     local titleBarFix = Instance.new("Frame")
     titleBarFix.Name = "TitleBarFix"
@@ -83,7 +83,7 @@ function RizeUILib.new()
     titleBarFix.BorderSizePixel = 0
     titleBarFix.ZIndex = 0
     titleBarFix.Parent = self.TitleBar
-
+    
     -- Title text
     self.TitleText = Instance.new("TextLabel")
     self.TitleText.Name = "TitleText"
@@ -96,7 +96,7 @@ function RizeUILib.new()
     self.TitleText.TextXAlignment = Enum.TextXAlignment.Left
     self.TitleText.BackgroundTransparency = 1
     self.TitleText.Parent = self.TitleBar
-
+    
     -- Close button
     self.CloseButton = Instance.new("TextButton")
     self.CloseButton.Name = "CloseButton"
@@ -109,17 +109,17 @@ function RizeUILib.new()
     self.CloseButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
     self.CloseButton.BorderSizePixel = 0
     self.CloseButton.Parent = self.TitleBar
-
+    
     -- Add UI Corner to CloseButton
     local closeButtonCorner = Instance.new("UICorner")
     closeButtonCorner.CornerRadius = UDim.new(0, 8)
     closeButtonCorner.Parent = self.CloseButton
-
+    
     -- Click handler for close button
     self.CloseButton.MouseButton1Click:Connect(function()
         self:ToggleUI(false)
     end)
-
+    
     -- Tab bar
     self.TabBar = Instance.new("Frame")
     self.TabBar.Name = "TabBar"
@@ -128,12 +128,12 @@ function RizeUILib.new()
     self.TabBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     self.TabBar.BorderSizePixel = 0
     self.TabBar.Parent = self.MainFrame
-
+    
     -- Add UI Corner to TabBar
     local tabBarCorner = Instance.new("UICorner")
     tabBarCorner.CornerRadius = UDim.new(0, 8)
     tabBarCorner.Parent = self.TabBar
-
+    
     -- Fix for the TabBar corner
     local tabBarFix = Instance.new("Frame")
     tabBarFix.Name = "TabBarFix"
@@ -143,20 +143,20 @@ function RizeUILib.new()
     tabBarFix.BorderSizePixel = 0
     tabBarFix.ZIndex = 0
     tabBarFix.Parent = self.TabBar
-
+    
     -- Add UI List Layout to TabBar
     self.TabLayout = Instance.new("UIListLayout")
     self.TabLayout.Padding = UDim.new(0, 4)
     self.TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
     self.TabLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     self.TabLayout.Parent = self.TabBar
-
+    
     -- Add padding to the TabBar
     local tabPadding = Instance.new("UIPadding")
     tabPadding.PaddingTop = UDim.new(0, 10)
     tabPadding.PaddingBottom = UDim.new(0, 10)
     tabPadding.Parent = self.TabBar
-
+    
     -- Content frame
     self.ContentFrame = Instance.new("Frame")
     self.ContentFrame.Name = "ContentFrame"
@@ -165,12 +165,12 @@ function RizeUILib.new()
     self.ContentFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     self.ContentFrame.BorderSizePixel = 0
     self.ContentFrame.Parent = self.MainFrame
-
+    
     -- Add UI Corner to ContentFrame
     local contentCorner = Instance.new("UICorner")
     contentCorner.CornerRadius = UDim.new(0, 8)
     contentCorner.Parent = self.ContentFrame
-
+    
     -- Add toggle button under Roblox logo
     self.ToggleButton = Instance.new("ImageButton")
     self.ToggleButton.Name = "ToggleButton"
@@ -183,12 +183,12 @@ function RizeUILib.new()
     self.ToggleButton.ImageRectSize = Vector2.new(36, 36)
     self.ToggleButton.ImageColor3 = Color3.fromRGB(255, 255, 255)
     self.ToggleButton.Parent = self.ScreenGui
-
+    
     -- Add UI Corner to ToggleButton
     local toggleButtonCorner = Instance.new("UICorner")
     toggleButtonCorner.CornerRadius = UDim.new(0, 8)
     toggleButtonCorner.Parent = self.ToggleButton
-
+    
     -- Add shadow to the toggle button
     local toggleShadow = Instance.new("Frame")
     toggleShadow.Name = "Shadow"
@@ -200,22 +200,22 @@ function RizeUILib.new()
     toggleShadow.BorderSizePixel = 0
     toggleShadow.ZIndex = -1
     toggleShadow.Parent = self.ToggleButton
-
+    
     local toggleShadowCorner = Instance.new("UICorner")
     toggleShadowCorner.CornerRadius = UDim.new(0, 8)
     toggleShadowCorner.Parent = toggleShadow
-
+    
     -- Click handler for toggle button
     self.ToggleButton.MouseButton1Click:Connect(function()
         self:ToggleUI()
     end)
-
+    
     -- Make the main frame draggable
     local dragging = false
     local dragInput
     local dragStart
     local startPos
-
+    
     self.TitleBar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = true
@@ -223,26 +223,26 @@ function RizeUILib.new()
             startPos = self.MainFrame.Position
         end
     end)
-
+    
     self.TitleBar.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = false
         end
     end)
-
+    
     self.TitleBar.InputChanged:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
             dragInput = input
         end
     end)
-
+    
     game:GetService("UserInputService").InputChanged:Connect(function(input)
         if input == dragInput and dragging then
             local delta = input.Position - dragStart
             self.MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
         end
     end)
-
+    
     -- Function to toggle UI visibility with animation
     function self:ToggleUI(state)
         if state ~= nil then
@@ -250,21 +250,21 @@ function RizeUILib.new()
         else
             self.Visible = not self.Visible
         end
-
+        
         if self.Visible then
             -- Show animation
             self.MainFrame.Visible = true
             self.MainFrame.Position = UDim2.new(0.5, -230, 0.4, -150)
             self.MainFrame.BackgroundTransparency = 1
             shadowFrame.BackgroundTransparency = 1
-
+            
             -- Animation tweens
             game:GetService("TweenService"):Create(
                 self.MainFrame,
                 TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
                 {Position = UDim2.new(0.5, -230, 0.5, -150), BackgroundTransparency = 0}
             ):Play()
-
+            
             game:GetService("TweenService"):Create(
                 shadowFrame,
                 TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
@@ -277,13 +277,13 @@ function RizeUILib.new()
                 TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
                 {Position = UDim2.new(0.5, -230, 0.4, -150), BackgroundTransparency = 1}
             ):Play()
-
+            
             game:GetService("TweenService"):Create(
                 shadowFrame,
                 TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
                 {BackgroundTransparency = 1}
             ):Play()
-
+            
             -- Hide the main frame after animation completes
             delay(0.5, function()
                 if not self.Visible then
@@ -292,7 +292,7 @@ function RizeUILib.new()
             end)
         end
     end
-
+    
     -- Method to create a tab
     function self:CreateTab(name)
         -- Tab button
@@ -307,12 +307,12 @@ function RizeUILib.new()
         tabButton.BorderSizePixel = 0
         tabButton.Parent = self.TabBar
         tabButton.AutoButtonColor = false -- Disable default button color changing
-
+        
         -- Add UI Corner to tab button
         local tabCorner = Instance.new("UICorner")
         tabCorner.CornerRadius = UDim.new(0, 6)
         tabCorner.Parent = tabButton
-
+        
         -- Tab content frame
         local contentFrame = Instance.new("ScrollingFrame")
         contentFrame.Name = name .. "Content"
@@ -327,31 +327,31 @@ function RizeUILib.new()
         contentFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
         contentFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
         contentFrame.ScrollingDirection = Enum.ScrollingDirection.Y
-
+        
         -- Add UI List Layout to content frame
         local contentLayout = Instance.new("UIListLayout")
         contentLayout.Padding = UDim.new(0, 8)
         contentLayout.SortOrder = Enum.SortOrder.LayoutOrder
         contentLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
         contentLayout.Parent = contentFrame
-
+        
         -- Add padding to content frame
         local contentPadding = Instance.new("UIPadding")
         contentPadding.PaddingTop = UDim.new(0, 8)
         contentPadding.PaddingBottom = UDim.new(0, 8)
         contentPadding.Parent = contentFrame
-
+        
         -- Store tab button and content frame
         self.Tabs[name] = tabButton
         self.TabContents[name] = contentFrame
-
+        
         -- Click handler for tab button
         tabButton.MouseButton1Click:Connect(function()
             -- Hide all tab contents
             for _, content in pairs(self.TabContents) do
                 content.Visible = false
             end
-
+            
             -- Reset all tab button colors
             for _, tab in pairs(self.Tabs) do
                 game:GetService("TweenService"):Create(
@@ -360,28 +360,28 @@ function RizeUILib.new()
                     {BackgroundColor3 = Color3.fromRGB(45, 45, 45), TextColor3 = Color3.fromRGB(200, 200, 200)}
                 ):Play()
             end
-
+            
             -- Show this tab's content with animation
             contentFrame.Visible = true
             contentFrame.Position = UDim2.new(0.05, 0, 0, 10)
             contentFrame.BackgroundTransparency = 1
-
+            
             game:GetService("TweenService"):Create(
                 contentFrame,
                 TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
                 {Position = UDim2.new(0, 10, 0, 10), BackgroundTransparency = 1}
             ):Play()
-
+            
             -- Highlight selected tab with animation
             game:GetService("TweenService"):Create(
                 tabButton,
                 TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
                 {BackgroundColor3 = Color3.fromRGB(60, 60, 60), TextColor3 = Color3.fromRGB(255, 255, 255)}
             ):Play()
-
+            
             self.CurrentTab = name
         end)
-
+        
         -- If this is the first tab, show it by default
         if self.CurrentTab == nil then
             tabButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
@@ -389,14 +389,14 @@ function RizeUILib.new()
             contentFrame.Visible = true
             self.CurrentTab = name
         end
-
+        
         return name
     end
-
+    
     -- Method to create a button within a tab
     function self:CreateButton(tab, name, callback)
         if not self.TabContents[tab] then return end
-
+        
         -- Create button element
         local button = Instance.new("TextButton")
         button.Name = name .. "Button"
@@ -409,12 +409,12 @@ function RizeUILib.new()
         button.BorderSizePixel = 0
         button.Parent = self.TabContents[tab]
         button.AutoButtonColor = false -- Disable default button color changing
-
+        
         -- Add UI Corner to button
         local buttonCorner = Instance.new("UICorner")
         buttonCorner.CornerRadius = UDim.new(0, 6)
         buttonCorner.Parent = button
-
+        
         -- Hover and click effects
         button.MouseEnter:Connect(function()
             game:GetService("TweenService"):Create(
@@ -423,7 +423,7 @@ function RizeUILib.new()
                 {BackgroundColor3 = Color3.fromRGB(65, 65, 65)}
             ):Play()
         end)
-
+        
         button.MouseLeave:Connect(function()
             game:GetService("TweenService"):Create(
                 button,
@@ -431,7 +431,7 @@ function RizeUILib.new()
                 {BackgroundColor3 = Color3.fromRGB(55, 55, 55)}
             ):Play()
         end)
-
+        
         button.MouseButton1Down:Connect(function()
             game:GetService("TweenService"):Create(
                 button,
@@ -439,7 +439,7 @@ function RizeUILib.new()
                 {BackgroundColor3 = Color3.fromRGB(75, 75, 75)}
             ):Play()
         end)
-
+        
         button.MouseButton1Up:Connect(function()
             game:GetService("TweenService"):Create(
                 button,
@@ -447,19 +447,19 @@ function RizeUILib.new()
                 {BackgroundColor3 = Color3.fromRGB(65, 65, 65)}
             ):Play()
         end)
-
+        
         -- Click handler
         button.MouseButton1Click:Connect(function()
             callback()
         end)
-
+        
         return button
     end
-
+    
     -- Method to create a toggle within a tab
     function self:CreateToggle(tab, name, default, callback)
         if not self.TabContents[tab] then return end
-
+        
         -- Create toggle container
         local toggleContainer = Instance.new("Frame")
         toggleContainer.Name = name .. "Toggle"
@@ -467,12 +467,12 @@ function RizeUILib.new()
         toggleContainer.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
         toggleContainer.BorderSizePixel = 0
         toggleContainer.Parent = self.TabContents[tab]
-
+        
         -- Add UI Corner to toggle container
         local toggleCorner = Instance.new("UICorner")
         toggleCorner.CornerRadius = UDim.new(0, 6)
         toggleCorner.Parent = toggleContainer
-
+        
         -- Toggle label
         local toggleLabel = Instance.new("TextLabel")
         toggleLabel.Name = "Label"
@@ -485,7 +485,7 @@ function RizeUILib.new()
         toggleLabel.TextXAlignment = Enum.TextXAlignment.Left
         toggleLabel.BackgroundTransparency = 1
         toggleLabel.Parent = toggleContainer
-
+        
         -- Modern toggle switch background
         local switchBg = Instance.new("Frame")
         switchBg.Name = "SwitchBackground"
@@ -494,12 +494,12 @@ function RizeUILib.new()
         switchBg.BackgroundColor3 = default and Color3.fromRGB(200, 50, 50) or Color3.fromRGB(100, 100, 100)
         switchBg.BorderSizePixel = 0
         switchBg.Parent = toggleContainer
-
+        
         -- Add UI Corner to switch background
         local switchBgCorner = Instance.new("UICorner")
         switchBgCorner.CornerRadius = UDim.new(1, 0) -- Fully rounded corners
         switchBgCorner.Parent = switchBg
-
+        
         -- Toggle switch knob
         local switchKnob = Instance.new("Frame")
         switchKnob.Name = "SwitchKnob"
@@ -508,15 +508,15 @@ function RizeUILib.new()
         switchKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         switchKnob.BorderSizePixel = 0
         switchKnob.Parent = switchBg
-
+        
         -- Add UI Corner to switch knob
         local switchKnobCorner = Instance.new("UICorner")
         switchKnobCorner.CornerRadius = UDim.new(1, 0) -- Fully rounded corners
         switchKnobCorner.Parent = switchKnob
-
+        
         -- Set in settings
         self.Settings[name] = default
-
+        
         -- Make the entire container clickable
         local toggleButton = Instance.new("TextButton")
         toggleButton.Name = "ToggleButton"
@@ -524,29 +524,29 @@ function RizeUILib.new()
         toggleButton.Size = UDim2.new(1, 0, 1, 0)
         toggleButton.BackgroundTransparency = 1
         toggleButton.Parent = toggleContainer
-
+        
         -- Click handler
         local state = default
         toggleButton.MouseButton1Click:Connect(function()
             state = not state
-
+            
             -- Animate the switch
             game:GetService("TweenService"):Create(
                 switchBg,
                 TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
                 {BackgroundColor3 = state and Color3.fromRGB(200, 50, 50) or Color3.fromRGB(100, 100, 100)}
             ):Play()
-
+            
             game:GetService("TweenService"):Create(
                 switchKnob,
                 TweenInfo.new(0.3, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out),
                 {Position = UDim2.new(state and 1 or 0, state and -20 or 2, 0.5, -9)}
             ):Play()
-
+            
             self.Settings[name] = state
             callback(state)
         end)
-
+        
         -- Hover effect
         toggleButton.MouseEnter:Connect(function()
             game:GetService("TweenService"):Create(
@@ -555,7 +555,7 @@ function RizeUILib.new()
                 {BackgroundColor3 = Color3.fromRGB(65, 65, 65)}
             ):Play()
         end)
-
+        
         toggleButton.MouseLeave:Connect(function()
             game:GetService("TweenService"):Create(
                 toggleContainer,
@@ -563,7 +563,7 @@ function RizeUILib.new()
                 {BackgroundColor3 = Color3.fromRGB(55, 55, 55)}
             ):Play()
         end)
-
+        
         self.Elements[name] = {
             type = "toggle",
             update = function(value)
@@ -573,24 +573,24 @@ function RizeUILib.new()
                     TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
                     {BackgroundColor3 = state and Color3.fromRGB(200, 50, 50) or Color3.fromRGB(100, 100, 100)}
                 ):Play()
-
+                
                 game:GetService("TweenService"):Create(
                     switchKnob,
                     TweenInfo.new(0.3, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out),
                     {Position = UDim2.new(state and 1 or 0, state and -20 or 2, 0.5, -9)}
                 ):Play()
-
+                
                 callback(state)
             end
         }
-
+        
         return toggleContainer
     end
-
+    
     -- Method to create a slider within a tab
     function self:CreateSlider(tab, name, min, max, default, callback)
         if not self.TabContents[tab] then return end
-
+        
         -- Create slider container
         local sliderContainer = Instance.new("Frame")
         sliderContainer.Name = name .. "Slider"
@@ -598,12 +598,12 @@ function RizeUILib.new()
         sliderContainer.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
         sliderContainer.BorderSizePixel = 0
         sliderContainer.Parent = self.TabContents[tab]
-
+        
         -- Add UI Corner to slider container
         local sliderCorner = Instance.new("UICorner")
         sliderCorner.CornerRadius = UDim.new(0, 6)
         sliderCorner.Parent = sliderContainer
-
+        
         -- Slider label
         local sliderLabel = Instance.new("TextLabel")
         sliderLabel.Name = "Label"
@@ -616,7 +616,7 @@ function RizeUILib.new()
         sliderLabel.TextXAlignment = Enum.TextXAlignment.Left
         sliderLabel.BackgroundTransparency = 1
         sliderLabel.Parent = sliderContainer
-
+        
         -- Value display
         local valueLabel = Instance.new("TextLabel")
         valueLabel.Name = "Value"
@@ -629,7 +629,7 @@ function RizeUILib.new()
         valueLabel.TextXAlignment = Enum.TextXAlignment.Right
         valueLabel.BackgroundTransparency = 1
         valueLabel.Parent = sliderContainer
-
+        
         -- Slider background
         local sliderBg = Instance.new("Frame")
         sliderBg.Name = "SliderBg"
@@ -638,12 +638,12 @@ function RizeUILib.new()
         sliderBg.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
         sliderBg.BorderSizePixel = 0
         sliderBg.Parent = sliderContainer
-
+        
         -- Add UI Corner to slider background
         local sliderBgCorner = Instance.new("UICorner")
         sliderBgCorner.CornerRadius = UDim.new(0, 6)
         sliderBgCorner.Parent = sliderBg
-
+        
         -- Slider fill
         local sliderFill = Instance.new("Frame")
         sliderFill.Name = "SliderFill"
@@ -652,12 +652,12 @@ function RizeUILib.new()
         sliderFill.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
         sliderFill.BorderSizePixel = 0
         sliderFill.Parent = sliderBg
-
+        
         -- Add UI Corner to slider fill
         local sliderFillCorner = Instance.new("UICorner")
         sliderFillCorner.CornerRadius = UDim.new(0, 6)
         sliderFillCorner.Parent = sliderFill
-
+        
         -- Slider knob
         local sliderKnob = Instance.new("Frame")
         sliderKnob.Name = "SliderKnob"
@@ -667,15 +667,15 @@ function RizeUILib.new()
         sliderKnob.BorderSizePixel = 0
         sliderKnob.ZIndex = 2
         sliderKnob.Parent = sliderBg
-
+        
         -- Add UI Corner to slider knob
         local sliderKnobCorner = Instance.new("UICorner")
         sliderKnobCorner.CornerRadius = UDim.new(1, 0)
         sliderKnobCorner.Parent = sliderKnob
-
+        
         -- Set in settings
         self.Settings[name] = default
-
+        
         -- Clickable slider area
         local sliderButton = Instance.new("TextButton")
         sliderButton.Name = "SliderButton"
@@ -683,53 +683,53 @@ function RizeUILib.new()
         sliderButton.Size = UDim2.new(1, 0, 1, 0)
         sliderButton.BackgroundTransparency = 1
         sliderButton.Parent = sliderBg
-
+        
         -- Function to update slider
         local function updateSlider(value)
             value = math.clamp(value, min, max)
             local percent = (value - min) / (max - min)
-
+            
             -- Animate slider components
             game:GetService("TweenService"):Create(
                 sliderFill,
                 TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
                 {Size = UDim2.new(percent, 0, 1, 0)}
             ):Play()
-
+            
             game:GetService("TweenService"):Create(
                 sliderKnob,
                 TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
                 {Position = UDim2.new(percent, -8, 0.5, -8)}
             ):Play()
-
+            
             -- Update value label with formatted number (1 decimal place)
             local formattedValue = math.floor(value * 10) / 10
             valueLabel.Text = tostring(formattedValue)
-
+            
             self.Settings[name] = value
             callback(value)
         end
-
+        
         -- Allow dragging the slider
         local dragging = false
-
+        
         sliderButton.InputBegan:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = true
-
+                
                 -- Handle the initial click position
                 local relativeX = math.clamp((input.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X, 0, 1)
                 local value = min + (relativeX * (max - min))
                 updateSlider(value)
             end
         end)
-
+        
         sliderButton.InputEnded:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = false
             end
         end)
-
+        
         -- Extend the touch/click area
         sliderContainer.InputBegan:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -737,7 +737,7 @@ function RizeUILib.new()
                 local yPos = input.Position.Y - sliderContainer.AbsolutePosition.Y
                 if yPos > 30 then  -- Only if clicked in the lower part
                     dragging = true
-
+                    
                     -- Handle the initial click position
                     local relativeX = math.clamp((input.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X, 0, 1)
                     local value = min + (relativeX * (max - min))
@@ -745,13 +745,13 @@ function RizeUILib.new()
                 end
             end
         end)
-
+        
         sliderContainer.InputEnded:Connect(function(input)
             if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = false
             end
         end)
-
+        
         -- Update during dragging
         game:GetService("UserInputService").InputChanged:Connect(function(input)
             if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
@@ -760,7 +760,7 @@ function RizeUILib.new()
                 updateSlider(value)
             end
         end)
-
+        
         -- Hover effect for container
         sliderContainer.MouseEnter:Connect(function()
             game:GetService("TweenService"):Create(
@@ -769,7 +769,7 @@ function RizeUILib.new()
                 {BackgroundColor3 = Color3.fromRGB(65, 65, 65)}
             ):Play()
         end)
-
+        
         sliderContainer.MouseLeave:Connect(function()
             game:GetService("TweenService"):Create(
                 sliderContainer,
@@ -777,19 +777,19 @@ function RizeUILib.new()
                 {BackgroundColor3 = Color3.fromRGB(55, 55, 55)}
             ):Play()
         end)
-
+        
         self.Elements[name] = {
             type = "slider",
             update = updateSlider
         }
-
+        
         return sliderContainer
     end
-
+    
     -- Method to create a notification
     function self:CreateNotification(message, duration)
         duration = duration or 3
-
+        
         -- Notification container
         local notifContainer = Instance.new("Frame")
         notifContainer.Name = "Notification"
@@ -799,12 +799,12 @@ function RizeUILib.new()
         notifContainer.BorderSizePixel = 0
         notifContainer.Parent = self.ScreenGui
         notifContainer.BackgroundTransparency = 1 -- Start transparent for animation
-
+        
         -- Add UI Corner to notification
         local notifCorner = Instance.new("UICorner")
         notifCorner.CornerRadius = UDim.new(0, 8)
         notifCorner.Parent = notifContainer
-
+        
         -- Add shadow to notification
         local notifShadow = Instance.new("Frame")
         notifShadow.Name = "Shadow"
@@ -816,11 +816,11 @@ function RizeUILib.new()
         notifShadow.BorderSizePixel = 0
         notifShadow.ZIndex = -1
         notifShadow.Parent = notifContainer
-
+        
         local notifShadowCorner = Instance.new("UICorner")
         notifShadowCorner.CornerRadius = UDim.new(0, 8)
         notifShadowCorner.Parent = notifShadow
-
+        
         -- Notification label
         local notifLabel = Instance.new("TextLabel")
         notifLabel.Name = "Message"
@@ -834,103 +834,103 @@ function RizeUILib.new()
         notifLabel.BackgroundTransparency = 1
         notifLabel.TextTransparency = 1 -- Start transparent for animation
         notifLabel.Parent = notifContainer
-
+        
         -- Animate notification in
         game:GetService("TweenService"):Create(
             notifContainer,
             TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
             {Position = UDim2.new(1, -260, 1, -70), BackgroundTransparency = 0}
         ):Play()
-
+        
         game:GetService("TweenService"):Create(
             notifShadow,
             TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
             {BackgroundTransparency = 0.6}
         ):Play()
-
+        
         game:GetService("TweenService"):Create(
             notifLabel,
             TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
             {TextTransparency = 0}
         ):Play()
-
+        
         -- Remove notification after duration
         task.spawn(function()
             task.wait(duration)
-
+            
             -- Animate notification out
             game:GetService("TweenService"):Create(
                 notifContainer,
                 TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
                 {Position = UDim2.new(1, 10, 1, -70), BackgroundTransparency = 1}
             ):Play()
-
+            
             game:GetService("TweenService"):Create(
                 notifShadow,
                 TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
                 {BackgroundTransparency = 1}
             ):Play()
-
+            
             game:GetService("TweenService"):Create(
                 notifLabel,
                 TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
                 {TextTransparency = 1}
             ):Play()
-
+            
             task.wait(0.5)
             notifContainer:Destroy()
         end)
-
+        
         return notifContainer
     end
-
+    
     -- Method to save settings
     function self:SaveSettings()
         -- This will be overridden in MainScript.lua
     end
-
+    
     -- Method to load settings
     function self:LoadSettings()
         -- This will be overridden in MainScript.lua
     end
-
+    
     -- Initialize the UI position for mobile/desktop
     local function initializeUIPosition()
         -- Check if we're on mobile
-        local isMobile = game:GetService("UserInputService").TouchEnabled and
+        local isMobile = game:GetService("UserInputService").TouchEnabled and 
                          not game:GetService("UserInputService").KeyboardEnabled
-
+        
         if isMobile then
             -- Mobile layout adjustments
             self.MainFrame.Size = UDim2.new(0, 400, 0, 300)
             self.MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-
+            
             -- Reposition toggle button to avoid overlap with Roblox mobile UI
-            self.ToggleButton.Position = UDim2.new(0, 10, 0, 120)
+            self.ToggleButton.Position = UDim2.new(0, 10, 0, 120) 
         end
     end
-
+    
     -- Call the initialization
     initializeUIPosition()
-
+    
     -- Show initial animation
     self.MainFrame.BackgroundTransparency = 1
     shadowFrame.BackgroundTransparency = 1
     self.MainFrame.Position = UDim2.new(0.5, -230, 0.4, -150)
-
+    
     -- Run the animation
     game:GetService("TweenService"):Create(
         self.MainFrame,
         TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
         {Position = UDim2.new(0.5, -230, 0.5, -150), BackgroundTransparency = 0}
     ):Play()
-
+    
     game:GetService("TweenService"):Create(
         shadowFrame,
         TweenInfo.new(0.8, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
         {BackgroundTransparency = 0.6}
     ):Play()
-
+    
     return self
 end
 
