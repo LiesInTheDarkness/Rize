@@ -64,8 +64,8 @@ local customModuleFound = false
 
 if isfile(customModulePath) then
     customModuleFound = true
-elseif isfile(rizeFolder .. "/CustomModule.Lua") then
-    customModulePath = rizeFolder .. "/CustomModule.Lua"
+elseif isfile(rizeFolder .. "/CustomModule.lua") then
+    customModulePath = rizeFolder .. "/CustomModule.lua"
     customModuleFound = true
 else
     local success, response = pcall(function() return game:HttpGet(defaultCustomModuleURL) end)
