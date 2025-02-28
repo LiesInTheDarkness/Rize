@@ -279,8 +279,6 @@ function RizeUILib.new()
             ):Play()
             
             game:GetService("TweenService"):Create(
-                shadowFrame,
-                TweenInfo.new(0.4, Enum.EasingStyle.
                                 shadowFrame,
                 TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
                 {BackgroundTransparency = 1}
@@ -598,8 +596,7 @@ function RizeUILib.new()
         sliderContainer.Name = name .. "Slider"
         sliderContainer.Size = UDim2.new(1, -16, 0, 60)
         sliderContainer.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-        sliderContainer.BorderSizePixel
-                sliderContainer.BorderSizePixel = 0
+        sliderContainer.BorderSizePixel = 0
         sliderContainer.Parent = self.TabContents[tab]
         
         -- Add UI Corner to slider container
