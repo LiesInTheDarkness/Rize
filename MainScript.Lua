@@ -2,7 +2,7 @@
 local HttpService = game:GetService("HttpService")
 local rizeFolder = "Rize"
 local profilePath = rizeFolder .. "/MainProfile.txt"
-local defaultCustomModuleURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Rize/refs/heads/main/CustomModule.lua"
+local defaultCustomModuleURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Rize/refs/heads/main/CustomModule.Lua"
 local uiLibURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Rize/refs/heads/main/UiLib.lua"
 
 -- Ensure the Rize folder exists.
