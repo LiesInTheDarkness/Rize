@@ -30,20 +30,20 @@ function RizeUILib.new()
     end
     
     -- Main Frame
-self.MainFrame = Instance.new("Frame")
-self.MainFrame.Name = "MainFrame"
-self.MainFrame.Size = UDim2.new(0.6, 0, 0.6, 0)         -- Use scale-based sizing for responsiveness
-self.MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)         -- Set the pivot to the center
-self.MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)         -- Center on the screen
-self.MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-self.MainFrame.BorderSizePixel = 0
-self.MainFrame.BackgroundTransparency = 0
-self.MainFrame.Parent = self.ScreenGui
+    self.MainFrame = Instance.new("Frame")
+    self.MainFrame.Name = "MainFrame"
+    self.MainFrame.Size = UDim2.new(0.6, 0, 0.6, 0)         -- Use scale-based sizing for responsiveness
+    self.MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)       -- Set the pivot to the center
+    self.MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)      -- Center on the screen
+    self.MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    self.MainFrame.BorderSizePixel = 0
+    self.MainFrame.BackgroundTransparency = 0
+    self.MainFrame.Parent = self.ScreenGui
 
--- Add UI Corner to MainFrame
-local mainFrameCorner = Instance.new("UICorner")
-mainFrameCorner.CornerRadius = UDim.new(0, 12)
-mainFrameCorner.Parent = self.MainFrame
+    -- Add UI Corner to MainFrame
+    local mainFrameCorner = Instance.new("UICorner")
+    mainFrameCorner.CornerRadius = UDim.new(0, 12)
+    mainFrameCorner.Parent = self.MainFrame
     
     -- Add shadow effect
     local shadowFrame = Instance.new("Frame")
@@ -254,7 +254,7 @@ mainFrameCorner.Parent = self.MainFrame
         if self.Visible then
             -- Show animation
             self.MainFrame.Visible = true
-            self.MainFrame.Position = UDim2.new(0.5, -230, 0.4, -150)
+            self.MainFrame.Position = UDim2.new(0.5, 0, 0.45, 0)  -- Start slightly above center
             self.MainFrame.BackgroundTransparency = 1
             shadowFrame.BackgroundTransparency = 1
             
@@ -262,7 +262,7 @@ mainFrameCorner.Parent = self.MainFrame
             game:GetService("TweenService"):Create(
                 self.MainFrame,
                 TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-                {Position = UDim2.new(0.5, -230, 0.5, -150), BackgroundTransparency = 0}
+                {Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 0}  -- Move to center
             ):Play()
             
             game:GetService("TweenService"):Create(
@@ -275,11 +275,13 @@ mainFrameCorner.Parent = self.MainFrame
             game:GetService("TweenService"):Create(
                 self.MainFrame,
                 TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
-                {Position = UDim2.new(0.5, -230, 0.4, -150), BackgroundTransparency = 1}
+                {Position = UDim2.new(0.5, 0, 0.45, 0), BackgroundTransparency = 1}  -- Move slightly up
             ):Play()
             
             game:GetService("TweenService"):Create(
                 shadowFrame,
+                TweenInfo.new(0.4, Enum.EasingStyle.
+                                shadowFrame,
                 TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
                 {BackgroundTransparency = 1}
             ):Play()
@@ -596,7 +598,8 @@ mainFrameCorner.Parent = self.MainFrame
         sliderContainer.Name = name .. "Slider"
         sliderContainer.Size = UDim2.new(1, -16, 0, 60)
         sliderContainer.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-        sliderContainer.BorderSizePixel = 0
+        sliderContainer.BorderSizePixel
+                sliderContainer.BorderSizePixel = 0
         sliderContainer.Parent = self.TabContents[tab]
         
         -- Add UI Corner to slider container
@@ -902,29 +905,29 @@ mainFrameCorner.Parent = self.MainFrame
         
         if isMobile then
             -- Mobile layout adjustments
-            self.MainFrame.Size = UDim2.new(0, 400, 0, 300)
-            self.MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
+                        self.MainFrame.Size = UDim2.new(0.8, 0, 0.7, 0)  -- Larger relative size for mobile
+            -- Position is already set to center with AnchorPoint
             
             -- Reposition toggle button to avoid overlap with Roblox mobile UI
             self.ToggleButton.Position = UDim2.new(0, 10, 0, 120) 
         end
     end
     
-    -- Call the initialization
+    -- Call the initialization function
     initializeUIPosition()
     
     -- Show initial animation
     self.MainFrame.BackgroundTransparency = 1
     shadowFrame.BackgroundTransparency = 1
-    self.MainFrame.Position = UDim2.new(0.5, -230, 0.4, -150)
-    
+    self.MainFrame.Position = UDim2.new(0.5, 0, 0.45, 0)  -- Start slightly above center
+        
     -- Run the animation
     game:GetService("TweenService"):Create(
         self.MainFrame,
         TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-        {Position = UDim2.new(0.5, -230, 0.5, -150), BackgroundTransparency = 0}
+        {Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 0}  -- Move to center
     ):Play()
-    
+        
     game:GetService("TweenService"):Create(
         shadowFrame,
         TweenInfo.new(0.8, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
@@ -935,3 +938,6 @@ mainFrameCorner.Parent = self.MainFrame
 end
 
 return RizeUILib
+
+
+
