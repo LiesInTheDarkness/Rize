@@ -314,3 +314,15 @@ end
 
 -- Run the main function
 return main()
+-- idk it's important
+local CustomModule = {}
+
+function CustomModule.AddCustomStuff(UI)
+    UI:CreateNotification("Custom Module Loaded!", 5)
+    local Tab = UI:CreateTab("Custom")
+    UI:CreateButton(Tab, "Click Me!", function()
+        UI:CreateNotification("Button Clicked!", 3)
+    end)
+end
+
+return CustomModule -- Put this at the very bottom!
