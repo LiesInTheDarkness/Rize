@@ -1,316 +1,109 @@
--- MainScript.lua
--- Main script for Rize UI framework
+-- CustomModule.lua
+-- This module defines custom UI elements for the Rize UI framework
 
-local Players = game:GetService("Players")
-local HttpService = game:GetService("HttpService")
-local RunService = game:GetService("RunService")
+local CustomModule = {}
 
--- Configuration
-local rizeFolder = "Rize"
-local profilePath = rizeFolder .. "/MainProfile.txt"
-local customModulePath = rizeFolder .. "/CustomModule.lua"
-local defaultCustomModuleURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Rize/refs/heads/main/CustomModule.lua"
-local uiLibURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Rize/refs/heads/main/UiLib.lua"
-
--- Version information
-local VERSION = "1.0.0"
-
--- Create logger with timestamp and enhanced formatting
-local Logger = {}
-function Logger:Info(message)
-    print(string.format("[Rize INFO] %s: %s", os.date("%H:%M:%S"), message))
-end
-function Logger:Warn(message)
-    warn(string.format("[Rize WARN] %s: %s", os.date("%H:%M:%S"), message))
-end
-function Logger:Error(message)
-    error(string.format("[Rize ERROR] %s: %s", os.date("%H:%M:%S"), message), 2)
-end
-
--- Check execution environment
-local function checkEnvironment()
-    if not (getgenv or getsenv) then
-        Logger:Error("Rize requires a proper executor with file system access.")
-        return false
-    end
+-- Function to add custom UI elements
+function CustomModule.AddCustomStuff(UI)
+    -- Create Main Tab
+    local MainTab = UI:CreateTab("Main")
     
-    -- Check for essential file system functions
-    local requiredFunctions = {"isfolder", "makefolder", "isfile", "readfile", "writefile"}
-    for _, funcName in ipairs(requiredFunctions) do
-        if not _G[funcName] then
-            Logger:Error("Missing required function: " .. funcName)
-            return false
-        end
-    end
-    
-    return true
-end
-
--- Ensure the Rize folder exists
-local function setupFolders()
-    if not isfolder(rizeFolder) then
-        Logger:Info("Creating Rize folder")
-        makefolder(rizeFolder)
-    end
-end
-
--- File System Helpers
-local FileSystem = {}
-
-function FileSystem:ReadJSON(path, default)
-    default = default or {}
-    
-    if not isfile(path) then
-        Logger:Info("File does not exist, creating: " .. path)
-        self:WriteJSON(path, default)
-        return default
-    end
-    
-    local data = readfile(path)
-    local success, decoded = pcall(function() 
-        return HttpService:JSONDecode(data) 
-    end)
-    
-    if success and decoded then
-        return decoded
-    else
-        Logger:Warn("Failed to decode JSON from: " .. path)
-        self:WriteJSON(path, default)
-        return default
-    end
-end
-
-function FileSystem:WriteJSON(path, data)
-    local success, encoded = pcall(function() 
-        return HttpService:JSONEncode(data) 
-    end)
-    
-    if success and encoded then
-        writefile(path, encoded)
-        return true
-    else
-        Logger:Warn("Failed to encode JSON for: " .. path)
-        return false
-    end
-end
-
-function FileSystem:DownloadFile(url, savePath)
-    Logger:Info("Downloading file from: " .. url)
-    
-    local success, response = pcall(function() 
-        return game:HttpGet(url) 
-    end)
-    
-    if success and response and response ~= "" then
-        writefile(savePath, response)
-        Logger:Info("Successfully downloaded file to: " .. savePath)
-        return true
-    else
-        Logger:Warn("Failed to download file from: " .. url)
-        return false
-    end
-end
-
--- Load the CustomModule
-local function loadCustomModule()
-    -- Check if the custom module exists locally
-    if isfile(customModulePath) then
-        Logger:Info("Found CustomModule.lua")
-    elseif isfile(rizeFolder .. "/CustomModule.Lua") then
-        customModulePath = rizeFolder .. "/CustomModule.Lua"
-        Logger:Info("Found CustomModule.Lua (capital extension)")
-    else
-        -- Download from GitHub if not found locally
-        Logger:Info("CustomModule not found locally, downloading from GitHub")
-        if not FileSystem:DownloadFile(defaultCustomModuleURL, customModulePath) then
-            Logger:Warn("Failed to download CustomModule, using fallback")
-            return {
-                AddCustomStuff = function(UI)
-                    UI:CreateNotification("CustomModule not available, using fallback", 5)
-                    local Tab = UI:CreateTab("Fallback")
-                    UI:CreateButton(Tab, "Reload CustomModule", function()
-                        UI:CreateNotification("Attempting to reload CustomModule...", 3)
-                        FileSystem:DownloadFile(defaultCustomModuleURL, customModulePath)
-                        UI:CreateNotification("Please restart Rize to apply changes", 5)
-                    end)
-                end
-            }
-        end
-    end
-    
-    -- Validate file content
-    local content = readfile(customModulePath)
-    if not content or content == "" then
-        Logger:Warn("CustomModule.lua exists but is empty, using fallback")
-        return {
-            AddCustomStuff = function(UI)
-                UI:CreateNotification("CustomModule is empty, using fallback", 5)
+    -- Add some basic controls to the Main tab
+    UI:CreateToggle(MainTab, "WalkSpeed Boost", false, function(state)
+        local player = game:GetService("Players").LocalPlayer
+        if player and player.Character then
+            if state then
+                player.Character.Humanoid.WalkSpeed = 32
+            else
+                player.Character.Humanoid.WalkSpeed = 16
             end
-        }
-    end
-    
-    -- Load the module
-    local loadSuccess, loadedModule = pcall(loadstring, content)
-    if loadSuccess and loadedModule then
-        local success, module = pcall(loadedModule)
-        if success and module then
-            Logger:Info("Successfully loaded CustomModule")
-            return module
         end
-    end
-    
-    Logger:Warn("Failed to load CustomModule.lua, using fallback")
-    return {
-        AddCustomStuff = function(UI)
-            UI:CreateNotification("Error in CustomModule, using fallback", 5)
-        end
-    }
-end
-
--- Load the UI Library
-local function loadUILibrary()
-    -- Try to download the latest UI library from GitHub
-    local uiLibContent
-    local success, response = pcall(function() 
-        return game:HttpGet(uiLibURL) 
     end)
     
-    if success and response and response ~= "" then
-        Logger:Info("Downloaded UI Library from GitHub")
-        uiLibContent = response
-        -- Cache the UI Library for future use
-        writefile(rizeFolder .. "/UiLib.lua", response)
-    elseif isfile(rizeFolder .. "/UiLib.lua") then
-        -- Use cached version if available
-        Logger:Info("Using cached UI Library")
-        uiLibContent = readfile(rizeFolder .. "/UiLib.lua")
-    else
-        Logger:Error("Failed to retrieve UI Library and no cached version available")
-        return nil
-    end
-    
-    -- Load the UI library
-    local loadSuccess, loadedLib = pcall(loadstring, uiLibContent)
-    if loadSuccess and loadedLib then
-        local success, lib = pcall(loadedLib)
-        if success and lib then
-            Logger:Info("Successfully loaded UI Library")
-            return lib
+    UI:CreateSlider(MainTab, "Jump Power", 50, 200, 50, function(value)
+        local player = game:GetService("Players").LocalPlayer
+        if player and player.Character then
+            player.Character.Humanoid.JumpPower = value
         end
-    end
+    end)
     
-    Logger:Error("Failed to load UI Library")
-    return nil
-end
-
--- Setup the UI instance with profile persistence
-local function setupUIInstance(RizeUI)
-    local UI = RizeUI.new()
+    UI:CreateButton(MainTab, "Reset Character", function()
+        local player = game:GetService("Players").LocalPlayer
+        if player and player.Character then
+            player.Character:BreakJoints()
+        end
+    end)
     
-    -- Override SaveSettings function
-    function UI:SaveSettings()
-        Logger:Info("Saving settings")
-        FileSystem:WriteJSON(profilePath, self.Settings)
-    end
+    -- Create Visual Tab
+    local VisualTab = UI:CreateTab("Visual")
     
-    -- Override LoadSettings function
-    function UI:LoadSettings()
-        Logger:Info("Loading settings")
-        local loaded = FileSystem:ReadJSON(profilePath, {})
-        if loaded then
-            self.Settings = loaded
-            
-            -- Apply loaded settings to UI elements
-            if self.Elements then
-                for name, value in pairs(self.Settings) do
-                    local element = self.Elements[name]
-                    if element then
-                        if element.type == "slider" then
-                            element.update(value)
-                        elseif element.type == "toggle" then
-                            element.update(value)
+    UI:CreateToggle(VisualTab, "ESP", false, function(state)
+        if state then
+            UI:CreateNotification("ESP Enabled", 3)
+            -- ESP implementation would go here
+        else
+            UI:CreateNotification("ESP Disabled", 3)
+            -- ESP cleanup would go here
+        end
+    end)
+    
+    UI:CreateToggle(VisualTab, "Fullbright", false, function(state)
+        if state then
+            game:GetService("Lighting").Brightness = 2
+            game:GetService("Lighting").ClockTime = 14
+            game:GetService("Lighting").FogEnd = 100000
+            game:GetService("Lighting").GlobalShadows = false
+        else
+            game:GetService("Lighting").Brightness = 1
+            game:GetService("Lighting").ClockTime = game:GetService("Lighting").TimeOfDay
+            game:GetService("Lighting").FogEnd = 10000
+            game:GetService("Lighting").GlobalShadows = true
+        end
+    end)
+    
+    -- Create Settings Tab
+    local SettingsTab = UI:CreateTab("Settings")
+    
+    UI:CreateButton(SettingsTab, "Reset All Settings", function()
+        for name, element in pairs(UI.Elements) do
+            if element.type == "toggle" then
+                element.update(false)
+            elseif element.type == "slider" then
+                -- Reset to default value (middle of range)
+                local MainTab = UI.TabContents["Main"]
+                if MainTab then
+                    for _, child in pairs(MainTab:GetChildren()) do
+                        if child.Name == name.."Slider" then
+                            local min = 50  -- Default min
+                            local max = 200 -- Default max
+                            element.update((min + max) / 2)
+                            break
                         end
                     end
                 end
             end
         end
-    end
-    
-    -- Add auto-save on close
-    local oldDestroy = UI.ScreenGui.Destroy
-    UI.ScreenGui.Destroy = function(...)
-        UI:SaveSettings()
-        return oldDestroy(...)
-    end
-    
-    -- Setup auto-save every 30 seconds
-    task.spawn(function()
-        while true do
-            task.wait(30)
-            if UI and UI.ScreenGui and UI.ScreenGui.Parent then
-                UI:SaveSettings()
-            else
-                break
-            end
-        end
+        UI:CreateNotification("All settings have been reset", 3)
     end)
     
-    return UI
-end
-
--- Main execution
-local function main()
-    -- Check execution environment
-    if not checkEnvironment() then
-        return
-    end
+    UI:CreateButton(SettingsTab, "Save Settings", function()
+        UI:SaveSettings()
+        UI:CreateNotification("Settings saved successfully!", 3)
+    end)
     
-    -- Setup folders and files
-    setupFolders()
+    -- Create Credits Tab
+    local CreditsTab = UI:CreateTab("Credits")
     
-    -- Load UI Library
-    local RizeUI = loadUILibrary()
-    if not RizeUI then
-        return
-    end
+    UI:CreateButton(CreditsTab, "Made by LiesInTheDarkness", function()
+        UI:CreateNotification("Thanks for using Rize UI!", 5)
+    end)
     
-    -- Create and setup UI instance
-    local UI = setupUIInstance(RizeUI)
-    
-    -- Load settings
-    UI:LoadSettings()
+    UI:CreateButton(CreditsTab, "Version 1.0.0", function()
+        UI:CreateNotification("You are using the latest version!", 3)
+    end)
     
     -- Welcome notification
-    UI:CreateNotification("Welcome to Rize UI v" .. VERSION, 5)
-    
-    -- Load Custom Module
-    local CustomModule = loadCustomModule()
-    
-    -- Add custom UI elements
-    task.spawn(function()
-        local success, err = pcall(function()
-            CustomModule.AddCustomStuff(UI)
-        end)
-        
-        if not success then
-            Logger:Warn("Error in CustomModule.AddCustomStuff: " .. tostring(err))
-            UI:CreateNotification("Error in CustomModule: " .. tostring(err), 5)
-            
-            -- Create a fallback tab
-            local Tab = UI:CreateTab("Error")
-            UI:CreateButton(Tab, "Show Error", function()
-                UI:CreateNotification(tostring(err), 10)
-            end)
-            UI:CreateButton(Tab, "Reload CustomModule", function()
-                UI:CreateNotification("Attempting to reload CustomModule...", 3)
-                FileSystem:DownloadFile(defaultCustomModuleURL, customModulePath)
-                UI:CreateNotification("Please restart Rize to apply changes", 5)
-            end)
-        end
-    end)
-    
-    return UI
+    UI:CreateNotification("Welcome to Rize UI!", 5)
 end
 
--- Run the main function
-return main()
+return CustomModule
