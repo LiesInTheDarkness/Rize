@@ -144,18 +144,31 @@ function RizeUILib.new()
     tabBarFix.ZIndex = 0
     tabBarFix.Parent = self.TabBar
     
-    -- Add UI List Layout to TabBar
+    -- Create a ScrollingFrame for the tabs
+    self.TabScrollFrame = Instance.new("ScrollingFrame")
+    self.TabScrollFrame.Name = "TabScrollFrame"
+    self.TabScrollFrame.Size = UDim2.new(1, 0, 1, 0)
+    self.TabScrollFrame.BackgroundTransparency = 1
+    self.TabScrollFrame.BorderSizePixel = 0
+    self.TabScrollFrame.ScrollBarThickness = 4
+    self.TabScrollFrame.ScrollBarImageColor3 = Color3.fromRGB(200, 50, 50)
+    self.TabScrollFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+    self.TabScrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    self.TabScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    self.TabScrollFrame.Parent = self.TabBar
+    
+    -- Add UI List Layout to TabScrollFrame
     self.TabLayout = Instance.new("UIListLayout")
     self.TabLayout.Padding = UDim.new(0, 4)
     self.TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
     self.TabLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-    self.TabLayout.Parent = self.TabBar
+    self.TabLayout.Parent = self.TabScrollFrame
     
-    -- Add padding to the TabBar
+    -- Add padding to the TabScrollFrame
     local tabPadding = Instance.new("UIPadding")
     tabPadding.PaddingTop = UDim.new(0, 10)
     tabPadding.PaddingBottom = UDim.new(0, 10)
-    tabPadding.Parent = self.TabBar
+    tabPadding.Parent = self.TabScrollFrame
     
     -- Content frame
     self.ContentFrame = Instance.new("Frame")
@@ -262,24 +275,24 @@ function RizeUILib.new()
             game:GetService("TweenService"):Create(
                 self.MainFrame,
                 TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-                {Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 0}  -- Move to center
+                {Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 0}
             ):Play()
             
             game:GetService("TweenService"):Create(
                 shadowFrame,
-                TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+                TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
                 {BackgroundTransparency = 0.6}
             ):Play()
         else
             -- Hide animation
             game:GetService("TweenService"):Create(
                 self.MainFrame,
-                TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
-                {Position = UDim2.new(0.5, 0, 0.45, 0), BackgroundTransparency = 1}  -- Move slightly up
+                TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
+                {Position = UDim2.new(0.5, 0, 0.45, 0), BackgroundTransparency = 1}
             ):Play()
             
             game:GetService("TweenService"):Create(
-                                shadowFrame,
+                shadowFrame,
                 TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
                 {BackgroundTransparency = 1}
             ):Play()
@@ -305,7 +318,7 @@ function RizeUILib.new()
         tabButton.TextSize = 16
         tabButton.Font = Enum.Font.GothamSemibold
         tabButton.BorderSizePixel = 0
-        tabButton.Parent = self.TabBar
+        tabButton.Parent = self.TabScrollFrame  -- Add to the ScrollingFrame instead of TabBar directly
         tabButton.AutoButtonColor = false -- Disable default button color changing
         
         -- Add UI Corner to tab button
@@ -580,7 +593,7 @@ function RizeUILib.new()
                     {Position = UDim2.new(state and 1 or 0, state and -20 or 2, 0.5, -9)}
                 ):Play()
                 
-                callback(state)
+                self.Settings[name] = state
             end
         }
         
@@ -877,32 +890,19 @@ function RizeUILib.new()
                 {TextTransparency = 1}
             ):Play()
             
-            task.wait(0.5)
+            -- Remove after animation
+            task.wait(0.6)
             notifContainer:Destroy()
         end)
-        
-        return notifContainer
     end
     
-    -- Method to save settings
-    function self:SaveSettings()
-        -- This will be overridden in MainScript.lua
-    end
-    
-    -- Method to load settings
-    function self:LoadSettings()
-        -- This will be overridden in MainScript.lua
-    end
-    
-    -- Initialize the UI position for mobile/desktop
+    -- Initialize UI position based on device
     local function initializeUIPosition()
-        -- Check if we're on mobile
-        local isMobile = game:GetService("UserInputService").TouchEnabled and 
-                         not game:GetService("UserInputService").KeyboardEnabled
+        local isMobile = game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").KeyboardEnabled
         
         if isMobile then
-            -- Mobile layout adjustments
-                        self.MainFrame.Size = UDim2.new(0.8, 0, 0.7, 0)  -- Larger relative size for mobile
+            -- Mobile-specific adjustments
+            self.MainFrame.Size = UDim2.new(0.8, 0, 0.7, 0)  -- Larger relative size for mobile
             -- Position is already set to center with AnchorPoint
             
             -- Reposition toggle button to avoid overlap with Roblox mobile UI
