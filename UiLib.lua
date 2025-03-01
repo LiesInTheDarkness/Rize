@@ -336,96 +336,94 @@ function RizeUILib.new()
         end
     end)
     
-    -- Function to toggle UI visibility with animation - FIXED VERSION
-    function self:ToggleUI(state)
-        -- First determine the requested state
-        local newState
-        if state ~= nil then
-            newState = state
-        else
-            newState = not self.Visible
-        end
-        
-        -- If new state is the same as current state, do nothing
-        if newState == self.Visible then 
-            return 
-        end
-        
-        -- Update the state
-        self.Visible = newState
-        
-        -- Change toggle button appearance based on state
-        game:GetService("TweenService"):Create(
-            toggleGradient,
-            TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-            {
-                Color = ColorSequence.new({
-                    ColorSequenceKeypoint.new(0, self.Visible and Color3.fromRGB(200, 50, 50) or Color3.fromRGB(80, 80, 80)),
-                    ColorSequenceKeypoint.new(1, self.Visible and Color3.fromRGB(150, 30, 30) or Color3.fromRGB(60, 60, 60))
-                })
-            }
-        ):Play()
-        
-        if self.Visible then
-            -- SHOWING UI
-            -- Make sure frame is visible first before animating
-            self.MainFrame.Visible = true
-            
-            -- Use saved position
-            self.MainFrame.Position = self.LastPosition
-            
-            -- Reset transparency for animation
-            self.MainFrame.BackgroundTransparency = 1
-            shadowFrame.BackgroundTransparency = 1
-            
-            -- Create the tweens
-            local showTween1 = game:GetService("TweenService"):Create(
-                self.MainFrame,
-                TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-                {BackgroundTransparency = 0}
-            )
-            
-            local showTween2 = game:GetService("TweenService"):Create(
-                shadowFrame,
-                TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-                {BackgroundTransparency = 0.6}
-            )
-            
-            -- Play the tweens
-            showTween1:Play()
-            showTween2:Play()
-        else
-            -- HIDING UI
-            -- Save position before hiding
-            self.LastPosition = self.MainFrame.Position
-            
-            -- Create the tweens
-            local hideTween1 = game:GetService("TweenService"):Create(
-                self.MainFrame,
-                TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
-                {BackgroundTransparency = 1}
-            )
-            
-            local hideTween2 = game:GetService("TweenService"):Create(
-                shadowFrame,
-                TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
-                {BackgroundTransparency = 1}
-            )
-            
-            -- Play the tweens
-            hideTween1:Play()
-            hideTween2:Play()
-            
-            -- Wait for animation to finish before hiding the frame
-            spawn(function()
-                wait(0.4) -- Match the tween duration
-                if not self.Visible then -- Double check in case state changed
-                    self.MainFrame.Visible = false
-                end
-            end)
-        end
+function self:ToggleUI(state)
+    -- First determine the requested state
+    local newState
+    if state ~= nil then
+        newState = state
+    else
+        newState = not self.Visible
     end
     
+    -- If new state is the same as current state, do nothing
+    if newState == self.Visible then 
+        return 
+    end
+    
+    -- Update the state
+    self.Visible = newState
+    
+    -- Change toggle button appearance based on state
+    local colorSequence = self.Visible and 
+        ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(200, 50, 50)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 30, 30))
+        }) or 
+        ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(80, 80, 80)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(60, 60, 60))
+        })
+    toggleGradient.Color = colorSequence
+    
+    if self.Visible then
+        -- SHOWING UI
+        -- Make sure frame is visible first before animating
+        self.MainFrame.Visible = true
+        
+        -- Use saved position
+        self.MainFrame.Position = self.LastPosition
+        
+        -- Reset transparency for animation
+        self.MainFrame.BackgroundTransparency = 1
+        shadowFrame.BackgroundTransparency = 1
+        
+        -- Create the tweens
+        local showTween1 = game:GetService("TweenService"):Create(
+            self.MainFrame,
+            TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+            {BackgroundTransparency = 0}
+        )
+        
+        local showTween2 = game:GetService("TweenService"):Create(
+            shadowFrame,
+            TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+            {BackgroundTransparency = 0.6}
+        )
+        
+        -- Play the tweens
+        showTween1:Play()
+        showTween2:Play()
+    else
+        -- HIDING UI
+        -- Save position before hiding
+        self.LastPosition = self.MainFrame.Position
+        
+        -- Create the tweens
+        local hideTween1 = game:GetService("TweenService"):Create(
+            self.MainFrame,
+            TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
+            {BackgroundTransparency = 1}
+        )
+        
+        local hideTween2 = game:GetService("TweenService"):Create(
+            shadowFrame,
+            TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
+            {BackgroundTransparency = 1}
+        )
+        
+        -- Play the tweens
+        hideTween1:Play()
+        hideTween2:Play()
+        
+        -- Wait for animation to finish before hiding the frame
+        spawn(function()
+            wait(0.4) -- Match the tween duration
+            if not self.Visible then -- Double check in case state changed
+                self.MainFrame.Visible = false
+            end
+        end)
+    end
+end
     -- Method to create a tab
     function self:CreateTab(name)
         -- Tab button
