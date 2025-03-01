@@ -1,4 +1,3 @@
--- MainScript.lua
 local HttpService = game:GetService("HttpService")
 local rizeFolder = "Rize"
 local profilePath = rizeFolder .. "/MainProfile.json"
@@ -23,27 +22,33 @@ local function loadProfileSettings()
         writefile(profilePath, "{}")
         return {}
     end
-    
+
     local data = readfile(profilePath)
     if not data or data == "" then
         writefile(profilePath, "{}")
         return {}
     end
-    
+
     local success, decoded = pcall(function() return HttpService:JSONDecode(data) end)
     if success and decoded then
         return decoded
+    else
+        warn("Failed to decode JSON: " .. tostring(decoded))
     end
-    
-    -- If JSON decode fails, reset the profile
-    writefile(profilePath, "{}")
+
+    -- If JSON decode fails, do not reset the profile
     return {}
 end
 
 local function saveProfileSettings(settings)
     local success, encoded = pcall(function() return HttpService:JSONEncode(settings) end)
     if success and encoded then
-        writefile(profilePath, encoded)
+        local saveSuccess = pcall(function() writefile(profilePath, encoded) end)
+        if not saveSuccess then
+            warn("Failed to save profile settings")
+        end
+    else
+        warn("Failed to encode settings to JSON")
     end
 end
 
@@ -53,19 +58,21 @@ local function setupProfileFunctions(UI)
     function UI:SaveSettings()
         saveProfileSettings(self.Settings)
     end
-    
+
     -- Load settings method
     function UI:LoadSettings()
         local loaded = loadProfileSettings()
-        if loaded then
+        if loaded and type(loaded) == "table" then
             self.Settings = loaded
+        else
+            warn("Loaded settings are invalid")
         end
     end
-    
+
     -- Apply loaded settings to UI elements
     function UI:ApplyLoadedSettings()
         if not self.Elements then return end
-        
+
         for name, element in pairs(self.Elements) do
             if self.Settings[name] ~= nil then
                 if element.type == "slider" then
@@ -75,21 +82,21 @@ local function setupProfileFunctions(UI)
                 end
             end
         end
-        
+
         -- Apply UI position if saved
         if self.Settings["UIPosition"] then
             local pos = self.Settings["UIPosition"]
             self.MainFrame.Position = UDim2.new(pos.X.Scale, pos.X.Offset, pos.Y.Scale, pos.Y.Offset)
             self.LastPosition = self.MainFrame.Position
         end
-        
+
         -- Apply toggle button position if saved
         if self.Settings["ToggleButtonPosition"] then
             local pos = self.Settings["ToggleButtonPosition"]
             self.ToggleButton.Position = UDim2.new(pos.X.Scale, pos.X.Offset, pos.Y.Scale, pos.Y.Offset)
         end
     end
-end  -- Fixed: Changed the curly brace to a parenthesis
+end
 
 -- Function to download or verify a file
 local function getOrDownloadFile(filePath, url, defaultContent)
@@ -117,20 +124,20 @@ local function getOrDownloadFile(filePath, url, defaultContent)
             end
         end
     end
-    
+
     -- File doesn't exist or is empty, try to download
     local success, response = pcall(function() return game:HttpGet(url) end)
     if success and response and response ~= "" then
         writefile(filePath, response)
         return response
     end
-    
+
     -- If download fails, use default content
     if defaultContent then
         writefile(filePath, defaultContent)
         return defaultContent
     end
-    
+
     return nil
 end
 
@@ -145,7 +152,7 @@ local CustomModule = {}
 function CustomModule.AddCustomStuff(UI)
     -- Create Main Tab
     local MainTab = UI:CreateTab("Main")
-    
+
     -- Add some basic controls to the Main tab
     UI:CreateToggle(MainTab, "WalkSpeed Boost", false, function(state)
         local player = game:GetService("Players").LocalPlayer
@@ -157,24 +164,24 @@ function CustomModule.AddCustomStuff(UI)
             end
         end
     end)
-    
+
     UI:CreateSlider(MainTab, "Jump Power", 50, 200, 50, function(value)
         local player = game:GetService("Players").LocalPlayer
         if player and player.Character then
             player.Character.Humanoid.JumpPower = value
         end
     end)
-    
+
     UI:CreateButton(MainTab, "Reset Character", function()
         local player = game:GetService("Players").LocalPlayer
         if player and player.Character then
             player.Character:BreakJoints()
         end
     end)
-    
+
     -- Create Visual Tab
     local VisualTab = UI:CreateTab("Visual")
-    
+
     UI:CreateToggle(VisualTab, "ESP", false, function(state)
         if state then
             UI:CreateNotification("ESP Enabled", 3)
@@ -184,7 +191,7 @@ function CustomModule.AddCustomStuff(UI)
             -- ESP cleanup would go here
         end
     end)
-    
+
     UI:CreateToggle(VisualTab, "Fullbright", false, function(state)
         if state then
             game:GetService("Lighting").Brightness = 2
@@ -198,10 +205,10 @@ function CustomModule.AddCustomStuff(UI)
             game:GetService("Lighting").GlobalShadows = true
         end
     end)
-    
+
     -- Create Settings Tab
     local SettingsTab = UI:CreateTab("Settings")
-    
+
     UI:CreateButton(SettingsTab, "Reset All Settings", function()
         for name, element in pairs(UI.Elements) do
             if element.type == "toggle" then
@@ -224,23 +231,23 @@ function CustomModule.AddCustomStuff(UI)
         UI:SaveSettings()
         UI:CreateNotification("All settings have been reset", 3)
     end)
-    
+
     UI:CreateButton(SettingsTab, "Save Settings", function()
         UI:SaveSettings()
         UI:CreateNotification("Settings saved successfully!", 3)
     end)
-    
+
     -- Create Credits Tab
     local CreditsTab = UI:CreateTab("Credits")
-    
+
     UI:CreateButton(CreditsTab, "Made by LiesInTheDarkness", function()
         UI:CreateNotification("Thanks for using Rize UI!", 5)
     end)
-    
+
     UI:CreateButton(CreditsTab, "Version 1.0.0", function()
         UI:CreateNotification("You are using the latest version!", 3)
     end)
-    
+
     -- Welcome notification
     UI:CreateNotification("Welcome to Rize UI!", 5)
 end
@@ -329,7 +336,7 @@ if CustomModule and type(CustomModule.AddCustomStuff) == "function" then
     local success, errorMsg = pcall(function()
         CustomModule.AddCustomStuff(UI)
     end)
-    
+
     if not success then
         warn("Error when calling AddCustomStuff: " .. tostring(errorMsg))
         UI:CreateNotification("Error loading custom elements. Check console for details.", 5)
