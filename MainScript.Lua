@@ -89,7 +89,7 @@ local function setupProfileFunctions(UI)
             self.ToggleButton.Position = UDim2.new(pos.X.Scale, pos.X.Offset, pos.Y.Scale, pos.Y.Offset)
         end
     end
-}
+end  -- Fixed: Changed the curly brace to a parenthesis
 
 -- Function to download or verify a file
 local function getOrDownloadFile(filePath, url, defaultContent)
