@@ -336,9 +336,11 @@ function RizeUILib.new()
         end
     end)
     
-    -- Function to toggle UI visibility with animation
+    -- Function to toggle UI visibility with animation - FIXED VERSION
     function self:ToggleUI(state)
         if state ~= nil then
+            -- Only change state if it's different from current state
+            if self.Visible == state then return end
             self.Visible = state
         else
             self.Visible = not self.Visible
@@ -361,40 +363,48 @@ function RizeUILib.new()
             self.MainFrame.Visible = true
             -- Use saved position or default if not available
             self.MainFrame.Position = self.LastPosition
+            
+            -- Reset transparency for fresh animation
             self.MainFrame.BackgroundTransparency = 1
             shadowFrame.BackgroundTransparency = 1
             
             -- Animation tweens
-            game:GetService("TweenService"):Create(
+            local showTween1 = game:GetService("TweenService"):Create(
                 self.MainFrame,
                 TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
                 {BackgroundTransparency = 0}
-            ):Play()
+            )
             
-            game:GetService("TweenService"):Create(
+            local showTween2 = game:GetService("TweenService"):Create(
                 shadowFrame,
                 TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
                 {BackgroundTransparency = 0.6}
-            ):Play()
+            )
+            
+            showTween1:Play()
+            showTween2:Play()
         else
             -- Save current position before hiding
             self.LastPosition = self.MainFrame.Position
             
             -- Hide animation
-            game:GetService("TweenService"):Create(
+            local hideTween1 = game:GetService("TweenService"):Create(
                 self.MainFrame,
                 TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
                 {BackgroundTransparency = 1}
-            ):Play()
+            )
             
-            game:GetService("TweenService"):Create(
+            local hideTween2 = game:GetService("TweenService"):Create(
                 shadowFrame,
                 TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
                 {BackgroundTransparency = 1}
-            ):Play()
+            )
             
-            -- Hide the main frame after animation completes
-            delay(0.5, function()
+            hideTween1:Play()
+            hideTween2:Play()
+            
+            -- Important: Connect the tween completion event to hide the frame
+            hideTween1.Completed:Connect(function()
                 if not self.Visible then
                     self.MainFrame.Visible = false
                 end
