@@ -805,43 +805,53 @@ function RizeUILib.new()
         sliderButtonCorner.Parent = sliderButton
         
         -- Click and drag functionality
-        local dragging = false
+        
+        -- Click and drag functionality
+local dragging = false
 
-        sliderButton.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                dragging = true
-                input.Changed:Connect(function()
-                    if input.UserInputState == Enum.UserInputState.End then
-                        dragging = false
-                    end
-                end)
+local function updateSlider(value)
+    valueLabel.Text = tostring(value)
+    local percentage = (value - min) / (max - min)
+    sliderFill.Size = UDim2.new(percentage, 0, 1, 0)
+    sliderButton.Position = UDim2.new(percentage, -10, 0.5, -10)
+    callback(value)
+end
+
+sliderButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
             end
         end)
+    end
+end)
 
-        sliderBg.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                dragging = true
-                local mousePos = game:GetService("UserInputService"):GetMouseLocation().X - sliderBg.AbsolutePosition.X
-                local percentage = math.clamp(mousePos / sliderBg.AbsoluteSize.X, 0, 1)
-                local value = math.floor(percentage * (max - min) + min)
-                valueLabel.Text = tostring(value)
-                sliderFill.Size = UDim2.new(percentage, 0, 1, 0)
-                sliderButton.Position = UDim2.new(percentage, -10, 0.5, -10)
-                callback(value)
-            end
-        end)
+sliderBg.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        local mousePos = (input.UserInputType == Enum.UserInputType.MouseButton1) and 
+                         (game:GetService("UserInputService"):GetMouseLocation().X - sliderBg.AbsolutePosition.X) or 
+                         (input.Position.X)
+                         
+        local percentage = math.clamp(mousePos / sliderBg.AbsoluteSize.X, 0, 1)
+        local value = math.floor(percentage * (max - min) + min)
+        updateSlider(value)
+    end
+end)
 
-        game:GetService("UserInputService").InputChanged:Connect(function(input)
-            if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-                local mousePos = game:GetService("UserInputService"):GetMouseLocation().X - sliderBg.AbsolutePosition.X
-                local percentage = math.clamp(mousePos / sliderBg.AbsoluteSize.X, 0, 1)
-                local value = math.floor(percentage * (max - min) + min)
-                valueLabel.Text = tostring(value)
-                sliderFill.Size = UDim2.new(percentage, 0, 1, 0)
-                sliderButton.Position = UDim2.new(percentage, -10, 0.5, -10)
-                callback(value)
-            end
-        end)
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local mousePos = (input.UserInputType == Enum.UserInputType.MouseMovement) and 
+                         (game:GetService("UserInputService"):GetMouseLocation().X - sliderBg.AbsolutePosition.X) or 
+                         (input.Position.X)
+                         
+        local percentage = math.clamp(mousePos / sliderBg.AbsoluteSize.X, 0, 1)
+        local value = math.floor(percentage * (max - min) + min)
+        updateSlider(value)
+    end
+end)
 
         return sliderContainer
     end
