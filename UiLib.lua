@@ -36,7 +36,7 @@ function RizeUILib.new()
     self.MainFrame.Size = UDim2.new(0.6, 0, 0.6, 0)         -- Use scale-based sizing for responsiveness
     self.MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)       -- Set the pivot to the center
     self.MainFrame.Position = self.LastPosition              -- Start near bottom
-    self.MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    self.MainFrame.BackgroundColor3 = Color3.fromRGB(240, 240, 255) -- Light icy blue
     self.MainFrame.BorderSizePixel = 0
     self.MainFrame.BackgroundTransparency = 0
     self.MainFrame.Parent = self.ScreenGui
@@ -53,7 +53,7 @@ function RizeUILib.new()
     shadowFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
     shadowFrame.AnchorPoint = Vector2.new(0.5, 0.5)
     shadowFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    shadowFrame.BackgroundTransparency = 0.6
+    shadowFrame.BackgroundTransparency = 0.8 -- More transparent for a frosty look
     shadowFrame.BorderSizePixel = 0
     shadowFrame.ZIndex = -1
     shadowFrame.Parent = self.MainFrame
@@ -66,7 +66,7 @@ function RizeUILib.new()
     self.TitleBar = Instance.new("Frame")
     self.TitleBar.Name = "TitleBar"
     self.TitleBar.Size = UDim2.new(1, 0, 0, 40)
-    self.TitleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    self.TitleBar.BackgroundColor3 = Color3.fromRGB(200, 200, 255) -- Soft blue
     self.TitleBar.BorderSizePixel = 0
     self.TitleBar.Parent = self.MainFrame
     
@@ -80,7 +80,7 @@ function RizeUILib.new()
     titleBarFix.Name = "TitleBarFix"
     titleBarFix.Size = UDim2.new(1, 0, 0, 20)
     titleBarFix.Position = UDim2.new(0, 0, 1, -10)
-    titleBarFix.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    titleBarFix.BackgroundColor3 = Color3.fromRGB(200, 200, 255) -- Soft blue
     titleBarFix.BorderSizePixel = 0
     titleBarFix.ZIndex = 0
     titleBarFix.Parent = self.TitleBar
@@ -91,7 +91,7 @@ function RizeUILib.new()
     self.TitleText.Text = "Rize UI"
     self.TitleText.Size = UDim2.new(1, -40, 1, 0)
     self.TitleText.Position = UDim2.new(0, 10, 0, 0)
-    self.TitleText.TextColor3 = Color3.fromRGB(255, 255, 255)
+    self.TitleText.TextColor3 = Color3.fromRGB(0, 0, 100) -- Dark blue for title
     self.TitleText.TextSize = 20
     self.TitleText.Font = Enum.Font.GothamBold
     self.TitleText.TextXAlignment = Enum.TextXAlignment.Left
@@ -104,10 +104,10 @@ function RizeUILib.new()
     self.CloseButton.Text = "X"
     self.CloseButton.Size = UDim2.new(0, 30, 0, 30)
     self.CloseButton.Position = UDim2.new(1, -35, 0, 5)
-    self.CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    self.CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- White for close button
     self.CloseButton.TextSize = 18
     self.CloseButton.Font = Enum.Font.GothamBold
-    self.CloseButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+    self.CloseButton.BackgroundColor3 = Color3.fromRGB(100, 100, 255) -- Blue for close button
     self.CloseButton.BorderSizePixel = 0
     self.CloseButton.Parent = self.TitleBar
     
@@ -126,7 +126,7 @@ function RizeUILib.new()
     self.TabBar.Name = "TabBar"
     self.TabBar.Size = UDim2.new(0, 120, 1, -40)
     self.TabBar.Position = UDim2.new(0, 0, 0, 40)
-    self.TabBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    self.TabBar.BackgroundColor3 = Color3.fromRGB(220, 220, 255) -- Light blue
     self.TabBar.BorderSizePixel = 0
     self.TabBar.Parent = self.MainFrame
     
@@ -140,7 +140,7 @@ function RizeUILib.new()
     tabBarFix.Name = "TabBarFix"
     tabBarFix.Size = UDim2.new(1, 0, 1, -8)
     tabBarFix.Position = UDim2.new(0, 0, 0, 0)
-    tabBarFix.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    tabBarFix.BackgroundColor3 = Color3.fromRGB(220, 220, 255) -- Light blue
     tabBarFix.BorderSizePixel = 0
     tabBarFix.ZIndex = 0
     tabBarFix.Parent = self.TabBar
@@ -176,7 +176,7 @@ function RizeUILib.new()
     self.ContentFrame.Name = "ContentFrame"
     self.ContentFrame.Size = UDim2.new(1, -120, 1, -40)
     self.ContentFrame.Position = UDim2.new(0, 120, 0, 40)
-    self.ContentFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    self.ContentFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- White
     self.ContentFrame.BorderSizePixel = 0
     self.ContentFrame.Parent = self.MainFrame
     
@@ -190,7 +190,7 @@ function RizeUILib.new()
     self.ToggleButton.Name = "ToggleButton"
     self.ToggleButton.Size = UDim2.new(0, 48, 0, 48)
     self.ToggleButton.Position = UDim2.new(0, 10, 0, 60) -- Position under Roblox logo
-    self.ToggleButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    self.ToggleButton.BackgroundColor3 = Color3.fromRGB(240, 240, 255) -- Light icy blue
     self.ToggleButton.BorderSizePixel = 0
     self.ToggleButton.Parent = self.ScreenGui
     self.ToggleButton.ZIndex = 10
@@ -220,8 +220,8 @@ function RizeUILib.new()
     local toggleGradient = Instance.new("UIGradient")
     toggleGradient.Rotation = 45
     toggleGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(200, 50, 50)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 30, 30))
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 150, 255)), -- Icy blue
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 100, 200)) -- Darker icy blue
     })
     toggleGradient.Parent = self.ToggleButton
     
@@ -336,94 +336,95 @@ function RizeUILib.new()
         end
     end)
     
-function self:ToggleUI(state)
-    -- First determine the requested state
-    local newState
-    if state ~= nil then
-        newState = state
-    else
-        newState = not self.Visible
+    function self:ToggleUI(state)
+        -- First determine the requested state
+        local newState
+        if state ~= nil then
+            newState = state
+        else
+            newState = not self.Visible
+        end
+        
+        -- If new state is the same as current state, do nothing
+        if newState == self.Visible then 
+            return 
+        end
+        
+        -- Update the state
+        self.Visible = newState
+        
+        -- Change toggle button appearance based on state
+        local colorSequence = self.Visible and 
+            ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(100, 150, 255)), -- Icy blue
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(50, 100, 200)) -- Darker icy blue
+            }) or 
+            ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(80, 80, 80)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(60, 60, 60))
+            })
+        toggleGradient.Color = colorSequence
+        
+        if self.Visible then
+            -- SHOWING UI
+            -- Make sure frame is visible first before animating
+            self.MainFrame.Visible = true
+            
+            -- Use saved position
+            self.MainFrame.Position = self.LastPosition
+            
+            -- Reset transparency for animation
+            self.MainFrame.BackgroundTransparency = 1
+            shadowFrame.BackgroundTransparency = 1
+            
+            -- Create the tweens
+            local showTween1 = game:GetService("TweenService"):Create(
+                self.MainFrame,
+                TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+                {BackgroundTransparency = 0}
+            )
+            
+            local showTween2 = game:GetService("TweenService"):Create(
+                shadowFrame,
+                TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+                {BackgroundTransparency = 0.6}
+            )
+            
+            -- Play the tweens
+            showTween1:Play()
+            showTween2:Play()
+        else
+            -- HIDING UI
+            -- Save position before hiding
+            self.LastPosition = self.MainFrame.Position
+            
+            -- Create the tweens
+            local hideTween1 = game:GetService("TweenService"):Create(
+                self.MainFrame,
+                TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
+                {BackgroundTransparency = 1}
+            )
+            
+            local hideTween2 = game:GetService("TweenService"):Create(
+                shadowFrame,
+                TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
+                {BackgroundTransparency = 1}
+            )
+            
+            -- Play the tweens
+            hideTween1:Play()
+            hideTween2:Play()
+            
+            -- Wait for animation to finish before hiding the frame
+            spawn(function()
+                wait(0.4) -- Match the tween duration
+                if not self.Visible then -- Double check in case state changed
+                    self.MainFrame.Visible = false
+                end
+            end)
+        end
     end
     
-    -- If new state is the same as current state, do nothing
-    if newState == self.Visible then 
-        return 
-    end
-    
-    -- Update the state
-    self.Visible = newState
-    
-    -- Change toggle button appearance based on state
-    local colorSequence = self.Visible and 
-        ColorSequence.new({
-            ColorSequenceKeypoint.new(0, Color3.fromRGB(200, 50, 50)),
-            ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 30, 30))
-        }) or 
-        ColorSequence.new({
-            ColorSequenceKeypoint.new(0, Color3.fromRGB(80, 80, 80)),
-            ColorSequenceKeypoint.new(1, Color3.fromRGB(60, 60, 60))
-        })
-    toggleGradient.Color = colorSequence
-    
-    if self.Visible then
-        -- SHOWING UI
-        -- Make sure frame is visible first before animating
-        self.MainFrame.Visible = true
-        
-        -- Use saved position
-        self.MainFrame.Position = self.LastPosition
-        
-        -- Reset transparency for animation
-        self.MainFrame.BackgroundTransparency = 1
-        shadowFrame.BackgroundTransparency = 1
-        
-        -- Create the tweens
-        local showTween1 = game:GetService("TweenService"):Create(
-            self.MainFrame,
-            TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-            {BackgroundTransparency = 0}
-        )
-        
-        local showTween2 = game:GetService("TweenService"):Create(
-            shadowFrame,
-            TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-            {BackgroundTransparency = 0.6}
-        )
-        
-        -- Play the tweens
-        showTween1:Play()
-        showTween2:Play()
-    else
-        -- HIDING UI
-        -- Save position before hiding
-        self.LastPosition = self.MainFrame.Position
-        
-        -- Create the tweens
-        local hideTween1 = game:GetService("TweenService"):Create(
-            self.MainFrame,
-            TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
-            {BackgroundTransparency = 1}
-        )
-        
-        local hideTween2 = game:GetService("TweenService"):Create(
-            shadowFrame,
-            TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
-            {BackgroundTransparency = 1}
-        )
-        
-        -- Play the tweens
-        hideTween1:Play()
-        hideTween2:Play()
-        
-        -- Wait for animation to finish before hiding the frame
-        spawn(function()
-            wait(0.4) -- Match the tween duration
-            if not self.Visible then -- Double check in case state changed
-                self.MainFrame.Visible = false
-            end
-        end)
-    end
-end
     -- Method to create a tab
     function self:CreateTab(name)
         -- Tab button
@@ -432,7 +433,7 @@ end
         tabButton.Text = name
         tabButton.Size = UDim2.new(0, 100, 0, 35)
         tabButton.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-        tabButton.TextColor3 = Color3.fromRGB(200, 200, 200)
+        tabButton.TextColor3 = Color3.fromRGB(0, 0, 100) -- Dark blue for tab text
         tabButton.TextSize = 16
         tabButton.Font = Enum.Font.GothamSemibold
         tabButton.BorderSizePixel = 0
@@ -488,7 +489,7 @@ end
                 game:GetService("TweenService"):Create(
                     tab,
                     TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-                    {BackgroundColor3 = Color3.fromRGB(45, 45, 45), TextColor3 = Color3.fromRGB(200, 200, 200)}
+                    {BackgroundColor3 = Color3.fromRGB(45, 45, 45), TextColor3 = Color3.fromRGB(0, 0, 100)} -- Dark blue for unselected tabs
                 ):Play()
             end
             
@@ -507,7 +508,7 @@ end
             game:GetService("TweenService"):Create(
                 tabButton,
                 TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-                {BackgroundColor3 = Color3.fromRGB(60, 60, 60), TextColor3 = Color3.fromRGB(255, 255, 255)}
+                {BackgroundColor3 = Color3.fromRGB(60, 60, 60), TextColor3 = Color3.fromRGB(255, 255, 255)} -- White for selected tab
             ):Play()
             
             self.CurrentTab = name
@@ -515,8 +516,8 @@ end
         
         -- If this is the first tab, show it by default
         if self.CurrentTab == nil then
-            tabButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-            tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+            tabButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60) -- Darker for selected tab
+            tabButton.TextColor3 = Color3.fromRGB(255, 255, 255) -- White for selected tab text
             contentFrame.Visible = true
             self.CurrentTab = name
         end
@@ -534,7 +535,7 @@ end
         button.Text = name
         button.Size = UDim2.new(1, -16, 0, 40)
         button.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
-        button.TextColor3 = Color3.fromRGB(255, 255, 255)
+        button.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
         button.TextSize = 16
         button.Font = Enum.Font.GothamSemibold
         button.BorderSizePixel = 0
@@ -610,7 +611,7 @@ end
         toggleLabel.Text = name
         toggleLabel.Size = UDim2.new(1, -70, 1, 0)
         toggleLabel.Position = UDim2.new(0, 10, 0, 0)
-        toggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        toggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
         toggleLabel.TextSize = 16
         toggleLabel.Font = Enum.Font.GothamSemibold
         toggleLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -622,7 +623,7 @@ end
         switchBg.Name = "SwitchBackground"
         switchBg.Size = UDim2.new(0, 44, 0, 22)
         switchBg.Position = UDim2.new(1, -54, 0.5, -11)
-        switchBg.BackgroundColor3 = default and Color3.fromRGB(200, 50, 50) or Color3.fromRGB(100, 100, 100)
+        switchBg.BackgroundColor3 = default and Color3.fromRGB(100, 150, 255) or Color3.fromRGB(100, 100, 100) -- Icy blue or grey
         switchBg.BorderSizePixel = 0
         switchBg.Parent = toggleContainer
         
@@ -636,7 +637,7 @@ end
         switchKnob.Name = "SwitchKnob"
         switchKnob.Size = UDim2.new(0, 18, 0, 18)
         switchKnob.Position = UDim2.new(default and 1 or 0, default and -20 or 2, 0.5, -9)
-        switchKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+        switchKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- White knob
         switchKnob.BorderSizePixel = 0
         switchKnob.Parent = switchBg
         
@@ -665,7 +666,7 @@ end
             game:GetService("TweenService"):Create(
                 switchBg,
                 TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-                {BackgroundColor3 = state and Color3.fromRGB(200, 50, 50) or Color3.fromRGB(100, 100, 100)}
+                {BackgroundColor3 = state and Color3.fromRGB(100, 150, 255) or Color3.fromRGB(100, 100, 100)} -- Icy blue or grey
             ):Play()
             
             game:GetService("TweenService"):Create(
@@ -702,7 +703,7 @@ end
                 game:GetService("TweenService"):Create(
                     switchBg,
                     TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-                    {BackgroundColor3 = state and Color3.fromRGB(200, 50, 50) or Color3.fromRGB(100, 100, 100)}
+                    {BackgroundColor3 = state and Color3.fromRGB(100, 150, 255) or Color3.fromRGB(100, 100, 100)} -- Icy blue or grey
                 ):Play()
                 
                 game:GetService("TweenService"):Create(
@@ -741,7 +742,7 @@ end
         sliderLabel.Text = name
         sliderLabel.Size = UDim2.new(1, -70, 0, 30)
         sliderLabel.Position = UDim2.new(0, 10, 0, 0)
-        sliderLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        sliderLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
         sliderLabel.TextSize = 16
         sliderLabel.Font = Enum.Font.GothamSemibold
         sliderLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -754,7 +755,7 @@ end
         valueLabel.Text = tostring(default)
         valueLabel.Size = UDim2.new(0, 60, 0, 30)
         valueLabel.Position = UDim2.new(1, -70, 0, 0)
-        valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        valueLabel.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text
         valueLabel.TextSize = 16
         valueLabel.Font = Enum.Font.GothamSemibold
         valueLabel.TextXAlignment = Enum.TextXAlignment.Right
@@ -780,7 +781,7 @@ end
         sliderFill.Name = "SliderFill"
         local fillPercent = (default - min) / (max - min)
         sliderFill.Size = UDim2.new(fillPercent, 0, 1, 0)
-        sliderFill.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+        sliderFill.BackgroundColor3 = Color3.fromRGB(100, 150, 255) -- Icy blue
         sliderFill.BorderSizePixel = 0
         sliderFill.Parent = sliderBg
         
@@ -789,290 +790,65 @@ end
         sliderFillCorner.CornerRadius = UDim.new(0, 6)
         sliderFillCorner.Parent = sliderFill
         
-        -- Slider knob
-        local sliderKnob = Instance.new("Frame")
-        sliderKnob.Name = "SliderKnob"
-        sliderKnob.Size = UDim2.new(0, 16, 0, 16)
-        sliderKnob.Position = UDim2.new(fillPercent, -8, 0.5, -8)
-        sliderKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        sliderKnob.BorderSizePixel = 0
-        sliderKnob.ZIndex = 2
-        sliderKnob.Parent = sliderBg
-        
-        -- Add UI Corner to slider knob
-        local sliderKnobCorner = Instance.new("UICorner")
-        sliderKnobCorner.CornerRadius = UDim.new(1, 0)
-        sliderKnobCorner.Parent = sliderKnob
-        
-        -- Set in settings
-        self.Settings[name] = default
-        
-        -- Clickable slider area
-        local sliderButton = Instance.new("TextButton")
+        -- Slider button
+        local sliderButton = Instance.new("Frame")
         sliderButton.Name = "SliderButton"
-        sliderButton.Text = ""
-        sliderButton.Size = UDim2.new(1, 0, 1, 0)
-        sliderButton.BackgroundTransparency = 1
+        sliderButton.Size = UDim2.new(0, 20, 0, 20)
+        sliderButton.Position = UDim2.new(fillPercent, -10, 0.5, -10)
+        sliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255) -- White button
+        sliderButton.BorderSizePixel = 0
         sliderButton.Parent = sliderBg
         
-        -- Function to update slider
-        local function updateSlider(value)
-            value = math.clamp(value, min, max)
-            local percent = (value - min) / (max - min)
-            
-            -- Animate slider components
-            game:GetService("TweenService"):Create(
-                sliderFill,
-                TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-                {Size = UDim2.new(percent, 0, 1, 0)}
-            ):Play()
-            
-            game:GetService("TweenService"):Create(
-                sliderKnob,
-                TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-                {Position = UDim2.new(percent, -8, 0.5, -8)}
-            ):Play()
-            
-            -- Update value label with formatted number (1 decimal place)
-            local formattedValue = math.floor(value * 10) / 10
-            valueLabel.Text = tostring(formattedValue)
-            
-            self.Settings[name] = value
-            callback(value)
-        end
+        -- Add UI Corner to slider button
+        local sliderButtonCorner = Instance.new("UICorner")
+        sliderButtonCorner.CornerRadius = UDim.new(1, 0) -- Fully rounded corners
+        sliderButtonCorner.Parent = sliderButton
         
-        -- Allow dragging the slider
+        -- Click and drag functionality
         local dragging = false
-        
+
         sliderButton.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
                 dragging = true
-                
-                -- Handle the initial click position
-                local relativeX = math.clamp((input.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X, 0, 1)
-                local value = min + (relativeX * (max - min))
-                updateSlider(value)
+                input.Changed:Connect(function()
+                    if input.UserInputState == Enum.UserInputState.End then
+                        dragging = false
+                    end
+                end)
             end
         end)
-        
-        sliderButton.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                dragging = false
+
+        sliderBg.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                dragging = true
+                local mousePos = game:GetService("UserInputService"):GetMouseLocation().X - sliderBg.AbsolutePosition.X
+                local percentage = math.clamp(mousePos / sliderBg.AbsoluteSize.X, 0, 1)
+                local value = math.floor(percentage * (max - min) + min)
+                valueLabel.Text = tostring(value)
+                sliderFill.Size = UDim2.new(percentage, 0, 1, 0)
+                sliderButton.Position = UDim2.new(percentage, -10, 0.5, -10)
+                callback(value)
             end
         end)
-        
-        -- Extend the touch/click area
-        sliderContainer.InputBegan:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                -- Only process if clicked in the lower part of the container (where the slider is)
-                local yPos = input.Position.Y - sliderContainer.AbsolutePosition.Y
-                if yPos > 30 then  -- Only if clicked in the lower part
-                    dragging = true
-                    
-                    -- Handle the initial click position
-                    local relativeX = math.clamp((input.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X, 0, 1)
-                    local value = min + (relativeX * (max - min))
-                    updateSlider(value)
-                end
-            end
-        end)
-        
-        sliderContainer.InputEnded:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                dragging = false
-            end
-        end)
-        
-        -- Update during dragging
+
         game:GetService("UserInputService").InputChanged:Connect(function(input)
-            if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-                local relativeX = math.clamp((input.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X, 0, 1)
-                local value = min + (relativeX * (max - min))
-                updateSlider(value)
+            if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                local mousePos = game:GetService("UserInputService"):GetMouseLocation().X - sliderBg.AbsolutePosition.X
+                local percentage = math.clamp(mousePos / sliderBg.AbsoluteSize.X, 0, 1)
+                local value = math.floor(percentage * (max - min) + min)
+                valueLabel.Text = tostring(value)
+                sliderFill.Size = UDim2.new(percentage, 0, 1, 0)
+                sliderButton.Position = UDim2.new(percentage, -10, 0.5, -10)
+                callback(value)
             end
         end)
-        
-        -- Hover effect for container
-        sliderContainer.MouseEnter:Connect(function()
-            game:GetService("TweenService"):Create(
-                sliderContainer,
-                TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-                {BackgroundColor3 = Color3.fromRGB(65, 65, 65)}
-            ):Play()
-        end)
-        
-        sliderContainer.MouseLeave:Connect(function()
-            game:GetService("TweenService"):Create(
-                sliderContainer,
-                TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-                {BackgroundColor3 = Color3.fromRGB(55, 55, 55)}
-            ):Play()
-        end)
-        
-        self.Elements[name] = {
-            type = "slider",
-            update = updateSlider
-        }
-        
+
         return sliderContainer
     end
-    
-    -- Method to create a notification
-    function self:CreateNotification(message, duration)
-        duration = duration or 3
-        
-        -- Notification container
-        local notifContainer = Instance.new("Frame")
-        notifContainer.Name = "Notification"
-        notifContainer.Size = UDim2.new(0, 250, 0, 60)
-        notifContainer.Position = UDim2.new(1, 10, 1, -70 - notifContainer.AbsoluteSize.Y)
-        notifContainer.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-        notifContainer.BorderSizePixel = 0
-        notifContainer.Parent = self.ScreenGui
-        notifContainer.BackgroundTransparency = 1 -- Start transparent for animation
-        
-        -- Add UI Corner to notification
-        local notifCorner = Instance.new("UICorner")
-        notifCorner.CornerRadius = UDim.new(0, 8)
-        notifCorner.Parent = notifContainer
-        
-        -- Add shadow to notification
-        local notifShadow = Instance.new("Frame")
-        notifShadow.Name = "Shadow"
-        notifShadow.Size = UDim2.new(1, 10, 1, 10)
-        notifShadow.Position = UDim2.new(0.5, 0, 0.5, 0)
-        notifShadow.AnchorPoint = Vector2.new(0.5, 0.5)
-        notifShadow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-        notifShadow.BackgroundTransparency = 1 -- Start transparent for animation
-        notifShadow.BorderSizePixel = 0
-        notifShadow.ZIndex = -1
-        notifShadow.Parent = notifContainer
-        
-        local notifShadowCorner = Instance.new("UICorner")
-        notifShadowCorner.CornerRadius = UDim.new(0, 8)
-        notifShadowCorner.Parent = notifShadow
-        
-        -- Notification label
-        local notifLabel = Instance.new("TextLabel")
-        notifLabel.Name = "Message"
-        notifLabel.Text = message
-        notifLabel.Size = UDim2.new(1, -20, 1, -10)
-        notifLabel.Position = UDim2.new(0, 10, 0, 5)
-        notifLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-        notifLabel.TextSize = 14
-        notifLabel.Font = Enum.Font.GothamSemibold
-        notifLabel.TextWrapped = true
-        notifLabel.BackgroundTransparency = 1
-        notifLabel.TextTransparency = 1 -- Start transparent for animation
-        notifLabel.Parent = notifContainer
-        
-        -- Animate notification in
-        game:GetService("TweenService"):Create(
-            notifContainer,
-            TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-            {Position = UDim2.new(1, -260, 1, -70), BackgroundTransparency = 0}
-        ):Play()
-        
-        game:GetService("TweenService"):Create(
-            notifShadow,
-            TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-            {BackgroundTransparency = 0.6}
-        ):Play()
-        
-        game:GetService("TweenService"):Create(
-            notifLabel,
-            TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-            {TextTransparency = 0}
-        ):Play()
-        
-        -- Remove notification after duration
-        task.spawn(function()
-            task.wait(duration)
-            
-            -- Animate notification out
-            game:GetService("TweenService"):Create(
-                notifContainer,
-                TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
-                {Position = UDim2.new(1, 10, 1, -70), BackgroundTransparency = 1}
-            ):Play()
-            
-            game:GetService("TweenService"):Create(
-                notifShadow,
-                TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
-                {BackgroundTransparency = 1}
-            ):Play()
-            
-            game:GetService("TweenService"):Create(
-                notifLabel,
-                TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
-                {TextTransparency = 1}
-            ):Play()
-            
-            -- Remove after animation
-            task.wait(0.6)
-            notifContainer:Destroy()
-        end)
-    end
-    
-    -- Method to apply saved settings
-    function self:ApplySettings()
-        -- Apply UI position if saved
-        if self.Settings["UIPosition"] then
-            local pos = self.Settings["UIPosition"]
-            self.MainFrame.Position = UDim2.new(pos.X.Scale, pos.X.Offset, pos.Y.Scale, pos.Y.Offset)
-            self.LastPosition = self.MainFrame.Position
-        end
-        
-        -- Apply toggle button position if saved
-        if self.Settings["ToggleButtonPosition"] then
-            local pos = self.Settings["ToggleButtonPosition"]
-            self.ToggleButton.Position = UDim2.new(pos.X.Scale, pos.X.Offset, pos.Y.Scale, pos.Y.Offset)
-        end
-        
-        -- Apply element-specific settings
-        for name, element in pairs(self.Elements) do
-            if self.Settings[name] ~= nil then
-                element.update(self.Settings[name])
-            end
-        end
-    end
-    
-    -- Initialize UI position based on device
-    local function initializeUIPosition()
-        local isMobile = game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").KeyboardEnabled
-        
-        if isMobile then
-            -- Mobile-specific adjustments
-            self.MainFrame.Size = UDim2.new(0.8, 0, 0.7, 0)  -- Larger relative size for mobile
-            
-            -- Position is already set to bottom with LastPosition
-            
-            -- Reposition toggle button to avoid overlap with Roblox mobile UI
-            self.ToggleButton.Position = UDim2.new(0, 10, 0, 120) 
-        end
-    end
-    
-    -- Call the initialization function
-    initializeUIPosition()
-    
-    -- Show initial animation
-    self.MainFrame.BackgroundTransparency = 1
-    shadowFrame.BackgroundTransparency = 1
-        
-    -- Run the animation
-    game:GetService("TweenService"):Create(
-        self.MainFrame,
-        TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-        {BackgroundTransparency = 0}  -- Move to saved position
-    ):Play()
-        
-    game:GetService("TweenService"):Create(
-        shadowFrame,
-        TweenInfo.new(0.8, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-        {BackgroundTransparency = 0.6}
-    ):Play()
-    
+
     return self
 end
 
 return RizeUILib
+
+
