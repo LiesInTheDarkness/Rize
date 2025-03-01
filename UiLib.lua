@@ -11,6 +11,7 @@ function RizeUILib.new()
     self.CurrentTab = nil
     self.Settings = {}
     self.Visible = true
+    self.LastPosition = UDim2.new(0.5, 0, 0.8, 0) -- Default position near bottom
     
     -- Create the main UI
     self.ScreenGui = Instance.new("ScreenGui")
@@ -34,7 +35,7 @@ function RizeUILib.new()
     self.MainFrame.Name = "MainFrame"
     self.MainFrame.Size = UDim2.new(0.6, 0, 0.6, 0)         -- Use scale-based sizing for responsiveness
     self.MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)       -- Set the pivot to the center
-    self.MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)      -- Center on the screen
+    self.MainFrame.Position = self.LastPosition              -- Start near bottom
     self.MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     self.MainFrame.BorderSizePixel = 0
     self.MainFrame.BackgroundTransparency = 0
@@ -184,43 +185,115 @@ function RizeUILib.new()
     contentCorner.CornerRadius = UDim.new(0, 8)
     contentCorner.Parent = self.ContentFrame
     
-    -- Add toggle button under Roblox logo
-    self.ToggleButton = Instance.new("ImageButton")
+    -- Improved toggle button
+    self.ToggleButton = Instance.new("Frame")
     self.ToggleButton.Name = "ToggleButton"
-    self.ToggleButton.Size = UDim2.new(0, 40, 0, 40)
+    self.ToggleButton.Size = UDim2.new(0, 48, 0, 48)
     self.ToggleButton.Position = UDim2.new(0, 10, 0, 60) -- Position under Roblox logo
-    self.ToggleButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    self.ToggleButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
     self.ToggleButton.BorderSizePixel = 0
-    self.ToggleButton.Image = "rbxassetid://3926307971" -- Menu icon
-    self.ToggleButton.ImageRectOffset = Vector2.new(604, 684)
-    self.ToggleButton.ImageRectSize = Vector2.new(36, 36)
-    self.ToggleButton.ImageColor3 = Color3.fromRGB(255, 255, 255)
     self.ToggleButton.Parent = self.ScreenGui
+    self.ToggleButton.ZIndex = 10
     
     -- Add UI Corner to ToggleButton
     local toggleButtonCorner = Instance.new("UICorner")
-    toggleButtonCorner.CornerRadius = UDim.new(0, 8)
+    toggleButtonCorner.CornerRadius = UDim.new(1, 0) -- Make it completely round
     toggleButtonCorner.Parent = self.ToggleButton
     
     -- Add shadow to the toggle button
     local toggleShadow = Instance.new("Frame")
     toggleShadow.Name = "Shadow"
-    toggleShadow.Size = UDim2.new(1, 6, 1, 6)
+    toggleShadow.Size = UDim2.new(1, 8, 1, 8)
     toggleShadow.Position = UDim2.new(0.5, 0, 0.5, 0)
     toggleShadow.AnchorPoint = Vector2.new(0.5, 0.5)
     toggleShadow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
     toggleShadow.BackgroundTransparency = 0.6
     toggleShadow.BorderSizePixel = 0
-    toggleShadow.ZIndex = -1
+    toggleShadow.ZIndex = 9
     toggleShadow.Parent = self.ToggleButton
     
     local toggleShadowCorner = Instance.new("UICorner")
-    toggleShadowCorner.CornerRadius = UDim.new(0, 8)
+    toggleShadowCorner.CornerRadius = UDim.new(1, 0)
     toggleShadowCorner.Parent = toggleShadow
     
+    -- Add gradient to toggle button for better appearance
+    local toggleGradient = Instance.new("UIGradient")
+    toggleGradient.Rotation = 45
+    toggleGradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(200, 50, 50)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 30, 30))
+    })
+    toggleGradient.Parent = self.ToggleButton
+    
+    -- Add icon to toggle button
+    local toggleIcon = Instance.new("ImageLabel")
+    toggleIcon.Name = "Icon"
+    toggleIcon.Size = UDim2.new(0.6, 0, 0.6, 0)
+    toggleIcon.Position = UDim2.new(0.5, 0, 0.5, 0)
+    toggleIcon.AnchorPoint = Vector2.new(0.5, 0.5)
+    toggleIcon.BackgroundTransparency = 1
+    toggleIcon.Image = "rbxassetid://3926307971" -- Menu icon
+    toggleIcon.ImageRectOffset = Vector2.new(604, 684)
+    toggleIcon.ImageRectSize = Vector2.new(36, 36)
+    toggleIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
+    toggleIcon.ZIndex = 11
+    toggleIcon.Parent = self.ToggleButton
+    
+    -- Add click detection for toggle button
+    local toggleClickArea = Instance.new("TextButton")
+    toggleClickArea.Name = "ClickArea"
+    toggleClickArea.Size = UDim2.new(1, 0, 1, 0)
+    toggleClickArea.Position = UDim2.new(0, 0, 0, 0)
+    toggleClickArea.BackgroundTransparency = 1
+    toggleClickArea.Text = ""
+    toggleClickArea.ZIndex = 12
+    toggleClickArea.Parent = self.ToggleButton
+    
     -- Click handler for toggle button
-    self.ToggleButton.MouseButton1Click:Connect(function()
+    toggleClickArea.MouseButton1Click:Connect(function()
         self:ToggleUI()
+    end)
+    
+    -- Make the toggle button draggable
+    local toggleDragging = false
+    local toggleDragInput
+    local toggleDragStart
+    local toggleStartPos
+    
+    toggleClickArea.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            if input.UserInputState == Enum.UserInputState.Begin then
+                toggleDragging = true
+                toggleDragStart = input.Position
+                toggleStartPos = self.ToggleButton.Position
+            end
+        end
+    end)
+    
+    toggleClickArea.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            toggleDragging = false
+            
+            -- Save toggle button position
+            self.Settings["ToggleButtonPosition"] = {
+                X = {Scale = self.ToggleButton.Position.X.Scale, Offset = self.ToggleButton.Position.X.Offset},
+                Y = {Scale = self.ToggleButton.Position.Y.Scale, Offset = self.ToggleButton.Position.Y.Offset}
+            }
+        end
+    end)
+    
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            if toggleDragging then
+                local delta = input.Position - toggleDragStart
+                self.ToggleButton.Position = UDim2.new(
+                    toggleStartPos.X.Scale, 
+                    toggleStartPos.X.Offset + delta.X,
+                    toggleStartPos.Y.Scale,
+                    toggleStartPos.Y.Offset + delta.Y
+                )
+            end
+        end
     end)
     
     -- Make the main frame draggable
@@ -240,6 +313,13 @@ function RizeUILib.new()
     self.TitleBar.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = false
+            -- Save position when dragging ends
+            self.LastPosition = self.MainFrame.Position
+            -- Save position to settings
+            self.Settings["UIPosition"] = {
+                X = {Scale = self.MainFrame.Position.X.Scale, Offset = self.MainFrame.Position.X.Offset},
+                Y = {Scale = self.MainFrame.Position.Y.Scale, Offset = self.MainFrame.Position.Y.Offset}
+            }
         end
     end)
     
@@ -264,10 +344,23 @@ function RizeUILib.new()
             self.Visible = not self.Visible
         end
         
+        -- Change toggle button appearance based on state
+        game:GetService("TweenService"):Create(
+            toggleGradient,
+            TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+            {
+                Color = ColorSequence.new({
+                    ColorSequenceKeypoint.new(0, self.Visible and Color3.fromRGB(200, 50, 50) or Color3.fromRGB(80, 80, 80)),
+                    ColorSequenceKeypoint.new(1, self.Visible and Color3.fromRGB(150, 30, 30) or Color3.fromRGB(60, 60, 60))
+                })
+            }
+        ):Play()
+        
         if self.Visible then
             -- Show animation
             self.MainFrame.Visible = true
-            self.MainFrame.Position = UDim2.new(0.5, 0, 0.45, 0)  -- Start slightly above center
+            -- Use saved position or default if not available
+            self.MainFrame.Position = self.LastPosition
             self.MainFrame.BackgroundTransparency = 1
             shadowFrame.BackgroundTransparency = 1
             
@@ -275,7 +368,7 @@ function RizeUILib.new()
             game:GetService("TweenService"):Create(
                 self.MainFrame,
                 TweenInfo.new(0.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-                {Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 0}
+                {BackgroundTransparency = 0}
             ):Play()
             
             game:GetService("TweenService"):Create(
@@ -284,11 +377,14 @@ function RizeUILib.new()
                 {BackgroundTransparency = 0.6}
             ):Play()
         else
+            -- Save current position before hiding
+            self.LastPosition = self.MainFrame.Position
+            
             -- Hide animation
             game:GetService("TweenService"):Create(
                 self.MainFrame,
                 TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In),
-                {Position = UDim2.new(0.5, 0, 0.45, 0), BackgroundTransparency = 1}
+                {BackgroundTransparency = 1}
             ):Play()
             
             game:GetService("TweenService"):Create(
@@ -896,6 +992,29 @@ function RizeUILib.new()
         end)
     end
     
+    -- Method to apply saved settings
+    function self:ApplySettings()
+        -- Apply UI position if saved
+        if self.Settings["UIPosition"] then
+            local pos = self.Settings["UIPosition"]
+            self.MainFrame.Position = UDim2.new(pos.X.Scale, pos.X.Offset, pos.Y.Scale, pos.Y.Offset)
+            self.LastPosition = self.MainFrame.Position
+        end
+        
+        -- Apply toggle button position if saved
+        if self.Settings["ToggleButtonPosition"] then
+            local pos = self.Settings["ToggleButtonPosition"]
+            self.ToggleButton.Position = UDim2.new(pos.X.Scale, pos.X.Offset, pos.Y.Scale, pos.Y.Offset)
+        end
+        
+        -- Apply element-specific settings
+        for name, element in pairs(self.Elements) do
+            if self.Settings[name] ~= nil then
+                element.update(self.Settings[name])
+            end
+        end
+    end
+    
     -- Initialize UI position based on device
     local function initializeUIPosition()
         local isMobile = game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").KeyboardEnabled
@@ -903,7 +1022,8 @@ function RizeUILib.new()
         if isMobile then
             -- Mobile-specific adjustments
             self.MainFrame.Size = UDim2.new(0.8, 0, 0.7, 0)  -- Larger relative size for mobile
-            -- Position is already set to center with AnchorPoint
+            
+            -- Position is already set to bottom with LastPosition
             
             -- Reposition toggle button to avoid overlap with Roblox mobile UI
             self.ToggleButton.Position = UDim2.new(0, 10, 0, 120) 
@@ -916,13 +1036,12 @@ function RizeUILib.new()
     -- Show initial animation
     self.MainFrame.BackgroundTransparency = 1
     shadowFrame.BackgroundTransparency = 1
-    self.MainFrame.Position = UDim2.new(0.5, 0, 0.45, 0)  -- Start slightly above center
         
     -- Run the animation
     game:GetService("TweenService"):Create(
         self.MainFrame,
         TweenInfo.new(0.6, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-        {Position = UDim2.new(0.5, 0, 0.5, 0), BackgroundTransparency = 0}  -- Move to center
+        {BackgroundTransparency = 0}  -- Move to saved position
     ):Play()
         
     game:GetService("TweenService"):Create(
@@ -935,6 +1054,3 @@ function RizeUILib.new()
 end
 
 return RizeUILib
-
-
-
