@@ -1,7 +1,7 @@
 -- MainScript.lua
 local HttpService = game:GetService("HttpService")
 local rizeFolder = "Rize"
-local profilePath = rizeFolder .. "/MainProfile.txt"
+local profilePath = rizeFolder .. "/MainProfile.json"
 local customModulePath = rizeFolder .. "/CustomModule.lua"
 local uiLibPath = rizeFolder .. "/UiLib.lua"
 local defaultCustomModuleURL = "https://raw.githubusercontent.com/LiesInTheDarkness/Rize/refs/heads/main/CustomModule.lua"
