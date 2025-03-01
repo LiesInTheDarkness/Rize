@@ -804,61 +804,79 @@ function RizeUILib.new()
         sliderButtonCorner.CornerRadius = UDim.new(1, 0) -- Fully rounded corners
         sliderButtonCorner.Parent = sliderButton
         
-        -- Click and drag functionality
+        -- Allow dragging the slider
+        local dragging = false
         
-        -- Click and drag functionality
-local dragging = false
-
-local function updateSlider(value)
-    valueLabel.Text = tostring(value)
-    local percentage = (value - min) / (max - min)
-    sliderFill.Size = UDim2.new(percentage, 0, 1, 0)
-    sliderButton.Position = UDim2.new(percentage, -10, 0.5, -10)
-    callback(value)
-end
-
-sliderButton.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
+        sliderButton.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                dragging = true
+                
+                -- Handle the initial click position
+                local relativeX = math.clamp((input.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X, 0, 1)
+                local value = min + (relativeX * (max - min))
+                updateSlider(value)
+            end
+        end)
+        
+        sliderButton.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
                 dragging = false
             end
         end)
-    end
-end)
-
-sliderBg.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        local mousePos = (input.UserInputType == Enum.UserInputType.MouseButton1) and 
-                         (game:GetService("UserInputService"):GetMouseLocation().X - sliderBg.AbsolutePosition.X) or 
-                         (input.Position.X)
-                         
-        local percentage = math.clamp(mousePos / sliderBg.AbsoluteSize.X, 0, 1)
-        local value = math.floor(percentage * (max - min) + min)
-        updateSlider(value)
-    end
-end)
-
-game:GetService("UserInputService").InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        local mousePos = (input.UserInputType == Enum.UserInputType.MouseMovement) and 
-                         (game:GetService("UserInputService"):GetMouseLocation().X - sliderBg.AbsolutePosition.X) or 
-                         (input.Position.X)
-                         
-        local percentage = math.clamp(mousePos / sliderBg.AbsoluteSize.X, 0, 1)
-        local value = math.floor(percentage * (max - min) + min)
-        updateSlider(value)
-    end
-end)
-
+        
+        -- Extend the touch/click area
+        sliderContainer.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                -- Only process if clicked in the lower part of the container (where the slider is)
+                local yPos = input.Position.Y - sliderContainer.AbsolutePosition.Y
+                if yPos > 30 then  -- Only if clicked in the lower part
+                    dragging = true
+                    
+                    -- Handle the initial click position
+                    local relativeX = math.clamp((input.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X, 0, 1)
+                    local value = min + (relativeX * (max - min))
+                    updateSlider(value)
+                end
+            end
+        end)
+        
+        sliderContainer.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                dragging = false
+            end
+        end)
+        
+        -- Update during dragging
+        game:GetService("UserInputService").InputChanged:Connect(function(input)
+            if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+                local relativeX = math.clamp((input.Position.X - sliderBg.AbsolutePosition.X) / sliderBg.AbsoluteSize.X, 0, 1)
+                local value = min + (relativeX * (max - min))
+                updateSlider(value)
+            end
+        end)
+        
+        -- Hover effect for container
+        sliderContainer.MouseEnter:Connect(function()
+            game:GetService("TweenService"):Create(
+                sliderContainer,
+                TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+                {BackgroundColor3 = Color3.fromRGB(65, 65, 65)}
+            ):Play()
+        end)
+        
+        sliderContainer.MouseLeave:Connect(function()
+            game:GetService("TweenService"):Create(
+                sliderContainer,
+                TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+                {BackgroundColor3 = Color3.fromRGB(55, 55, 55)}
+            ):Play()
+        end)
+        
+        self.Elements[name] = {
+            type = "slider",
+            update = updateSlider
+        }
+        
         return sliderContainer
     end
-
-    return self
-end
-
-return RizeUILib
-
 
